@@ -1,0 +1,33 @@
+{% extends 'site_app/base.html' %}
+{% load i18n %}
+{% block title %}{{ month.title }} — {% trans "ScaleFit" %}{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="breadcrumb">
+    <a href="{% url 'site_home' %}">{% trans "Home" %}</a>
+    <span class="sep">/</span>
+    <a href="{% url 'site_goal_plans' goal_type %}">{% if goal_type == 'weight_loss' %}{% trans "Weight Loss" %}{% else %}{% trans "Weight Gain" %}{% endif %}</a>
+    <span class="sep">/</span>
+    <a href="{% url 'site_plan_detail' plan.pk %}">{{ plan.name }}</a>
+    <span class="sep">/</span>
+    <span class="current">{{ month.title }}</span>
+  </div>
+  <h1>{{ month.title }}</h1>
+  <p>{{ plan.name }} — {% trans "Select a week to view daily content" %}</p>
+</div>
+
+<section class="section">
+  <div class="items-grid">
+    {% for week in items %}
+    <a href="{% url 'site_week_days' plan.pk week.pk %}" class="item-card reveal">
+      <div class="item-number">{{ week.week_number }}</div>
+      <h4>{{ week.title }}</h4>
+      <div class="item-sub">{% trans "7 Days Inside" %}</div>
+    </a>
+    {% empty %}
+    <div class="empty"><div class="empty-icon">📅</div><p>{% trans "No weeks yet." %}</p></div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

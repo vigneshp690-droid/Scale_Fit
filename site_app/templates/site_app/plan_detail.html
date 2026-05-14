@@ -1,0 +1,48 @@
+{% extends 'site_app/base.html' %}
+{% load i18n %}
+{% block title %}{{ plan.name }} — {% trans "ScaleFit" %}{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="breadcrumb">
+    <a href="{% url 'site_home' %}">{% trans "Home" %}</a>
+    <span class="sep">/</span>
+    <a href="{% url 'site_goal_plans' goal_type %}">{% if goal_type == 'weight_loss' %}{% trans "Weight Loss" %}{% else %}{% trans "Weight Gain" %}{% endif %}</a>
+    <span class="sep">/</span>
+    <span class="current">{{ plan.name }}</span>
+  </div>
+  <h1>{{ plan.name }}</h1>
+  <p>
+    {{ plan.get_duration_display }} —
+    {% if item_type == 'monthly' %}{% trans "Follow each month for best results" %}
+    {% elif item_type == 'weekly' %}{% trans "Follow each week for best results" %}
+    {% else %}{% trans "Follow each day for best results" %}{% endif %}
+  </p>
+</div>
+
+<section class="section">
+  <div class="items-grid">
+    {% for item in items %}
+    <a href="
+      {% if item_type == 'monthly' %}{% url 'site_month_weeks' plan.pk item.pk %}
+      {% elif item_type == 'weekly' %}{% url 'site_week_days' plan.pk item.pk %}
+      {% else %}{% url 'site_day_detail' item.pk %}{% endif %}
+    " class="item-card reveal">
+      <div class="item-number">
+        {% if item_type == 'monthly' %}{{ item.month_number }}
+        {% elif item_type == 'weekly' %}{{ item.week_number }}
+        {% else %}{{ item.day_number }}{% endif %}
+      </div>
+      <h4>{{ item.title }}</h4>
+      <div class="item-sub">
+        {% if item_type == 'monthly' %}{% trans "4 Weeks Inside" %}
+        {% elif item_type == 'weekly' %}{% trans "7 Days Inside" %}
+        {% else %}{% trans "Meals" %} · {% trans "Workout" %} · {% trans "Water" %}{% endif %}
+      </div>
+    </a>
+    {% empty %}
+    <div class="empty"><div class="empty-icon">📅</div><p>{% trans "No content yet." %}</p></div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

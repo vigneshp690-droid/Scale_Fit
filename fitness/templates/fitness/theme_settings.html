@@ -1,0 +1,63 @@
+{% extends "fitness/base_admin.html" %}
+{% load static %}
+
+{% block title %}Theme Settings - ScaleFit{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <section>
+        <div class="view-toolbar">
+            <div class="view-heading">
+                <h2>User Page Themes</h2>
+                <p>Choose the visual theme used on user-side pages across the platform.</p>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="period-grid">
+                {% for theme in themes %}
+                <div class="period-card {% if theme.slug == active_theme_slug %}active{% endif %}" style="background: white; border-radius: 8px; border: 1px solid {% if theme.slug == active_theme_slug %}var(--sf-orange){% else %}var(--sf-line){% endif %}; padding: 20px; box-shadow: var(--sf-card-shadow);">
+                    <div class="theme-preview" style="display: grid; grid-template-columns: repeat(3, 1fr); height: 60px; border-radius: 6px; overflow: hidden; margin-bottom: 15px;">
+                        {% for color in theme.colors %}
+                            <span style="background: {{ color }};"></span>
+                        {% endfor %}
+                    </div>
+                    <h3 style="color: var(--sf-ink); margin: 0 0 10px; font-size: 1.1rem;">{{ theme.name }}</h3>
+                    <p style="color: var(--sf-muted); font-size: 0.85rem; line-height: 1.5; margin-bottom: 20px; flex-grow: 1;">
+                        {{ theme.description }}
+                    </p>
+                    <div class="period-actions" style="border-top: 1px solid var(--sf-line); padding-top: 15px;">
+                        {% if theme.slug == active_theme_slug %}
+                            <button class="btn" type="button" disabled style="width: 100%; background: var(--sf-panel); color: var(--sf-muted); justify-content: center; font-weight: 800; cursor: default;">
+                                <i class="fa-solid fa-check" style="margin-right: 8px;"></i> Active Theme
+                            </button>
+                        {% else %}
+                            <button class="btn" type="submit" name="theme" value="{{ theme.slug }}" style="width: 100%; background: var(--sf-orange); color: white; justify-content: center; font-weight: 800;">
+                                <i class="fa-solid fa-wand-magic-sparkles" style="margin-right: 8px;"></i> Apply Theme
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </form>
+    </section>
+
+    <aside>
+        <div class="side-header">
+            <h3>Visual Style</h3>
+        </div>
+        <div class="side-panel" style="padding: 18px;">
+            <p style="font-size: 0.8rem; color: var(--sf-muted); line-height: 1.6; font-weight: 800;">
+                These themes only apply to the member-facing side of the application. The admin panel maintains its professional ScaleFit interface.
+            </p>
+        </div>
+
+        <div class="promo-panel">
+            <h3>Appearance</h3>
+            <p>Customizing the member experience helps maintain brand identity and user engagement.</p>
+        </div>
+    </aside>
+</div>
+{% endblock %}

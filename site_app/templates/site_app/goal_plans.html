@@ -1,0 +1,40 @@
+{% extends 'site_app/base.html' %}
+{% load i18n %}
+{% block title %}{% if goal_type == 'weight_loss' %}{% trans "Weight Loss" %}{% else %}{% trans "Weight Gain" %}{% endif %} {% trans "Plans" %} — {% trans "ScaleFit" %}{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="breadcrumb">
+    <a href="{% url 'site_home' %}">{% trans "Home" %}</a>
+    <span class="sep">/</span>
+    <span class="current">{% if goal_type == 'weight_loss' %}{% trans "Weight Loss" %}{% else %}{% trans "Weight Gain" %}{% endif %}</span>
+  </div>
+  <h1>{% if goal_type == 'weight_loss' %}🔥 {% trans "Weight Loss" %}{% else %}💪 {% trans "Weight Gain" %}{% endif %} {% trans "Plans" %}</h1>
+  <p>{% trans "Choose a plan that fits your schedule and commitment level" %}</p>
+</div>
+
+<section class="section">
+  <div class="plans-grid">
+    {% for plan in plans %}
+    <a href="{% url 'site_plan_detail' plan.pk %}" class="plan-card reveal">
+      <div class="plan-badge {% if plan.plan_type == 'day' %}badge-day{% elif plan.plan_type == 'weekly' %}badge-weekly{% else %}badge-monthly{% endif %}">
+        {% if plan.plan_type == 'day' %}<i class="fas fa-calendar-day"></i> {% trans "Day Plan" %}
+        {% elif plan.plan_type == 'weekly' %}<i class="fas fa-calendar-week"></i> {% trans "Weekly Plan" %}
+        {% else %}<i class="fas fa-calendar"></i> {% trans "Monthly Plan" %}{% endif %}
+      </div>
+      <h3>{{ plan.name }}</h3>
+      {% if plan.description %}<p>{{ plan.description }}</p>{% endif %}
+      <div class="plan-meta">
+        <span class="plan-count">
+          <strong>{{ plan.count }}</strong>
+          {% if plan.plan_type == 'day' %}{% trans "Days" %}{% elif plan.plan_type == 'weekly' %}{% trans "Weeks" %}{% else %}{% trans "Months" %}{% endif %}
+        </span>
+        <span style="color:var(--primary); font-size:13px; font-weight:700;">{% trans "View Plan" %} →</span>
+      </div>
+    </a>
+    {% empty %}
+    <div class="empty"><div class="empty-icon">📋</div><p>{% trans "No plans available yet." %}</p></div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

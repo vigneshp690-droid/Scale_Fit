@@ -1,0 +1,326 @@
+/* ==========================================
+   PREMIUM UI COMPONENTS
+   ========================================== */
+
+.admin-app {
+    --orange-accent: #f97316;
+    --purple-accent: #8b5cf6;
+    --blue-accent: #3b82f6;
+    --green-accent: #22c55e;
+    --red-accent: #ef4444;
+    
+    --text-dark: #1e293b;
+    --text-gray: #64748b;
+    --border-soft: #e2e8f0;
+    --bg-light: #f8fafc;
+    --card-white: #ffffff;
+
+    --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================
+   PAGE HEADER
+   ========================================== */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+    animation: fadeInDown 0.5s ease-out backwards;
+}
+
+.page-header .header-content h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0 0 8px 0;
+}
+
+.page-header .header-content p {
+    font-size: 1rem;
+    color: var(--text-gray);
+    margin: 0;
+}
+
+.breadcrumbs {
+    font-size: 0.9rem;
+    color: var(--text-gray);
+}
+
+.breadcrumbs a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.breadcrumbs a:hover {
+    color: var(--text-dark);
+}
+
+.breadcrumbs span {
+    margin: 0 8px;
+}
+
+/* ==========================================
+   BUTTONS
+   ========================================== */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 12px;
+    background: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px var(--primary-glow);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px var(--primary-glow);
+}
+
+.btn-primary i {
+    transition: transform 0.3s ease;
+}
+
+.btn-primary:hover i {
+    transform: rotate(4deg);
+}
+
+/* ==========================================
+   FORMS
+   ========================================== */
+.form-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 32px;
+}
+
+.form-group {
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.form-input,
+.form-textarea,
+.form-select,
+input[type="text"],
+input[type="number"],
+input[type="time"],
+textarea,
+select {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--border-soft);
+    background: var(--bg-light);
+    color: var(--text-dark);
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="time"]:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: white;
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.form-textarea, textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.form-grid .time-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* Image Upload */
+.image-upload-card {
+    background: var(--card-white);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.3s ease;
+}
+
+.image-upload-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+}
+
+.upload-area {
+    border: 2px dashed var(--border-soft);
+    border-radius: 12px;
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: var(--bg-light);
+}
+
+.upload-area.hover {
+    border-color: var(--primary-color);
+    background-color: #fff7f0;
+}
+
+.upload-area i {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 16px;
+}
+
+.upload-area p { margin: 0; color: var(--text-gray); font-weight: 500; }
+.upload-area p strong { color: var(--primary-color); }
+
+#image-preview { margin-top: 20px; text-align: center; }
+#image-preview img { max-width: 100%; max-height: 250px; border-radius: 12px; box-shadow: var(--shadow-soft); }
+#image-preview .preview-text { display: none; font-weight: 500; color: var(--text-gray); margin-bottom: 8px; }
+
+/* ==========================================
+   PREMIUM TABLE
+   ========================================== */
+.table-container {
+    background: var(--card-white);
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    animation: fadeInUp 0.5s ease-out backwards 0.2s;
+}
+
+.premium-table { width: 100%; border-collapse: collapse; }
+.premium-table thead tr { border-bottom: 1px solid var(--border-soft); }
+.premium-table th { padding: 18px 24px; text-align: left; font-size: 0.85rem; font-weight: 600; color: var(--text-gray); text-transform: uppercase; letter-spacing: 0.5px; }
+.premium-table tbody tr { border-bottom: 1px solid var(--border-soft); transition: background-color 0.2s; }
+.premium-table tbody tr:last-child { border-bottom: none; }
+.premium-table tbody tr:hover { background-color: var(--bg-light); }
+.premium-table td { padding: 20px 24px; vertical-align: middle; color: var(--text-dark); font-size: 0.95rem; }
+.premium-table td strong { font-weight: 600; }
+
+/* Status Badges */
+.status-badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; text-transform: capitalize; }
+.badge-green { background-color: #dcfce7; color: #16a34a; }
+.badge-orange { background-color: #ffedd5; color: #f97316; }
+.badge-blue { background-color: #dbeafe; color: #2563eb; }
+.badge-red { background-color: #fee2e2; color: #dc2626; }
+
+/* ==========================================
+   ANIMATIONS
+   ========================================== */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+@media (max-width: 992px) {
+    .form-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+    .page-header { text-align: center; justify-content: center; }
+    .breadcrumbs { display: none; }
+}
+
+/* ==========================================
+   PROGRAM & MEMBER CARD GRIDS
+   ========================================== */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    animation: fadeInUp 0.5s ease-out backwards;
+    animation-delay: 0.1s;
+}
+
+.program-card {
+    background: var(--card-white);
+    border: 1px solid var(--border-soft);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.program-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-hover);
+    border-color: transparent;
+}
+
+.program-card .program-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.program-card .program-header h3 {
+    color: var(--text-dark);
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.program-card .program-description {
+    color: var(--text-gray);
+    line-height: 1.6;
+    font-size: 0.95rem;
+    flex-grow: 1;
+    margin-bottom: 20px;
+}
+
+.program-card .program-actions {
+    margin-top: auto;
+    display: flex;
+    gap: 10px;
+}
+
+.program-card .program-actions .btn {
+    flex-grow: 1;
+    text-align: center;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}

@@ -1,0 +1,157 @@
+/* Shared user frontend themes. Admin templates must not load this file. */
+.user-app {
+    --primary: #ff6417;
+    --primary-dark: #e85308;
+    --primary-soft: rgba(255, 100, 23, 0.12);
+    --primary-glow: rgba(255, 100, 23, 0.26);
+    --gradient: linear-gradient(135deg, #ff6417 0%, #e85308 100%);
+    --hero-gradient: linear-gradient(100deg, rgba(255, 100, 23, 0.94), rgba(255, 122, 44, 0.76));
+    --text-color: #10213f;
+    --text-muted: #77859a;
+    --surface: #ffffff;
+    --surface-soft: #f8fafc;
+    --page-bg: #f2f6fb;
+    --border-color: #e4eaf2;
+    --accent: #19b8c9;
+    --accent-soft: rgba(25, 184, 201, 0.12);
+    --accent-text: #0e8fa1;
+    --secondary: #8757e8;
+    --secondary-soft: rgba(135, 87, 232, 0.12);
+    --shadow: 0 16px 40px rgba(30, 43, 67, 0.08);
+    --theme-shadow: rgba(255, 100, 23, 0.24);
+    --white: #ffffff;
+
+    /* Compatibility tokens used by existing user templates. */
+    --primary-color: var(--primary);
+    --primary-light: var(--primary-soft);
+    --secondary-color: var(--accent);
+    --bg-color: var(--page-bg);
+    --card-bg: var(--surface);
+    --sidebar-bg: var(--surface);
+    --text-main: var(--text-color);
+    --text-dark: var(--text-color);
+    --text-gray: var(--text-muted);
+    --border-soft: var(--border-color);
+    --bg-light: var(--surface-soft);
+    --card-white: var(--surface);
+    --sf-orange: var(--primary);
+    --sf-orange-dark: var(--primary-dark);
+    --sf-orange-soft: var(--primary-soft);
+    --sf-cyan: var(--accent);
+    --sf-purple: var(--secondary);
+    --sf-ink: var(--text-color);
+    --sf-muted: var(--text-muted);
+    --sf-line: var(--border-color);
+    --sf-panel: var(--page-bg);
+    --sf-peach: var(--primary-soft);
+    --sf-shadow: var(--shadow);
+    --sf-theme-shadow: var(--theme-shadow);
+    --sf-success-bg: var(--primary-soft);
+    --sf-success-border: var(--primary-soft);
+    --sf-success-text: var(--primary);
+    --sf-promo-start: var(--primary);
+    --sf-promo-end: var(--primary-dark);
+}
+
+.user-app.theme-green {
+    --primary: #16a34a;
+    --primary-dark: #15803d;
+    --primary-soft: rgba(22, 163, 74, 0.12);
+    --primary-glow: rgba(22, 163, 74, 0.24);
+    --gradient: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+    --hero-gradient: linear-gradient(100deg, rgba(22, 163, 74, 0.92), rgba(20, 184, 166, 0.74));
+    --text-color: #123524;
+    --page-bg: #f0f8f4;
+    --accent: #14b8a6;
+    --accent-soft: rgba(20, 184, 166, 0.12);
+    --accent-text: #0f8f84;
+    --secondary: #4f46e5;
+    --theme-shadow: rgba(22, 163, 74, 0.24);
+}
+
+.user-app.theme-orange {
+    --primary: #ff6417;
+    --primary-dark: #e85308;
+    --primary-soft: rgba(255, 100, 23, 0.12);
+    --primary-glow: rgba(255, 100, 23, 0.26);
+    --gradient: linear-gradient(135deg, #ff6417 0%, #e85308 100%);
+    --hero-gradient: linear-gradient(100deg, rgba(255, 100, 23, 0.94), rgba(255, 122, 44, 0.76));
+    --text-color: #10213f;
+    --page-bg: #f2f6fb;
+    --accent: #19b8c9;
+    --accent-soft: rgba(25, 184, 201, 0.12);
+    --accent-text: #0e8fa1;
+    --secondary: #8757e8;
+    --theme-shadow: rgba(255, 100, 23, 0.24);
+}
+
+.user-app.theme-dark {
+    --primary: #f97316;
+    --primary-dark: #ea580c;
+    --primary-soft: rgba(249, 115, 22, 0.16);
+    --primary-glow: rgba(249, 115, 22, 0.28);
+    --gradient: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    --hero-gradient: linear-gradient(100deg, rgba(17, 24, 39, 0.86), rgba(249, 115, 22, 0.68));
+    --text-color: #f8fafc;
+    --text-muted: #cbd5e1;
+    --surface: #1f2937;
+    --surface-soft: #273244;
+    --page-bg: #111827;
+    --border-color: #374151;
+    --accent: #22d3ee;
+    --accent-soft: rgba(34, 211, 238, 0.14);
+    --accent-text: #67e8f9;
+    --secondary: #a78bfa;
+    --secondary-soft: rgba(167, 139, 250, 0.16);
+    --shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+    --theme-shadow: rgba(249, 115, 22, 0.24);
+}
+
+.user-app.theme-blue {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-soft: rgba(37, 99, 235, 0.12);
+    --primary-glow: rgba(37, 99, 235, 0.24);
+    --gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    --hero-gradient: linear-gradient(100deg, rgba(37, 99, 235, 0.9), rgba(6, 182, 212, 0.72));
+    --text-color: #0f172a;
+    --page-bg: #f1f6ff;
+    --accent: #06b6d4;
+    --accent-soft: rgba(6, 182, 212, 0.12);
+    --accent-text: #0284a4;
+    --secondary: #7c3aed;
+    --theme-shadow: rgba(37, 99, 235, 0.24);
+}
+
+.user-app.theme-berry {
+    --primary: #d9467c;
+    --primary-dark: #be185d;
+    --primary-soft: rgba(217, 70, 124, 0.12);
+    --primary-glow: rgba(217, 70, 124, 0.24);
+    --gradient: linear-gradient(135deg, #d9467c 0%, #be185d 100%);
+    --hero-gradient: linear-gradient(100deg, rgba(217, 70, 124, 0.9), rgba(249, 115, 22, 0.72));
+    --text-color: #241230;
+    --page-bg: #fff4f8;
+    --accent: #f97316;
+    --accent-soft: rgba(249, 115, 22, 0.12);
+    --accent-text: #c2410c;
+    --secondary: #7e22ce;
+    --theme-shadow: rgba(217, 70, 124, 0.24);
+}
+
+.user-app .sidebar-menu li.active a,
+.user-app .view-toggle button.active {
+    box-shadow: 0 10px 22px var(--theme-shadow);
+}
+
+.user-app .status-badge,
+.user-app .status-badge.badge-green,
+.user-app .alert {
+    background: var(--primary-soft);
+    border-color: var(--primary-soft);
+    color: var(--primary);
+}
+
+.user-app .promo-panel {
+    background-image: var(--gradient);
+}

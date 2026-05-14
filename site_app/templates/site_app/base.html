@@ -1,0 +1,115 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:site_settings.default_language|default:'en' }}" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{% trans "ScaleFit" %}{% endblock %}</title>
+  {% if site_settings and site_settings.favicon %}
+  <link rel="icon" href="{{ site_settings.favicon.url }}">
+  {% endif %}
+  <link rel="stylesheet" href="{% static 'css/user_theme.css' %}">
+  <link rel="stylesheet" href="{% static 'site_app/css/site.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  {% if site_settings %}
+  <style>
+    .user-app {
+      --primary: {{ site_settings.primary_theme_color }};
+      --primary-dark: {{ site_settings.primary_theme_color }};
+      --primary-soft: color-mix(in srgb, {{ site_settings.primary_theme_color }} 14%, transparent);
+      --primary-glow: color-mix(in srgb, {{ site_settings.primary_theme_color }} 26%, transparent);
+      --accent: {{ site_settings.secondary_theme_color }};
+      --accent-soft: color-mix(in srgb, {{ site_settings.secondary_theme_color }} 14%, transparent);
+      {% if site_settings.enable_dark_mode %}
+      --text-color: #f8fafc;
+      --text-muted: #cbd5e1;
+      --surface: #1f2937;
+      --surface-soft: #273244;
+      --page-bg: #111827;
+      --border-color: #374151;
+      --shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+      {% endif %}
+    }
+  </style>
+  {% endif %}
+</head>
+<body class="user-app {{ active_theme_class|default:'theme-orange' }} {% if site_settings.enable_dark_mode %}theme-dark{% endif %}" data-language="{{ LANGUAGE_CODE|default:site_settings.default_language|default:'en' }}" data-timezone="{{ site_settings.timezone|default:'UTC' }}" data-currency="{{ site_settings.currency|default:'INR' }}" data-unit="{{ site_settings.measurement_unit|default:'kg' }}">
+
+<nav class="nav">
+  <a href="{% url 'site_home' %}" class="nav-brand">
+    {% if site_settings and site_settings.site_logo %}
+    <img src="{{ site_settings.site_logo.url }}" alt="{% trans 'ScaleFit logo' %}" class="nav-logo">
+    {% else %}
+    <span class="icon"><i class="fas fa-dumbbell"></i></span>
+    {% endif %}
+    Scale<span>Fit</span>
+  </a>
+  <div class="nav-actions">
+    <div class="nav-links">
+      <a href="{% url 'site_home' %}">{% trans "Home" %}</a>
+      {% if not site_settings or site_settings.enable_weight_loss_programs %}
+      <a href="{% url 'site_goal_plans' 'weight_loss' %}">{% trans "Weight Loss" %}</a>
+      {% endif %}
+      {% if not site_settings or site_settings.enable_weight_gain_programs %}
+      <a href="{% url 'site_goal_plans' 'weight_gain' %}">{% trans "Weight Gain" %}</a>
+      {% endif %}
+    </div>
+    {% get_current_language as CURRENT_LANGUAGE %}
+    {% get_available_languages as AVAILABLE_LANGUAGES %}
+    <form class="site-language-switcher" action="{% url 'set_language' %}" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <label class="site-language-select" aria-label="{% trans 'Select language' %}">
+        <i class="fa-solid fa-globe"></i>
+        <select name="language" data-language-select onchange="this.form.submit()">
+          {% for language_code, language_name in AVAILABLE_LANGUAGES %}
+          <option value="{{ language_code }}" {% if language_code == CURRENT_LANGUAGE %}selected{% endif %}>{{ language_name }}</option>
+          {% endfor %}
+        </select>
+        <i class="fa-solid fa-chevron-down"></i>
+      </label>
+    </form>
+  </div>
+</nav>
+
+{% block content %}{% endblock %}
+
+<footer class="footer">
+  <p>© 2026 <strong>ScaleFit</strong> - {% trans "Transform Your Body, Transform Your Life" %}</p>
+  {% if site_settings %}
+  <p>
+    <a href="mailto:{{ site_settings.support_email }}">{{ site_settings.support_email }}</a>
+    {% if site_settings.support_phone %} · <a href="tel:{{ site_settings.support_phone }}">{{ site_settings.support_phone }}</a>{% endif %}
+    {% if site_settings.support_working_hours %} · {{ site_settings.support_working_hours }}{% endif %}
+    {% if site_settings.help_center_url %} · <a href="{{ site_settings.help_center_url }}" target="_blank" rel="noopener">{% trans "Help Center" %}</a>{% endif %}
+  </p>
+  {% endif %}
+</footer>
+
+{% if site_settings.enable_live_chat %}
+<button class="live-chat-button" type="button" aria-label="{% trans 'Open live chat' %}">
+  <i class="fas fa-comment-dots"></i>
+</button>
+{% endif %}
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  document.querySelectorAll('[data-language-select]').forEach(select => {
+    select.addEventListener('change', () => select.form.submit());
+  });
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

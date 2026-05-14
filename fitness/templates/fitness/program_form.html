@@ -1,0 +1,163 @@
+{% extends "fitness/base_admin.html" %}
+{% load static %}
+
+{% block title %}{{ action|default:"Create" }} Program - ScaleFit{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <section>
+        <div class="view-toolbar">
+            <div class="view-heading">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
+                    <a href="{% url 'program_list' goal_type|default:'weight_loss' %}" style="color: var(--sf-orange); font-size: 0.8rem; font-weight: 800; text-decoration: none;">
+                        <i class="fa-solid fa-arrow-left"></i> Programs
+                    </a>
+                </div>
+                <h2>{{ action|default:"Create" }} Program</h2>
+                <p>Manage the program details and configuration.</p>
+            </div>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="progress-panel" style="margin-top: 0;">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="alert error">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div style="display: grid; gap: 20px; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                {% if form.name %}
+                    <div style="grid-column: 1 / -1;">
+                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Program Title</label>
+                        {{ form.name.errors }}
+                        {{ form.name }}
+                    </div>
+                {% endif %}
+
+                {% if form.title %}
+                    <div style="grid-column: 1 / -1;">
+                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Program Title</label>
+                        {{ form.title.errors }}
+                        {{ form.title }}
+                    </div>
+                {% endif %}
+
+                {% if form.goal_type %}
+                    <div>
+                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Goal Type</label>
+                        {{ form.goal_type.errors }}
+                        {{ form.goal_type }}
+                    </div>
+                {% endif %}
+
+                {% if form.difficulty %}
+                    <div>
+                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Difficulty</label>
+                        {{ form.difficulty.errors }}
+                        {{ form.difficulty }}
+                    </div>
+                {% endif %}
+
+                {% if form.duration_weeks %}
+                    <div>
+                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Duration (Weeks)</label>
+                        {{ form.duration_weeks.errors }}
+                        {{ form.duration_weeks }}
+                    </div>
+                {% endif %}
+
+                {% if form.display_order %}
+                    <div>
+                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Display Order</label>
+                        {{ form.display_order.errors }}
+                        {{ form.display_order }}
+                    </div>
+                {% endif %}
+
+                {% if form.description %}
+                    <div style="grid-column: 1 / -1;">
+                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Description</label>
+                        {{ form.description.errors }}
+                        {{ form.description }}
+                    </div>
+                {% endif %}
+
+                {% if form.is_active %}
+                    <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--sf-panel); border-radius: 8px;">
+                        {{ form.is_active }}
+                        <label for="{{ form.is_active.id_for_label }}" style="font-size: 0.85rem; font-weight: 800; color: var(--sf-ink);">Active</label>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--sf-line);">
+                <a href="{% url 'program_list' goal_type|default:'weight_loss' %}" style="padding: 12px 24px; border-radius: 6px; font-size: 0.85rem; font-weight: 800; text-decoration: none; background: var(--sf-panel); color: var(--sf-muted);">Cancel</a>
+                <button type="submit" class="btn" style="background: var(--sf-orange); color: white; padding: 12px 24px; border: 0; border-radius: 6px; font-size: 0.85rem; font-weight: 800; cursor: pointer;">
+                    {{ action|default:"Save" }} Program
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <aside>
+        {% if form.image %}
+            <div class="side-header">
+                <h3>Program Media</h3>
+            </div>
+            <div class="side-panel" style="padding: 18px;">
+                <div id="upload-area" style="border: 2px dashed var(--sf-line); border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    {{ form.image }}
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; color: var(--sf-orange); margin-bottom: 12px; display: block;"></i>
+                    <p style="font-size: 0.75rem; color: var(--sf-muted); font-weight: 800; margin: 0;">Click to upload image</p>
+                </div>
+                <div id="image-preview" style="margin-top: 15px;">
+                    {% if form.instance.image %}
+                        <img src="{{ form.instance.image.url }}" alt="Preview" style="width: 100%; border-radius: 6px; border: 1px solid var(--sf-line);">
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="promo-panel">
+            <h3>ScaleFit Admin</h3>
+            <p>Maintain consistency across all admin tools while managing your programs.</p>
+        </div>
+    </aside>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const uploadArea = document.getElementById('upload-area');
+    const imageInput = document.querySelector('input[type="file"]');
+    const imagePreview = document.getElementById('image-preview');
+
+    if (imageInput) {
+        imageInput.style.display = 'none';
+        
+        if (uploadArea) {
+            uploadArea.addEventListener('click', () => imageInput.click());
+            
+            imageInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        let img = imagePreview.querySelector('img');
+                        if (!img) {
+                            img = document.createElement('img');
+                            img.style.width = '100%';
+                            img.style.borderRadius = '6px';
+                            img.style.border = '1px solid var(--sf-line)';
+                            imagePreview.appendChild(img);
+                        }
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    }
+</script>
+{% endblock %}

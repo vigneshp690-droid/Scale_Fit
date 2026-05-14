@@ -1,0 +1,121 @@
+{% extends "fitness/base_admin.html" %}
+{% load static %}
+
+{% block title %}Referral - ScaleFit Admin{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <section>
+        <div class="metric-row" style="margin-top: 0;">
+            <div class="metric-card cyan" style="min-height: auto;">
+                <span class="metric-icon"><i class="fa-solid fa-users"></i></span>
+                <h3>Total Refers</h3>
+                <p style="font-size: 1.5rem; font-weight: 800;">{{ referral_count|default:"0" }}</p>
+            </div>
+            <div class="metric-card orange" style="min-height: auto;">
+                <span class="metric-icon"><i class="fa-solid fa-user-check"></i></span>
+                <h3>Active Referrals</h3>
+                <p style="font-size: 1.5rem; font-weight: 800;">{{ referral_count|default:"0" }}</p>
+            </div>
+            <div class="metric-card purple" style="min-height: auto;">
+                <span class="metric-icon"><i class="fa-solid fa-gift"></i></span>
+                <h3>Rewards</h3>
+                <p style="font-size: 1.5rem; font-weight: 800;">0</p>
+            </div>
+        </div>
+
+        <div class="table-panel" style="margin-top: 24px;">
+            <div class="panel-title" style="padding: 0 10px;">
+                <h3>Referral Activity</h3>
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Date Joined</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for referral in referrals %}
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span class="food-dot" style="background: var(--sf-orange-soft); color: var(--sf-orange);">
+                                    {{ referral.username|make_list|first|upper }}
+                                </span>
+                                <div>
+                                    <div style="font-weight: 800; color: var(--sf-ink);">{{ referral.get_full_name|default:referral.username }}</div>
+                                    <div style="font-size: 0.7rem; color: var(--sf-muted);">@{{ referral.username }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ referral.date_joined|date:"M d, Y" }}</td>
+                        <td>
+                            <span class="pill" style="background: #dcfce7; color: #16a34a; padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 800;">
+                                Joined
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" style="text-align: center; padding: 40px;">
+                            <div style="color: var(--sf-muted);">
+                                <i class="fa-solid fa-share-nodes" style="font-size: 2.5rem; margin-bottom: 12px; display: block; opacity: 0.3;"></i>
+                                <p style="font-weight: 800;">No referral activity yet</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <aside>
+        <div class="side-header">
+            <h3>Your Referral Code</h3>
+        </div>
+        <div class="side-panel" style="padding: 18px;">
+            <div style="background: var(--sf-panel); border-radius: 8px; padding: 16px; margin-bottom: 15px; border: 1px solid var(--sf-line);">
+                <div style="font-size: 0.7rem; color: var(--sf-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 8px;">Unique Code</div>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <span id="refCode" style="font-family: monospace; font-size: 1.2rem; font-weight: 800; letter-spacing: 2px;">{{ referral_code|default:"SF-ADMIN" }}</span>
+                    <button onclick="copyToClipboard('refCode')" style="background: none; border: 0; color: var(--sf-orange); cursor: pointer;"><i class="fa-regular fa-copy"></i></button>
+                </div>
+            </div>
+            <button class="btn" style="background: var(--sf-orange); color: white; width: 100%; font-size: 0.8rem; font-weight: 800;" onclick="copyToClipboard('refLink')">Copy Referral Link</button>
+            <input type="hidden" id="refLink" value="{{ referral_link }}">
+        </div>
+
+        <div class="promo-panel">
+            <h3>How it works</h3>
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                <div style="display: flex; gap: 10px;">
+                    <span style="width: 24px; height: 24px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; flex-shrink: 0;">1</span>
+                    <p style="font-size: 0.75rem; color: rgba(255,255,255,0.9);">Share your code or link with potential members.</p>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <span style="width: 24px; height: 24px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; flex-shrink: 0;">2</span>
+                    <p style="font-size: 0.75rem; color: rgba(255,255,255,0.9);">They register using your unique credentials.</p>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <span style="width: 24px; height: 24px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; flex-shrink: 0;">3</span>
+                    <p style="font-size: 0.75rem; color: rgba(255,255,255,0.9);">Track their activity and manage their programs.</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function copyToClipboard(elementId) {
+        const text = document.getElementById(elementId).innerText || document.getElementById(elementId).value;
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Copied to clipboard!');
+        });
+    }
+</script>
+{% endblock %}

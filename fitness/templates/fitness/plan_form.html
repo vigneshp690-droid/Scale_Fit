@@ -1,0 +1,117 @@
+{% extends "fitness/base_admin.html" %}
+{% load static %}
+
+{% block title %}{{ action }} Plan - ScaleFit{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <section>
+        <div class="view-toolbar">
+            <div class="view-heading">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
+                    <a href="{% url 'plan_list' program_id=program.pk %}" style="color: var(--sf-orange); font-size: 0.8rem; font-weight: 800; text-decoration: none;">
+                        <i class="fa-solid fa-arrow-left"></i> Plans
+                    </a>
+                </div>
+                <h2>{{ action }} Plan</h2>
+                <p>{{ program.name }} · {{ formatted_goal_type }}</p>
+            </div>
+        </div>
+
+        <form method="POST" class="progress-panel" style="margin-top: 0;">
+            {% csrf_token %}
+            {{ form.program.as_hidden }}
+            {% if form.non_field_errors %}
+                <div class="alert error">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div style="display: grid; gap: 20px; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="grid-column: 1 / -1;">
+                    <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Plan Name</label>
+                    {{ form.name.errors }}
+                    {{ form.name }}
+                </div>
+
+                <div>
+                    <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Plan Type</label>
+                    {{ form.plan_type.errors }}
+                    {{ form.plan_type }}
+                </div>
+
+                <div>
+                    <label id="count-label" class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Number of Days</label>
+                    {{ form.count.errors }}
+                    {{ form.count }}
+                </div>
+
+                <div style="grid-column: 1 / -1;">
+                    <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Description</label>
+                    {{ form.description.errors }}
+                    {{ form.description }}
+                </div>
+
+                <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--sf-panel); border-radius: 8px;">
+                    {{ form.is_active }}
+                    <label for="{{ form.is_active.id_for_label }}" style="font-size: 0.85rem; font-weight: 800; color: var(--sf-ink);">Active</label>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--sf-line);">
+                <a href="{% url 'plan_list' program_id=program.pk %}" style="padding: 12px 24px; border-radius: 6px; font-size: 0.85rem; font-weight: 800; text-decoration: none; background: var(--sf-panel); color: var(--sf-muted);">Cancel</a>
+                <button type="submit" class="btn" style="background: var(--sf-orange); color: white; padding: 12px 24px; border: 0; border-radius: 6px; font-size: 0.85rem; font-weight: 800; cursor: pointer;">
+                    {{ action }} Plan
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <aside>
+        <div class="side-header">
+            <h3>Quick Links</h3>
+        </div>
+        <div class="side-panel">
+            <a class="side-card" href="{% url 'program_list' goal_type=goal_type %}">
+                <div>
+                    <h4>Programs</h4>
+                    <p>Program library</p>
+                </div>
+                <span class="pill">Open</span>
+            </a>
+            <a class="side-card" href="{% url 'members' %}">
+                <div>
+                    <h4>Members</h4>
+                    <p>User management</p>
+                </div>
+                <span class="pill">Open</span>
+            </a>
+        </div>
+
+        <div class="promo-panel">
+            <h3>Plan Creator</h3>
+            <p>Define the roadmap for your members with clear, structured plans.</p>
+        </div>
+    </aside>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const planTypeSelect = document.querySelector('select[name="plan_type"]');
+    const countLabel = document.getElementById('count-label');
+    const labels = { day: 'Number of Days', weekly: 'Number of Weeks', monthly: 'Number of Months' };
+
+    function updateLabel() {
+        if (!planTypeSelect || !countLabel) {
+            return;
+        }
+        countLabel.textContent = labels[planTypeSelect.value] || 'Count';
+    }
+
+    if (planTypeSelect) {
+        planTypeSelect.addEventListener('change', updateLabel);
+        updateLabel();
+    }
+</script>
+{% endblock %}

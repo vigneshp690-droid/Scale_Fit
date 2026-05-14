@@ -1,0 +1,88 @@
+{% extends "fitness/base_admin.html" %}
+{% load static %}
+
+{% block title %}Members - ScaleFit Admin{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <section>
+        <div class="progress-panel" style="margin-top: 0;">
+            <div class="panel-title">
+                <h3>Member Management</h3>
+            </div>
+            <p style="color: var(--sf-muted); font-size: 0.88rem; line-height: 1.6; margin-bottom: 24px;">
+                This module is ready for future member CRUD functionality. You can add members, track enrollments, and manage progress here.
+            </p>
+            
+            <div class="metric-row">
+                <div class="metric-card cyan" style="min-height: auto; padding: 20px;">
+                    <span class="metric-icon"><i class="fa-solid fa-user-plus"></i></span>
+                    <h3>Member Records</h3>
+                    <p style="font-size: 0.72rem;">Prepare profile and account management workflows.</p>
+                </div>
+                <div class="metric-card orange" style="min-height: auto; padding: 20px;">
+                    <span class="metric-icon"><i class="fa-solid fa-chart-line"></i></span>
+                    <h3>Progress Tracking</h3>
+                    <p style="font-size: 0.72rem;">Keep space for future member goals and activity.</p>
+                </div>
+                <div class="metric-card purple" style="min-height: auto; padding: 20px;">
+                    <span class="metric-icon"><i class="fa-solid fa-link"></i></span>
+                    <h3>Referral Context</h3>
+                    <p style="font-size: 0.72rem;">Connect member growth with referral activity.</p>
+                </div>
+            </div>
+
+            <div class="table-panel" style="margin-top: 24px;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Member</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 40px;">
+                                <div style="color: var(--sf-muted);">
+                                    <i class="fa-solid fa-users-slash" style="font-size: 2.5rem; margin-bottom: 12px; display: block; opacity: 0.3;"></i>
+                                    <p style="font-weight: 800;">No members registered yet</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <aside>
+        <div class="side-header">
+            <h3>Admin Overview</h3>
+            <a href="{% url 'dashboard' %}">Dashboard <i class="fa-solid fa-angle-right"></i></a>
+        </div>
+        <div class="side-panel">
+            <a class="side-card" href="{% url 'program_list' goal_type='weight_loss' %}">
+                <div>
+                    <h4>Programs</h4>
+                    <p>Manage training</p>
+                </div>
+                <span class="pill">Open</span>
+            </a>
+            <a class="side-card" href="{% url 'referral' %}">
+                <div>
+                    <h4>Referrals</h4>
+                    <p>Track invites</p>
+                </div>
+                <span class="pill">Open</span>
+            </a>
+        </div>
+
+        <div class="promo-panel">
+            <h3>Member Tools</h3>
+            <p>Future updates will include detailed analytics and communication tools for members.</p>
+        </div>
+    </aside>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% load i18n %}
+<header class="topbar dashboard-navbar">
+    <div class="topbar-left">
+        <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="{% trans 'Toggle Sidebar' %}">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <label class="search-box" aria-label="{{ search_label|default:'Search' }}">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="search" {% if search_id %}id="{{ search_id }}"{% endif %} placeholder="{% trans 'Search' %}">
+        </label>
+    </div>
+
+    <div class="topbar-right">
+        <div class="notification-wrap">
+            <button class="notification-btn" type="button" id="notificationToggle" aria-label="{% trans 'Notifications' %}" aria-expanded="false" aria-controls="notificationMenu">
+                <i class="fa-solid fa-bell"></i>
+                <span class="badge"></span>
+            </button>
+            <div class="dropdown-menu notification-menu" id="notificationMenu">
+                <h4>{% trans 'Notifications' %}</h4>
+                <a class="dropdown-item notification-item" href="#"><i class="fa-solid fa-utensils"></i> {% trans 'Meal reminders are ready' %}</a>
+                <a class="dropdown-item notification-item" href="#"><i class="fa-solid fa-dumbbell"></i> {% trans 'Workout plan updated' %}</a>
+                <a class="dropdown-item notification-item" href="#"><i class="fa-solid fa-chart-line"></i> {% trans 'Weekly analytics available' %}</a>
+            </div>
+        </div>
+
+        <a class="icon-btn" href="{% url 'settings' %}" aria-label="{% trans 'Settings' %}">
+            <i class="fa-solid fa-gear"></i>
+        </a>
+
+        <div class="user-profile">
+            <button class="avatar-button profile-trigger" type="button" id="profileToggle" aria-label="{% trans 'Open profile menu' %}" aria-expanded="false" aria-controls="profileMenu">
+                {% if current_user_profile.profile_image %}
+                    <img src="{{ current_user_profile.profile_image.url }}" alt="{{ user.username }} profile image">
+                {% else %}
+                    {{ user.username|make_list|first|upper|default:"U" }}
+                {% endif %}
+            </button>
+            <div class="dropdown-menu profile-menu" id="profileMenu">
+                <div class="profile-menu-header">
+                    <div class="profile-menu-avatar">
+                        {% if current_user_profile.profile_image %}
+                            <img src="{{ current_user_profile.profile_image.url }}" alt="{{ user.username }} profile image">
+                        {% else %}
+                            {{ user.username|make_list|first|upper|default:"U" }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        <p class="profile-menu-name">{{ user.get_full_name|default:user.username|default:"User" }}</p>
+                        <p class="profile-menu-username">@{{ user.username|default:"user" }}</p>
+                    </div>
+                </div>
+                <div class="profile-details">
+                    <div class="profile-detail">
+                        <i class="fa-regular fa-envelope"></i>
+                        <span>{% if user.email %}{{ user.email }}{% else %}{% trans 'No email added' %}{% endif %}</span>
+                    </div>
+                    <div class="profile-detail">
+                        <i class="fa-solid fa-phone"></i>
+                        <span>{% if current_user_profile.mobile_number %}{{ current_user_profile.mobile_number }}{% else %}{% trans 'No mobile added' %}{% endif %}</span>
+                    </div>
+                    <div class="profile-detail">
+                        <i class="fa-regular fa-calendar"></i>
+                        <span>{% trans 'Joined' %} {{ user.date_joined|date:"M d, Y" }}</span>
+                    </div>
+                </div>
+                <div class="profile-menu-actions">
+                    <a href="{% url 'settings' %}#profile" data-profile-shortcut><i class="fa-regular fa-user"></i> {% trans 'Profile settings' %}</a>
+                    <a href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> {% trans 'Logout' %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

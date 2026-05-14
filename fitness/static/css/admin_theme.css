@@ -1,0 +1,12 @@
+.admin-app {
+    --sf-orange: #f97316;
+    --sf-orange-dark: #e86600;
+    --sf-orange-soft: #fff3ea;
+    --sf-cyan: #06b6d4;
+    --sf-purple: #8b5cf6;
+    --sf-ink: #1f2937;
+    --sf-muted: #64748b;
+    --sf-line: #e5e7eb;
+    --sf-panel: #f8fafc;
+    --sf-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+}
