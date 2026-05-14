@@ -1,0 +1,138 @@
+{% extends "fitness/base_admin.html" %}
+{% load static %}
+
+{% block title %}{{ day.title }} Content - ScaleFit{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <section>
+        <div class="view-toolbar">
+            <div class="view-heading">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
+                    <a href="javascript:history.back()" style="color: var(--sf-orange); font-size: 0.8rem; font-weight: 800; text-decoration: none;">
+                        <i class="fa-solid fa-arrow-left"></i> Back
+                    </a>
+                </div>
+                <h2>{{ section_label }} Content</h2>
+                <p>{{ program.name }} · {{ plan.name }} · Day {{ day.day_number }}</p>
+            </div>
+            <div class="toolbar-actions">
+                <a href="{% url 'content_create' day_id=day.pk %}?section={{ section }}" class="panel-title" style="padding: 10px 16px; display: inline-flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-plus"></i> Add {{ section_label }}
+                </a>
+            </div>
+        </div>
+
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert {{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="tabs-panel" style="margin-bottom: 24px; padding: 12px; background: white; border-radius: 8px; box-shadow: var(--sf-shadow);">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                {% for value, display in section_choices %}
+                    <a href="?section={{ value }}" style="padding: 8px 16px; border-radius: 6px; font-size: 0.78rem; font-weight: 800; text-decoration: none; background: {% if section == value %}var(--sf-orange){% else %}var(--sf-panel){% endif %}; color: {% if section == value %}white{% else %}var(--sf-muted){% endif %};">
+                        {{ display }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if section == 'meals' %}
+        <div style="margin-bottom: 24px; display: flex; gap: 8px; flex-wrap: wrap;">
+            {% for value, display in category_choices %}
+                <a href="?section=meals&meal_category={{ value }}" style="padding: 6px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 800; text-decoration: none; border: 1px solid {% if meal_category == value %}var(--sf-orange){% else %}var(--sf-line){% endif %}; background: {% if meal_category == value %}var(--sf-orange-soft){% else %}white{% endif %}; color: {% if meal_category == value %}var(--sf-orange){% else %}var(--sf-muted){% endif %};">
+                    {{ display }}
+                </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="plans-grid">
+            {% for item in items %}
+            <div class="program-card">
+                {% if section == 'meals' or section == 'workout' %}
+                    <div style="height: 140px; background: var(--sf-panel); border-radius: 8px; margin-bottom: 15px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid var(--sf-line);">
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
+                            <i class="fa-solid fa-image" style="font-size: 2rem; color: var(--sf-line);"></i>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <div class="program-card-top">
+                    <div class="program-icon">
+                        {% if section == 'meals' %}<i class="fa-solid fa-utensils"></i>
+                        {% elif section == 'workout' %}<i class="fa-solid fa-dumbbell"></i>
+                        {% else %}<i class="fa-solid fa-glass-water"></i>{% endif %}
+                    </div>
+                    <span class="status-badge {% if item.is_active %}badge-green{% else %}badge-orange{% endif %}">
+                        {{ item.is_active|yesno:"Active,Inactive" }}
+                    </span>
+                </div>
+                
+                <h3>
+                    {% if section == 'water' %}{{ item.target_amount }}{% else %}{{ item.title }}{% endif %}
+                </h3>
+                
+                {% if section == 'water' %}
+                    <p class="program-description">{{ item.reminder_note|default:"No reminder note." }}</p>
+                {% else %}
+                    <p class="program-description">{{ item.description|truncatewords:15|default:"No description." }}</p>
+                {% endif %}
+
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px;">
+                    {% if section == 'meals' %}
+                        <span style="font-size: 0.65rem; font-weight: 800; background: var(--sf-orange-soft); color: var(--sf-orange); padding: 4px 8px; border-radius: 4px;">{{ item.get_meal_category_display }}</span>
+                        <span style="font-size: 0.65rem; font-weight: 800; background: var(--sf-panel); color: var(--sf-muted); padding: 4px 8px; border-radius: 4px;">{{ item.start_time|time:"H:i" }}</span>
+                    {% elif section == 'workout' %}
+                        <span style="font-size: 0.65rem; font-weight: 800; background: var(--sf-orange-soft); color: var(--sf-orange); padding: 4px 8px; border-radius: 4px;">{{ item.duration }}</span>
+                    {% endif %}
+                    <span style="font-size: 0.65rem; font-weight: 800; background: var(--sf-panel); color: var(--sf-muted); padding: 4px 8px; border-radius: 4px;">Order {{ item.display_order }}</span>
+                </div>
+
+                <div style="display: flex; gap: 8px;">
+                    <a href="{% url 'content_edit' day_id=day.pk pk=item.pk %}?section={{ section }}" class="btn" style="background: var(--sf-panel); color: var(--sf-ink); flex: 1; font-size: 0.75rem;">Edit</a>
+                    <a href="{% url 'content_delete' day_id=day.pk pk=item.pk %}?section={{ section }}" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--sf-line); border-radius: 6px; color: #ef4444;"><i class="fa-solid fa-trash"></i></a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fa-solid fa-folder-open"></i>
+                <h3>No Items Found</h3>
+                <p>Add the first {{ section_label|lower }} item for this day.</p>
+                <a href="{% url 'content_create' day_id=day.pk %}?section={{ section }}" class="btn" style="background: var(--sf-orange); color: white; display: inline-flex; margin-top: 15px;">Add {{ section_label }}</a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <aside>
+        <div class="side-header">
+            <h3>Schedule Overview</h3>
+            <a href="{% url 'day_list' plan_id=plan.pk %}">Days <i class="fa-solid fa-angle-right"></i></a>
+        </div>
+        <div class="side-panel">
+            <div class="side-card">
+                <div>
+                    <h4>Day {{ day.day_number }}</h4>
+                    <p>{{ day.title }}</p>
+                </div>
+                <span class="pill">{{ items.count }} Items</span>
+            </div>
+        </div>
+
+        <div class="promo-panel">
+            <h3>Content Editor</h3>
+            <p>Customize every detail of your members' daily experience.</p>
+            <a href="{% url 'dashboard' %}" style="background: white; color: var(--sf-purple); padding: 8px 16px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-top: 10px;">Dashboard</a>
+        </div>
+    </aside>
+</div>
+{% endblock %}

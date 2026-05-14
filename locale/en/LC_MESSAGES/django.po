@@ -1,0 +1,66 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ScaleFit\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-14 00:00+0000\n"
+"PO-Revision-Date: 2026-05-14 00:00+0000\n"
+"Last-Translator: ScaleFit\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "ScaleFit"
+msgstr "ScaleFit"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Toggle Sidebar"
+msgstr "Toggle Sidebar"
+
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "Select language"
+msgstr "Select language"
+
+msgid "English"
+msgstr "English"
+
+msgid "Tamil"
+msgstr "Tamil"
+
+msgid "Hindi"
+msgstr "Hindi"
+
+msgid "Meal reminders are ready"
+msgstr "Meal reminders are ready"
+
+msgid "Workout plan updated"
+msgstr "Workout plan updated"
+
+msgid "Weekly analytics available"
+msgstr "Weekly analytics available"
+
+msgid "Open profile menu"
+msgstr "Open profile menu"
+
+msgid "No email added"
+msgstr "No email added"
+
+msgid "No mobile added"
+msgstr "No mobile added"
+
+msgid "Joined"
+msgstr "Joined"
+
+msgid "Profile settings"
+msgstr "Profile settings"
+
+msgid "Logout"
+msgstr "Logout"

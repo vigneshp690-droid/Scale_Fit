@@ -1,0 +1,222 @@
+{% extends "fitness/base_admin.html" %}
+{% load static %}
+
+{% block title %}{{ goal_type|title|cut:"_" }} Programs - ScaleFit{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <section>
+        <div class="view-toolbar">
+            <div class="view-heading">
+                <h2>{{ formatted_goal_type|default:goal_type|title|cut:"_" }} Programs</h2>
+                <p>Manage and configure {{ formatted_goal_type|default:goal_type|title|cut:"_" }} training programs.</p>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <div class="view-toggle">
+                    <button type="button" class="active" data-view-button="grid" aria-pressed="true" title="Grid View">
+                        <i class="fa-solid fa-grip"></i>
+                    </button>
+                    <button type="button" data-view-button="table" aria-pressed="false" title="Table View">
+                        <i class="fa-solid fa-list"></i>
+                    </button>
+                </div>
+                <a href="{% url 'program_create' goal_type %}" class="panel-title" style="padding: 10px 16px; display: inline-flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-plus"></i> Add Program
+                </a>
+            </div>
+        </div>
+
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert {{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div id="gridView" class="program-view">
+            <div class="program-grid">
+                {% for program in programs %}
+                <div class="program-card">
+                    <div class="program-card-top">
+                        <div class="program-icon">
+                            {% if goal_type == 'weight_loss' %}
+                                <i class="fa-solid fa-arrow-trend-down"></i>
+                            {% else %}
+                                <i class="fa-solid fa-arrow-trend-up"></i>
+                            {% endif %}
+                        </div>
+                        <span class="status-badge {% if program.is_active %}badge-green{% else %}badge-orange{% endif %}">
+                            {{ program.is_active|yesno:"Active,Inactive" }}
+                        </span>
+                    </div>
+                    <h3>{{ program.name }}</h3>
+                    <p class="program-description">{{ program.description|truncatewords:22|default:"No description provided." }}</p>
+                    <div class="program-actions">
+                        <a href="{% url 'plan_list' program.pk %}" class="btn" style="background: var(--sf-orange); color: white;">View Plans</a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="empty-state">
+                    <i class="fas fa-folder-open"></i>
+                    <h3>No Programs Found</h3>
+                    <p>No {{ formatted_goal_type|default:goal_type|title|cut:"_" }} programs have been created yet.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div id="tableView" class="program-view" hidden>
+            <div class="table-panel" style="margin-top: 0;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Program Name</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for program in programs %}
+                        <tr>
+                            <td>
+                                <div class="table-program-name" style="display: flex; align-items: center; gap: 10px; font-weight: 800; color: var(--sf-ink);">
+                                    <span class="food-dot">
+                                        {% if goal_type == 'weight_loss' %}
+                                            <i class="fa-solid fa-arrow-trend-down"></i>
+                                        {% else %}
+                                            <i class="fa-solid fa-arrow-trend-up"></i>
+                                        {% endif %}
+                                    </span>
+                                    {{ program.name }}
+                                </div>
+                            </td>
+                            <td>{{ program.description|truncatewords:18|default:"No description provided." }}</td>
+                            <td>
+                                <span class="pill" style="background: {% if program.is_active %}#dcfce7{% else %}#fff4ea{% endif %}; color: {% if program.is_active %}#16a34a{% else %}#ff7a00{% endif %}; padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 800;">
+                                    {{ program.is_active|yesno:"Active,Inactive" }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{% url 'plan_list' program.pk %}" style="color: var(--sf-orange); font-weight: 800; font-size: 0.8rem;">Open</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {% if paginator.num_pages > 1 %}
+        <nav class="pagination-bar" style="margin-top: 24px; padding: 14px; background: white; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--sf-shadow);">
+            <div class="pagination-summary" style="font-size: 0.78rem; color: var(--sf-muted); font-weight: 800;">
+                Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ paginator.count }}
+            </div>
+            <div class="pagination-controls" style="display: flex; gap: 8px;">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--sf-line); border-radius: 6px; color: var(--sf-muted);"><i class="fa-solid fa-angles-left"></i></a>
+                    <a href="?page={{ page_obj.previous_page_number }}" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--sf-line); border-radius: 6px; color: var(--sf-muted);"><i class="fa-solid fa-angle-left"></i></a>
+                {% endif %}
+
+                <span style="background: var(--sf-orange); color: white; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-weight: 800; font-size: 0.8rem;">{{ page_obj.number }}</span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--sf-line); border-radius: 6px; color: var(--sf-muted);"><i class="fa-solid fa-angle-right"></i></a>
+                    <a href="?page={{ paginator.num_pages }}" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--sf-line); border-radius: 6px; color: var(--sf-muted);"><i class="fa-solid fa-angles-right"></i></a>
+                {% endif %}
+            </div>
+        </nav>
+        {% endif %}
+    </section>
+
+    <aside>
+        <div class="side-header">
+            <h3>Program Types</h3>
+            <a href="{% url 'dashboard' %}">Overview <i class="fa-solid fa-angle-right"></i></a>
+        </div>
+        <div class="side-panel">
+            <a class="side-card" href="{% url 'program_list' goal_type='weight_loss' %}" style="{% if goal_type == 'weight_loss' %}border-left: 3px solid var(--sf-orange);{% endif %}">
+                <div>
+                    <h4>Weight Loss</h4>
+                    <p>Fat loss programs</p>
+                </div>
+                <span class="pill">{% if goal_type == 'weight_loss' %}Active{% else %}Open{% endif %}</span>
+            </a>
+            <a class="side-card" href="{% url 'program_list' goal_type='weight_gain' %}" style="{% if goal_type == 'weight_gain' %}border-left: 3px solid var(--sf-orange);{% endif %}">
+                <div>
+                    <h4>Weight Gain</h4>
+                    <p>Mass gain programs</p>
+                </div>
+                <span class="pill">{% if goal_type == 'weight_gain' %}Active{% else %}Open{% endif %}</span>
+            </a>
+        </div>
+
+        <div class="side-header" style="margin-top: 26px;">
+            <h3>Quick Links</h3>
+            <a href="{% url 'members' %}">View All <i class="fa-solid fa-angle-right"></i></a>
+        </div>
+        <div class="side-panel">
+            <a class="side-card" href="{% url 'members' %}">
+                <div>
+                    <h4>Members</h4>
+                    <p>User management</p>
+                </div>
+                <span class="pill">Open</span>
+            </a>
+            <a class="side-card" href="{% url 'referral' %}">
+                <div>
+                    <h4>Referrals</h4>
+                    <p>Invite tracking</p>
+                </div>
+                <span class="pill">Open</span>
+            </a>
+        </div>
+
+        <div class="promo-panel">
+            <h3>{{ formatted_goal_type|default:goal_type|title|cut:"_" }} Admin Area</h3>
+            <p>Open a program to manage plans, periods, and daily content.</p>
+            <a href="{% url 'dashboard' %}" style="background: white; color: var(--sf-purple); padding: 8px 16px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-top: 10px;">Dashboard</a>
+        </div>
+    </aside>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const viewButtons = document.querySelectorAll('[data-view-button]');
+    const gridView = document.getElementById('gridView');
+    const tableView = document.getElementById('tableView');
+    const viewStorageKey = 'scalefit-program-list-view';
+
+    function applyViewMode(selectedView, shouldPersist) {
+        const viewMode = selectedView === 'table' ? 'table' : 'grid';
+        const showTable = viewMode === 'table';
+
+        if (gridView && tableView) {
+            gridView.hidden = showTable;
+            tableView.hidden = !showTable;
+        }
+
+        viewButtons.forEach((item) => {
+            const isActive = item.dataset.viewButton === viewMode;
+            item.classList.toggle('active', isActive);
+            item.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+
+        if (shouldPersist) {
+            localStorage.setItem(viewStorageKey, viewMode);
+        }
+    }
+
+    applyViewMode(localStorage.getItem(viewStorageKey), false);
+
+    viewButtons.forEach((button) => {
+        button.addEventListener('click', function() {
+            applyViewMode(button.dataset.viewButton, true);
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends "fitness/base_admin.html" %}
+{% load static %}
+
+{% block title %}
+    {% if month %}{{ month.title }} - Weeks{% elif week %}{{ week.title }} - Days{% endif %} - ScaleFit
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <section>
+        <div class="view-toolbar">
+            <div class="view-heading">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
+                    <a href="javascript:history.back()" style="color: var(--sf-orange); font-size: 0.8rem; font-weight: 800; text-decoration: none;">
+                        <i class="fa-solid fa-arrow-left"></i> Back
+                    </a>
+                </div>
+                <h2>
+                    {% if month %}{{ month.title }}{% elif week %}{{ week.title }}{% else %}Plan Schedule{% endif %}
+                </h2>
+                <p>{{ plan.name }} ({{ plan.get_plan_type_display }})</p>
+            </div>
+        </div>
+
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert {{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="plans-grid">
+            {% for item in items %}
+            <div class="program-card" style="min-height: auto;">
+                <div class="program-card-top">
+                    <div class="program-icon">
+                        <i class="fa-solid fa-calendar-{% if item_type == 'week' %}week{% else %}day{% endif %}"></i>
+                    </div>
+                    <span class="status-badge badge-orange">
+                        {% if item_type == 'week' %}Week {{ item.week_number }}{% else %}Day {{ item.day_number }}{% endif %}
+                    </span>
+                </div>
+                <h3>{{ item.title }}</h3>
+                {% if item.description %}
+                    <p class="program-description">{{ item.description|truncatewords:20 }}</p>
+                {% endif %}
+                
+                {% if item_type == 'day' %}
+                <div style="display: flex; gap: 12px; margin: 15px 0; padding: 12px; background: var(--sf-panel); border-radius: 8px;">
+                    <div style="text-align: center; flex: 1;">
+                        <span style="display: block; font-size: 1.1rem; font-weight: 800; color: var(--sf-ink);">{{ item.program_items.count }}</span>
+                        <span style="font-size: 0.65rem; font-weight: 800; color: var(--sf-muted); text-transform: uppercase;">Meals</span>
+                    </div>
+                    <div style="text-align: center; flex: 1;">
+                        <span style="display: block; font-size: 1.1rem; font-weight: 800; color: var(--sf-ink);">{{ item.workout_items.count }}</span>
+                        <span style="font-size: 0.65rem; font-weight: 800; color: var(--sf-muted); text-transform: uppercase;">Workouts</span>
+                    </div>
+                    <div style="text-align: center; flex: 1;">
+                        <span style="display: block; font-size: 1.1rem; font-weight: 800; color: var(--sf-ink);">{{ item.water_targets.count }}</span>
+                        <span style="font-size: 0.65rem; font-weight: 800; color: var(--sf-muted); text-transform: uppercase;">Water</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="program-actions">
+                    {% if item_type == 'week' %}
+                        <a href="{% url 'week_detail' week_id=item.pk %}" class="btn" style="background: var(--sf-orange); color: white;">View Days</a>
+                    {% else %}
+                        <a href="{% url 'day_content' day_id=item.pk %}" class="btn" style="background: var(--sf-orange); color: white;">Manage Content</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fa-solid fa-calendar"></i>
+                <h3>No items found</h3>
+                <p>Nothing has been added here yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <aside>
+        <div class="side-header">
+            <h3>Plan Overview</h3>
+            <a href="{% url 'plan_list' program.pk %}">Plans <i class="fa-solid fa-angle-right"></i></a>
+        </div>
+        <div class="side-panel">
+            <div class="side-card">
+                <div>
+                    <h4>{{ plan.name }}</h4>
+                    <p>{{ plan.plan_type|title }}</p>
+                </div>
+                <span class="pill">{{ items.count }} Items</span>
+            </div>
+        </div>
+
+        <div class="promo-panel">
+            <h3>Schedule Management</h3>
+            <p>Drill down into weeks and days to manage specific content for your members.</p>
+            <a href="{% url 'dashboard' %}" style="background: white; color: var(--sf-purple); padding: 8px 16px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-top: 10px;">Dashboard</a>
+        </div>
+    </aside>
+</div>
+{% endblock %}

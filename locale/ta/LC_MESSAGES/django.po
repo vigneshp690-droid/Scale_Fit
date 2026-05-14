@@ -1,0 +1,246 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ScaleFit\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-14 00:00+0000\n"
+"PO-Revision-Date: 2026-05-14 00:00+0000\n"
+"Last-Translator: ScaleFit\n"
+"Language-Team: Tamil\n"
+"Language: ta\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "ScaleFit"
+msgstr "ScaleFit"
+
+msgid "ScaleFit logo"
+msgstr "ScaleFit லோகோ"
+
+msgid "Home"
+msgstr "முகப்பு"
+
+msgid "Programs"
+msgstr "திட்டங்கள்"
+
+msgid "Weight Loss"
+msgstr "எடை குறைப்பு"
+
+msgid "Weight Gain"
+msgstr "எடை அதிகரிப்பு"
+
+msgid "Login"
+msgstr "உள்நுழைவு"
+
+msgid "Transform Your Body, Transform Your Life"
+msgstr "உங்கள் உடலை மாற்றுங்கள், உங்கள் வாழ்க்கையை மாற்றுங்கள்"
+
+msgid "Help Center"
+msgstr "உதவி மையம்"
+
+msgid "Open live chat"
+msgstr "நேரடி அரட்டையை திறக்கவும்"
+
+msgid "Search"
+msgstr "தேடல்"
+
+msgid "Toggle Sidebar"
+msgstr "பக்கப்பட்டியை மாற்று"
+
+msgid "Notifications"
+msgstr "அறிவிப்புகள்"
+
+msgid "Settings"
+msgstr "அமைப்புகள்"
+
+msgid "Select language"
+msgstr "மொழியைத் தேர்ந்தெடுக்கவும்"
+
+msgid "English"
+msgstr "English"
+
+msgid "Tamil"
+msgstr "தமிழ்"
+
+msgid "Hindi"
+msgstr "हिन्दी"
+
+msgid "Meal reminders are ready"
+msgstr "உணவு நினைவூட்டல்கள் தயாராக உள்ளன"
+
+msgid "Workout plan updated"
+msgstr "உடற்பயிற்சி திட்டம் புதுப்பிக்கப்பட்டது"
+
+msgid "Weekly analytics available"
+msgstr "வாராந்திர பகுப்பாய்வு கிடைக்கிறது"
+
+msgid "Open profile menu"
+msgstr "சுயவிவர மெனுவை திறக்கவும்"
+
+msgid "No email added"
+msgstr "மின்னஞ்சல் சேர்க்கப்படவில்லை"
+
+msgid "No mobile added"
+msgstr "மொபைல் எண் சேர்க்கப்படவில்லை"
+
+msgid "Joined"
+msgstr "இணைந்த தேதி"
+
+msgid "Profile settings"
+msgstr "சுயவிவர அமைப்புகள்"
+
+msgid "Logout"
+msgstr "வெளியேறு"
+
+msgid "Transform Your Body"
+msgstr "உங்கள் உடலை மாற்றுங்கள்"
+
+msgid "Professional Fitness Plans"
+msgstr "தொழில்முறை உடற்பயிற்சி திட்டங்கள்"
+
+msgid "With"
+msgstr "உடன்"
+
+msgid "Science-Backed"
+msgstr "அறிவியல் ஆதாரமுள்ள"
+
+msgid "Plans"
+msgstr "திட்டங்கள்"
+
+msgid "Structured day-by-day meal plans, workouts, and hydration guides tailored for your goal."
+msgstr "உங்கள் இலக்கிற்கேற்ப தினசரி உணவு திட்டங்கள், உடற்பயிற்சிகள், மற்றும் நீர்ப்பான வழிகாட்டிகள்."
+
+msgid "Lose Weight"
+msgstr "எடை குறையுங்கள்"
+
+msgid "Build Muscle"
+msgstr "தசை வளர்த்துக் கொள்ளுங்கள்"
+
+msgid "Goal Types"
+msgstr "இலக்கு வகைகள்"
+
+msgid "Daily Sections"
+msgstr "தினசரி பகுதிகள்"
+
+msgid "Free"
+msgstr "இலவசம்"
+
+msgid "Get Started"
+msgstr "தொடங்குங்கள்"
+
+msgid "Choose Your Goal"
+msgstr "உங்கள் இலக்கை தேர்ந்தெடுக்கவும்"
+
+msgid "Pick the path that matches your fitness goal"
+msgstr "உங்கள் உடற்பயிற்சி இலக்கிற்கு பொருந்தும் பாதையை தேர்ந்தெடுக்கவும்"
+
+msgid "Structured meal plans and cardio-focused workouts designed to burn fat and boost metabolism effectively."
+msgstr "கொழுப்பை குறைத்து மெட்டபாலிசத்தை மேம்படுத்த உணவு திட்டங்களும் கார்டியோ உடற்பயிற்சிகளும்."
+
+msgid "High-calorie meal plans and strength training programs to build lean muscle mass and increase body weight."
+msgstr "தசை நிறை மற்றும் உடல் எடையை அதிகரிக்க அதிக கலோரி உணவு திட்டங்களும் வலிமைப் பயிற்சிகளும்."
+
+msgid "Explore Plans"
+msgstr "திட்டங்களை பார்க்கவும்"
+
+msgid "How It Works"
+msgstr "இது எப்படி வேலை செய்கிறது"
+
+msgid "Simple 3-Step Process"
+msgstr "எளிய 3 படி செயல்முறை"
+
+msgid "Select weight loss or weight gain based on your fitness target."
+msgstr "உங்கள் உடற்பயிற்சி இலக்கின் அடிப்படையில் எடை குறைப்பு அல்லது எடை அதிகரிப்பை தேர்ந்தெடுக்கவும்."
+
+msgid "Pick a Plan"
+msgstr "ஒரு திட்டத்தை தேர்ந்தெடுக்கவும்"
+
+msgid "Choose from 7-day or 30-day structured fitness plans."
+msgstr "7 நாள் அல்லது 30 நாள் அமைந்த உடற்பயிற்சி திட்டங்களில் இருந்து தேர்ந்தெடுக்கவும்."
+
+msgid "Follow Daily"
+msgstr "தினமும் பின்பற்றவும்"
+
+msgid "Follow your daily meals, workouts, and water targets."
+msgstr "உங்கள் தினசரி உணவு, உடற்பயிற்சி, மற்றும் நீர் இலக்குகளை பின்பற்றவும்."
+
+msgid "Choose a plan that fits your schedule and commitment level"
+msgstr "உங்கள் அட்டவணை மற்றும் உறுதிப்பாட்டிற்கு பொருந்தும் திட்டத்தை தேர்ந்தெடுக்கவும்"
+
+msgid "Day Plan"
+msgstr "நாள் திட்டம்"
+
+msgid "Weekly Plan"
+msgstr "வார திட்டம்"
+
+msgid "Monthly Plan"
+msgstr "மாத திட்டம்"
+
+msgid "Days"
+msgstr "நாட்கள்"
+
+msgid "Weeks"
+msgstr "வாரங்கள்"
+
+msgid "Months"
+msgstr "மாதங்கள்"
+
+msgid "View Plan"
+msgstr "திட்டத்தை பார்க்கவும்"
+
+msgid "No plans available yet."
+msgstr "இன்னும் திட்டங்கள் இல்லை."
+
+msgid "Follow each month for best results"
+msgstr "சிறந்த முடிவுகளுக்கு ஒவ்வொரு மாதத்தையும் பின்பற்றவும்"
+
+msgid "Follow each week for best results"
+msgstr "சிறந்த முடிவுகளுக்கு ஒவ்வொரு வாரத்தையும் பின்பற்றவும்"
+
+msgid "Follow each day for best results"
+msgstr "சிறந்த முடிவுகளுக்கு ஒவ்வொரு நாளையும் பின்பற்றவும்"
+
+msgid "4 Weeks Inside"
+msgstr "உள்ளே 4 வாரங்கள்"
+
+msgid "7 Days Inside"
+msgstr "உள்ளே 7 நாட்கள்"
+
+msgid "Meals"
+msgstr "உணவுகள்"
+
+msgid "Workout"
+msgstr "உடற்பயிற்சி"
+
+msgid "Water"
+msgstr "நீர்"
+
+msgid "No content yet."
+msgstr "இன்னும் உள்ளடக்கம் இல்லை."
+
+msgid "Select a day to view meals, workouts and water targets"
+msgstr "உணவுகள், உடற்பயிற்சிகள், மற்றும் நீர் இலக்குகளை பார்க்க ஒரு நாளை தேர்ந்தெடுக்கவும்"
+
+msgid "No days yet."
+msgstr "இன்னும் நாட்கள் இல்லை."
+
+msgid "Select a week to view daily content"
+msgstr "தினசரி உள்ளடக்கத்தை பார்க்க ஒரு வாரத்தை தேர்ந்தெடுக்கவும்"
+
+msgid "No weeks yet."
+msgstr "இன்னும் வாரங்கள் இல்லை."
+
+msgid "Your complete guide for today"
+msgstr "இன்றிற்கான உங்கள் முழுமையான வழிகாட்டி"
+
+msgid "No meals added yet."
+msgstr "இன்னும் உணவுகள் சேர்க்கப்படவில்லை."
+
+msgid "No workouts added yet."
+msgstr "இன்னும் உடற்பயிற்சிகள் சேர்க்கப்படவில்லை."
+
+msgid "Reminder every"
+msgstr "ஒவ்வொரு இடைவெளியிலும் நினைவூட்டல்"
+
+msgid "No water targets added yet."
+msgstr "இன்னும் நீர் இலக்குகள் சேர்க்கப்படவில்லை."

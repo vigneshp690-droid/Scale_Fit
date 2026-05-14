@@ -1,0 +1,142 @@
+{% extends "fitness/base_admin.html" %}
+{% load static %}
+
+{% block title %}{{ plan.name }} - ScaleFit{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <section>
+        <div class="view-toolbar">
+            <div class="view-heading">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
+                    <a href="{% url 'plan_list' program_id=program.pk %}" style="color: var(--sf-orange); font-size: 0.8rem; font-weight: 800; text-decoration: none;">
+                        <i class="fa-solid fa-arrow-left"></i> Plans
+                    </a>
+                </div>
+                <h2>{{ plan.name }}</h2>
+                <p>{{ program.name }} · {{ plan.get_plan_type_display }}</p>
+            </div>
+            
+            <div class="view-toggle">
+                <button type="button" id="gridToggle" class="active"><i class="fa-solid fa-grip"></i> Grid</button>
+                <button type="button" id="tableToggle"><i class="fa-solid fa-list"></i> Table</button>
+            </div>
+        </div>
+
+        <div id="gridView" class="period-grid">
+            {% for day in days %}
+            <div class="period-card" style="background: white; border-radius: 8px; border: 1px solid var(--sf-line); padding: 20px; box-shadow: var(--sf-card-shadow);">
+                <div class="period-card-top" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                    <div class="period-icon" style="width: 40px; height: 40px; background: var(--sf-orange-soft); color: var(--sf-orange); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                        <i class="fa-solid fa-calendar-day"></i>
+                    </div>
+                    <span class="period-number" style="background: var(--sf-panel); color: var(--sf-muted); font-size: 0.7rem; font-weight: 800; padding: 4px 10px; border-radius: 20px;">
+                        DAY {{ day.day_number }}
+                    </span>
+                </div>
+                <h3 style="color: var(--sf-ink); margin: 0 0 10px; font-size: 1.1rem;">{{ day.title|default:"Untitled Day" }}</h3>
+                <p style="color: var(--sf-muted); font-size: 0.85rem; line-height: 1.5; margin-bottom: 20px; flex-grow: 1;">
+                    {{ day.description|truncatewords:15|default:"No description provided for this day." }}
+                </p>
+                <div class="period-actions" style="border-top: 1px solid var(--sf-line); padding-top: 15px;">
+                    <a href="{% url 'day_content' day_id=day.pk %}" class="btn" style="width: 100%; background: var(--sf-orange); color: white; justify-content: center; font-weight: 800;">
+                        Manage Content <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state" style="grid-column: 1 / -1; padding: 60px; text-align: center; background: white; border-radius: 8px; border: 1px dashed var(--sf-line);">
+                <i class="fa-solid fa-calendar-plus" style="font-size: 3rem; color: var(--sf-line); margin-bottom: 20px; display: block;"></i>
+                <h3 style="color: var(--sf-ink);">No Days Found</h3>
+                <p style="color: var(--sf-muted); margin-bottom: 20px;">Start by creating days for this plan.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div id="tableView" class="table-panel" hidden style="margin-top: 0;">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th style="text-align: right;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for day in days %}
+                    <tr>
+                        <td style="font-weight: 800; color: var(--sf-orange);">Day {{ day.day_number }}</td>
+                        <td style="font-weight: 800; color: var(--sf-ink);">{{ day.title|default:"-" }}</td>
+                        <td style="color: var(--sf-muted); font-size: 0.85rem;">{{ day.description|truncatewords:10|default:"-" }}</td>
+                        <td style="text-align: right;">
+                            <a href="{% url 'day_content' day_id=day.pk %}" class="btn" style="background: var(--sf-orange-soft); color: var(--sf-orange); padding: 6px 12px; font-size: 0.75rem;">
+                                Edit <i class="fa-solid fa-chevron-right" style="margin-left: 5px;"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <aside>
+        <div class="side-header">
+            <h3>Plan Info</h3>
+        </div>
+        <div class="side-panel">
+            <div class="side-card">
+                <div>
+                    <h4>Type</h4>
+                    <p>{{ plan.get_plan_type_display }}</p>
+                </div>
+                <span class="pill">Active</span>
+            </div>
+            <div class="side-card">
+                <div>
+                    <h4>Program</h4>
+                    <p>{{ program.name }}</p>
+                </div>
+                <i class="fa-solid fa-dumbbell" style="color: var(--sf-orange);"></i>
+            </div>
+        </div>
+
+        <div class="promo-panel">
+            <h3>Management</h3>
+            <p>Define daily tasks, meals, and workouts for this plan to guide your members.</p>
+        </div>
+    </aside>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const gridToggle = document.getElementById('gridToggle');
+    const tableToggle = document.getElementById('tableToggle');
+    const gridView = document.getElementById('gridView');
+    const tableView = document.getElementById('tableView');
+
+    function setView(view) {
+        if (view === 'table') {
+            gridView.hidden = true;
+            tableView.hidden = false;
+            tableToggle.classList.add('active');
+            gridToggle.classList.remove('active');
+        } else {
+            gridView.hidden = false;
+            tableView.hidden = true;
+            gridToggle.classList.add('active');
+            tableToggle.classList.remove('active');
+        }
+        localStorage.setItem('dayListView', view);
+    }
+
+    gridToggle.addEventListener('click', () => setView('grid'));
+    tableToggle.addEventListener('click', () => setView('table'));
+
+    // Load saved view preference
+    const savedView = localStorage.getItem('dayListView');
+    if (savedView) setView(savedView);
+</script>
+{% endblock %}

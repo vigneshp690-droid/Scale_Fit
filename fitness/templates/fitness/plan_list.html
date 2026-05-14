@@ -1,0 +1,171 @@
+{% extends "fitness/base_admin.html" %}
+{% load static %}
+
+{% block title %}{{ program.name }} Plans - ScaleFit{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <section>
+        <div class="view-toolbar">
+            <div class="view-heading">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
+                    <a href="{% url 'program_list' program.goal_type %}" style="color: var(--sf-orange); font-size: 0.8rem; font-weight: 800; text-decoration: none;">
+                        <i class="fa-solid fa-arrow-left"></i> Programs
+                    </a>
+                </div>
+                <h2>{{ program.name }} Plans</h2>
+                <p>Manage training plans for this program.</p>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <div class="view-toggle">
+                    <button type="button" class="active" data-view-button="grid" aria-pressed="true" title="Grid View">
+                        <i class="fa-solid fa-grip"></i>
+                    </button>
+                    <button type="button" data-view-button="table" aria-pressed="false" title="Table View">
+                        <i class="fa-solid fa-list"></i>
+                    </button>
+                </div>
+                <a href="{% url 'plan_create' program.pk %}" class="panel-title" style="padding: 10px 16px; display: inline-flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-plus"></i> Add Plan
+                </a>
+            </div>
+        </div>
+
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert {{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div id="gridView" class="plan-view">
+            <div class="plans-grid">
+                {% for plan in plans %}
+                <div class="program-card" style="min-height: auto;">
+                    <div class="program-card-top">
+                        <div class="program-icon">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <span class="status-badge badge-orange">{{ plan.plan_type|title }}</span>
+                    </div>
+                    <h3>{{ plan.name }}</h3>
+                    <p class="program-description">{{ plan.description|truncatewords:15|default:"No description." }}</p>
+                    <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                        <span style="font-size: 0.7rem; font-weight: 800; color: var(--sf-muted); background: var(--sf-panel); padding: 4px 8px; border-radius: 4px;">{{ plan.count }} {{ plan.plan_type|cut:"ly" }}s</span>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <a href="{% url 'week_list' plan.pk %}" class="btn" style="background: var(--sf-orange); color: white; flex: 1; font-size: 0.75rem;">Manage</a>
+                        <a href="{% url 'plan_update' plan.pk %}" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--sf-line); border-radius: 6px; color: var(--sf-muted);"><i class="fa-solid fa-pen"></i></a>
+                        <a href="{% url 'plan_delete' plan.pk %}" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--sf-line); border-radius: 6px; color: #ef4444;"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="empty-state">
+                    <i class="fas fa-calendar-xmark"></i>
+                    <h3>No Plans Found</h3>
+                    <p>No plans have been created for this program yet.</p>
+                    <a href="{% url 'plan_create' program.pk %}" class="btn" style="background: var(--sf-orange); color: white; display: inline-flex; margin-top: 15px;">Create First Plan</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div id="tableView" class="plan-view" hidden>
+            <div class="table-panel" style="margin-top: 0;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Plan Name</th>
+                            <th>Type</th>
+                            <th>Duration</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for plan in plans %}
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px; font-weight: 800; color: var(--sf-ink);">
+                                    <span class="food-dot"><i class="fa-solid fa-calendar-day"></i></span>
+                                    {{ plan.name }}
+                                </div>
+                            </td>
+                            <td>{{ plan.plan_type|title }}</td>
+                            <td>{{ plan.count }} {{ plan.plan_type|cut:"ly" }}s</td>
+                            <td>
+                                <div style="display: flex; gap: 12px;">
+                                    <a href="{% url 'week_list' plan.pk %}" style="color: var(--sf-orange); font-weight: 800; font-size: 0.8rem;">Open</a>
+                                    <a href="{% url 'plan_update' plan.pk %}" style="color: var(--sf-muted);"><i class="fa-solid fa-pen"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <aside>
+        <div class="side-header">
+            <h3>Program Details</h3>
+            <a href="{% url 'program_update' program.pk %}">Edit <i class="fa-solid fa-pen"></i></a>
+        </div>
+        <div class="side-panel">
+            <div class="side-card">
+                <div>
+                    <h4>{{ program.name }}</h4>
+                    <p>{{ program.goal_type|title|cut:"_" }}</p>
+                </div>
+                <span class="pill">{{ plans.count }} Plans</span>
+            </div>
+        </div>
+
+        <div class="promo-panel">
+            <h3>Plan Management</h3>
+            <p>Define the structure of your program by adding weekly or daily plans.</p>
+            <a href="{% url 'program_list' program.goal_type %}" style="background: white; color: var(--sf-purple); padding: 8px 16px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-top: 10px;">Back to Programs</a>
+        </div>
+    </aside>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const viewButtons = document.querySelectorAll('[data-view-button]');
+    const gridView = document.getElementById('gridView');
+    const tableView = document.getElementById('tableView');
+    const viewStorageKey = 'scalefit-plan-list-view';
+
+    function applyViewMode(selectedView, shouldPersist) {
+        const viewMode = selectedView === 'table' ? 'table' : 'grid';
+        const showTable = viewMode === 'table';
+
+        if (gridView && tableView) {
+            gridView.hidden = showTable;
+            tableView.hidden = !showTable;
+        }
+
+        viewButtons.forEach((item) => {
+            const isActive = item.dataset.viewButton === viewMode;
+            item.classList.toggle('active', isActive);
+            item.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+
+        if (shouldPersist) {
+            localStorage.setItem(viewStorageKey, viewMode);
+        }
+    }
+
+    applyViewMode(localStorage.getItem(viewStorageKey), false);
+
+    viewButtons.forEach((button) => {
+        button.addEventListener('click', function() {
+            applyViewMode(button.dataset.viewButton, true);
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,288 @@
+.admin-app .main-wrapper {
+    min-width: 0;
+}
+
+.admin-app .dashboard-navbar {
+    align-items: center;
+    background: #ffffff;
+    border-bottom: 1px solid var(--sf-line, #e7edf5);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+    display: flex;
+    gap: 24px;
+    justify-content: space-between;
+    min-height: 72px;
+    padding: 0 26px;
+    position: static;
+    width: 100%;
+    z-index: 20;
+}
+
+.admin-app .dashboard-navbar .topbar-left {
+    align-items: center;
+    display: flex;
+    flex: 1 1 auto;
+    gap: 14px;
+    min-width: 0;
+}
+
+.admin-app .dashboard-navbar .search-box {
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid var(--sf-line, #e7edf5);
+    border-radius: 9px;
+    display: flex;
+    flex: 1 1 auto;
+    gap: 10px;
+    height: 36px;
+    min-width: 0;
+    padding: 0 13px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    width: 100%;
+}
+
+.admin-app .dashboard-navbar .search-box:focus-within {
+    background: #ffffff;
+    border-color: rgba(255, 122, 0, 0.46);
+    box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.08);
+}
+
+.admin-app .dashboard-navbar .search-box i {
+    color: #94a3b8;
+    flex: 0 0 auto;
+    font-size: 0.92rem;
+}
+
+.admin-app .dashboard-navbar .search-box input {
+    background: transparent;
+    border: 0;
+    color: var(--sf-ink, #1f2a3d);
+    flex: 1 1 auto;
+    font: inherit;
+    font-size: 0.84rem;
+    min-width: 0;
+    outline: 0;
+    width: 100%;
+}
+
+.admin-app .dashboard-navbar .topbar-right {
+    align-items: center;
+    display: flex;
+    flex: 0 0 auto;
+    gap: 14px;
+    justify-content: flex-end;
+    position: relative;
+    white-space: nowrap;
+}
+
+.admin-app .dashboard-navbar .notification-wrap,
+.admin-app .dashboard-navbar .user-profile {
+    display: inline-flex;
+    position: relative;
+}
+
+.admin-app .dashboard-navbar .icon-btn,
+.admin-app .dashboard-navbar .notification-btn,
+.admin-app .dashboard-navbar .avatar-button,
+.admin-app .dashboard-navbar .profile-trigger {
+    align-items: center;
+    border: 0;
+    border-radius: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: 0.95rem;
+    height: 38px;
+    justify-content: center;
+    position: relative;
+    text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    width: 38px;
+}
+
+.admin-app .dashboard-navbar .icon-btn,
+.admin-app .dashboard-navbar .notification-btn {
+    background: transparent;
+    color: #728098;
+}
+
+.admin-app .dashboard-navbar .icon-btn:hover,
+.admin-app .dashboard-navbar .notification-btn:hover {
+    background: var(--sf-orange-soft, #fff4ea);
+    color: var(--sf-orange, #ff7a00);
+    transform: translateY(-1px);
+}
+
+.admin-app .dashboard-navbar .notification-btn .badge {
+    background: var(--sf-orange, #ff7a00);
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    height: 9px;
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 9px;
+}
+
+.admin-app .dashboard-navbar .avatar-button,
+.admin-app .dashboard-navbar .profile-trigger {
+    background: linear-gradient(135deg, #ffb46f, var(--sf-orange, #ff7a00));
+    color: #ffffff;
+    font-weight: 800;
+    overflow: hidden;
+}
+
+.admin-app .dashboard-navbar .avatar-button img,
+.admin-app .dashboard-navbar .profile-trigger img,
+.admin-app .dashboard-navbar .profile-menu-avatar img {
+    display: block;
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+}
+
+.admin-app .dashboard-navbar .dropdown-menu {
+    background: #ffffff;
+    border: 1px solid var(--sf-line, #e7edf5);
+    border-radius: 14px;
+    box-shadow: 0 18px 42px rgba(36, 48, 71, 0.14);
+    min-width: 250px;
+    opacity: 0;
+    padding: 12px;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 12px);
+    transform: translateY(-8px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 50;
+}
+
+.admin-app .dashboard-navbar .dropdown-menu.open,
+.admin-app .dashboard-navbar .notification-wrap.open .notification-menu,
+.admin-app .dashboard-navbar .user-profile.open .profile-menu {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.admin-app .dashboard-navbar .dropdown-menu h4 {
+    color: var(--sf-ink, #1f2a3d);
+    font-size: 0.78rem;
+    font-weight: 800;
+    margin: 0 0 10px;
+}
+
+.admin-app .dashboard-navbar .dropdown-item,
+.admin-app .dashboard-navbar .notification-item,
+.admin-app .dashboard-navbar .profile-menu-actions a {
+    align-items: center;
+    border-radius: 10px;
+    color: #536174;
+    display: flex;
+    font-size: 0.78rem;
+    font-weight: 700;
+    gap: 10px;
+    padding: 10px;
+    text-decoration: none;
+}
+
+.admin-app .dashboard-navbar .dropdown-item:hover,
+.admin-app .dashboard-navbar .notification-item:hover,
+.admin-app .dashboard-navbar .profile-menu-actions a:hover {
+    background: #f8fafc;
+    color: var(--sf-orange, #ff7a00);
+}
+
+.admin-app .dashboard-navbar .profile-menu-header {
+    align-items: center;
+    border-bottom: 1px solid var(--sf-line, #e7edf5);
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+    padding: 4px 4px 12px;
+}
+
+.admin-app .dashboard-navbar .profile-menu-avatar {
+    align-items: center;
+    background: linear-gradient(135deg, #ffb46f, var(--sf-orange, #ff7a00));
+    border-radius: 50%;
+    color: #ffffff;
+    display: flex;
+    flex: 0 0 auto;
+    font-size: 0.82rem;
+    font-weight: 800;
+    height: 38px;
+    justify-content: center;
+    overflow: hidden;
+    width: 38px;
+}
+
+.admin-app .dashboard-navbar .profile-menu-name,
+.admin-app .dashboard-navbar .profile-menu-username {
+    margin: 0;
+}
+
+.admin-app .dashboard-navbar .profile-menu-name {
+    color: var(--sf-ink, #1f2a3d);
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+.admin-app .dashboard-navbar .profile-menu-username {
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.admin-app .dashboard-navbar .profile-details {
+    border-bottom: 1px solid var(--sf-line, #e7edf5);
+    display: grid;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding: 0 4px 12px;
+}
+
+.admin-app .dashboard-navbar .profile-detail {
+    align-items: center;
+    color: #64748b;
+    display: flex;
+    font-size: 0.75rem;
+    font-weight: 700;
+    gap: 9px;
+}
+
+@media (max-width: 980px) {
+    .admin-app .dashboard-navbar {
+        gap: 14px;
+        padding: 0 18px;
+    }
+
+    .admin-app .dashboard-navbar .mobile-toggle {
+        display: inline-flex;
+        flex: 0 0 auto;
+    }
+}
+
+@media (max-width: 560px) {
+    .admin-app .dashboard-navbar {
+        align-items: stretch;
+        flex-wrap: wrap;
+        gap: 12px;
+        min-height: 96px;
+        padding: 12px 16px;
+    }
+
+    .admin-app .dashboard-navbar .topbar-left {
+        flex-basis: 100%;
+        order: 2;
+    }
+
+    .admin-app .dashboard-navbar .topbar-right {
+        margin-left: auto;
+        order: 1;
+    }
+
+    .admin-app .dashboard-navbar .search-box {
+        height: 38px;
+    }
+}

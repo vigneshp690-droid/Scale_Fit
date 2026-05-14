@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ScaleFit - Admin{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/admin_dashboard_theme.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/admin_theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin_navbar.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="admin-app">
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fa-solid fa-dumbbell"></i> ScaleFit</h2>
+            <button class="mobile-close" onclick="toggleSidebar()" aria-label="Close Sidebar"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <a href="{% url 'dashboard' %}" title="Overview dashboard"><i class="fa-solid fa-table-cells-large"></i> Overview</a>
+            </li>
+            <li class="{% if goal_type == 'weight_loss' %}active{% endif %}">
+                <a href="{% url 'program_list' goal_type='weight_loss' %}" title="Manage weight loss programs"><i class="fa-solid fa-dumbbell"></i> Weight Loss</a>
+            </li>
+            <li class="{% if goal_type == 'weight_gain' %}active{% endif %}">
+                <a href="{% url 'program_list' goal_type='weight_gain' %}" title="Manage weight gain programs"><i class="fa-solid fa-bowl-food"></i> Weight Gain</a>
+            </li>
+            <li class="{% if request.resolver_match.url_name == 'members' %}active{% endif %}">
+                <a href="{% url 'members' %}"><i class="fa-regular fa-circle-user"></i> Members</a>
+            </li>
+            <li class="{% if request.resolver_match.url_name == 'referral' %}active{% endif %}">
+                <a href="{% url 'referral' %}" title="View referral activity"><i class="fa-solid fa-chart-simple"></i> Referrals</a>
+            </li>
+            <li class="{% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
+                <a href="{% url 'settings' %}"><i class="fa-solid fa-gear"></i> Settings</a>
+            </li>
+            <li class="logout-item"><a href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
+        </ul>
+    </aside>
+
+    <div class="main-wrapper">
+        {% include "fitness/partials/top_navbar.html" with search_label="Search" %}
+
+        <main class="content-area">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</div>
+
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
+    }
+
+    const userProfile = document.querySelector('.user-profile');
+    const avatarButton = document.querySelector('.avatar-button');
+    const notificationWrap = document.querySelector('.notification-wrap');
+    const notificationToggle = document.getElementById('notificationToggle');
+
+    if (userProfile && avatarButton) {
+        avatarButton.addEventListener('click', function(event) {
+            event.stopPropagation();
+            const isOpen = userProfile.classList.toggle('open');
+            avatarButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            if (notificationWrap && notificationToggle) {
+                notificationWrap.classList.remove('open');
+                notificationToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+
+    if (notificationWrap && notificationToggle) {
+        notificationToggle.addEventListener('click', function(event) {
+            event.stopPropagation();
+            const isOpen = notificationWrap.classList.toggle('open');
+            notificationToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            if (userProfile && avatarButton) {
+                userProfile.classList.remove('open');
+                avatarButton.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+
+    document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.querySelector('.mobile-toggle');
+        if (window.innerWidth <= 980 && sidebar && toggleBtn && !sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+
+        if (userProfile && avatarButton && !userProfile.contains(event.target)) {
+            userProfile.classList.remove('open');
+            avatarButton.setAttribute('aria-expanded', 'false');
+        }
+
+        if (notificationWrap && notificationToggle && !notificationWrap.contains(event.target)) {
+            notificationWrap.classList.remove('open');
+            notificationToggle.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            if (userProfile && avatarButton && userProfile.classList.contains('open')) {
+                userProfile.classList.remove('open');
+                avatarButton.setAttribute('aria-expanded', 'false');
+                avatarButton.focus();
+            }
+
+            if (notificationWrap && notificationToggle && notificationWrap.classList.contains('open')) {
+                notificationWrap.classList.remove('open');
+                notificationToggle.setAttribute('aria-expanded', 'false');
+                notificationToggle.focus();
+            }
+        }
+    });
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

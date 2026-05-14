@@ -1,0 +1,246 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ScaleFit\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-14 00:00+0000\n"
+"PO-Revision-Date: 2026-05-14 00:00+0000\n"
+"Last-Translator: ScaleFit\n"
+"Language-Team: Hindi\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "ScaleFit"
+msgstr "ScaleFit"
+
+msgid "ScaleFit logo"
+msgstr "ScaleFit लोगो"
+
+msgid "Home"
+msgstr "होम"
+
+msgid "Programs"
+msgstr "कार्यक्रम"
+
+msgid "Weight Loss"
+msgstr "वजन घटाना"
+
+msgid "Weight Gain"
+msgstr "वजन बढ़ाना"
+
+msgid "Login"
+msgstr "लॉगिन"
+
+msgid "Transform Your Body, Transform Your Life"
+msgstr "अपना शरीर बदलें, अपना जीवन बदलें"
+
+msgid "Help Center"
+msgstr "सहायता केंद्र"
+
+msgid "Open live chat"
+msgstr "लाइव चैट खोलें"
+
+msgid "Search"
+msgstr "खोजें"
+
+msgid "Toggle Sidebar"
+msgstr "साइडबार टॉगल करें"
+
+msgid "Notifications"
+msgstr "सूचनाएं"
+
+msgid "Settings"
+msgstr "सेटिंग्स"
+
+msgid "Select language"
+msgstr "भाषा चुनें"
+
+msgid "English"
+msgstr "English"
+
+msgid "Tamil"
+msgstr "தமிழ்"
+
+msgid "Hindi"
+msgstr "हिन्दी"
+
+msgid "Meal reminders are ready"
+msgstr "भोजन रिमाइंडर तैयार हैं"
+
+msgid "Workout plan updated"
+msgstr "वर्कआउट प्लान अपडेट हुआ"
+
+msgid "Weekly analytics available"
+msgstr "साप्ताहिक एनालिटिक्स उपलब्ध है"
+
+msgid "Open profile menu"
+msgstr "प्रोफाइल मेनू खोलें"
+
+msgid "No email added"
+msgstr "कोई ईमेल नहीं जोड़ा गया"
+
+msgid "No mobile added"
+msgstr "कोई मोबाइल नंबर नहीं जोड़ा गया"
+
+msgid "Joined"
+msgstr "जुड़े"
+
+msgid "Profile settings"
+msgstr "प्रोफाइल सेटिंग्स"
+
+msgid "Logout"
+msgstr "लॉगआउट"
+
+msgid "Transform Your Body"
+msgstr "अपना शरीर बदलें"
+
+msgid "Professional Fitness Plans"
+msgstr "प्रोफेशनल फिटनेस प्लान"
+
+msgid "With"
+msgstr "के साथ"
+
+msgid "Science-Backed"
+msgstr "विज्ञान-समर्थित"
+
+msgid "Plans"
+msgstr "प्लान"
+
+msgid "Structured day-by-day meal plans, workouts, and hydration guides tailored for your goal."
+msgstr "आपके लक्ष्य के अनुसार दिन-प्रतिदिन भोजन योजना, वर्कआउट और हाइड्रेशन गाइड।"
+
+msgid "Lose Weight"
+msgstr "वजन घटाएं"
+
+msgid "Build Muscle"
+msgstr "मसल बनाएं"
+
+msgid "Goal Types"
+msgstr "लक्ष्य प्रकार"
+
+msgid "Daily Sections"
+msgstr "दैनिक सेक्शन"
+
+msgid "Free"
+msgstr "मुफ्त"
+
+msgid "Get Started"
+msgstr "शुरू करें"
+
+msgid "Choose Your Goal"
+msgstr "अपना लक्ष्य चुनें"
+
+msgid "Pick the path that matches your fitness goal"
+msgstr "अपने फिटनेस लक्ष्य से मेल खाने वाला रास्ता चुनें"
+
+msgid "Structured meal plans and cardio-focused workouts designed to burn fat and boost metabolism effectively."
+msgstr "फैट घटाने और मेटाबॉलिज्म बढ़ाने के लिए भोजन योजनाएं और कार्डियो-केंद्रित वर्कआउट।"
+
+msgid "High-calorie meal plans and strength training programs to build lean muscle mass and increase body weight."
+msgstr "लीन मसल और वजन बढ़ाने के लिए हाई-कैलोरी भोजन योजनाएं और स्ट्रेंथ ट्रेनिंग।"
+
+msgid "Explore Plans"
+msgstr "प्लान देखें"
+
+msgid "How It Works"
+msgstr "यह कैसे काम करता है"
+
+msgid "Simple 3-Step Process"
+msgstr "सरल 3-स्टेप प्रक्रिया"
+
+msgid "Select weight loss or weight gain based on your fitness target."
+msgstr "अपने फिटनेस लक्ष्य के आधार पर वजन घटाना या वजन बढ़ाना चुनें।"
+
+msgid "Pick a Plan"
+msgstr "एक प्लान चुनें"
+
+msgid "Choose from 7-day or 30-day structured fitness plans."
+msgstr "7-दिन या 30-दिन के संरचित फिटनेस प्लान में से चुनें।"
+
+msgid "Follow Daily"
+msgstr "रोज फॉलो करें"
+
+msgid "Follow your daily meals, workouts, and water targets."
+msgstr "अपने दैनिक भोजन, वर्कआउट और पानी के लक्ष्य फॉलो करें।"
+
+msgid "Choose a plan that fits your schedule and commitment level"
+msgstr "अपनी समय-सारणी और प्रतिबद्धता के अनुसार प्लान चुनें"
+
+msgid "Day Plan"
+msgstr "डे प्लान"
+
+msgid "Weekly Plan"
+msgstr "वीकली प्लान"
+
+msgid "Monthly Plan"
+msgstr "मंथली प्लान"
+
+msgid "Days"
+msgstr "दिन"
+
+msgid "Weeks"
+msgstr "सप्ताह"
+
+msgid "Months"
+msgstr "महीने"
+
+msgid "View Plan"
+msgstr "प्लान देखें"
+
+msgid "No plans available yet."
+msgstr "अभी कोई प्लान उपलब्ध नहीं है।"
+
+msgid "Follow each month for best results"
+msgstr "बेहतर परिणामों के लिए हर महीने फॉलो करें"
+
+msgid "Follow each week for best results"
+msgstr "बेहतर परिणामों के लिए हर सप्ताह फॉलो करें"
+
+msgid "Follow each day for best results"
+msgstr "बेहतर परिणामों के लिए हर दिन फॉलो करें"
+
+msgid "4 Weeks Inside"
+msgstr "अंदर 4 सप्ताह"
+
+msgid "7 Days Inside"
+msgstr "अंदर 7 दिन"
+
+msgid "Meals"
+msgstr "भोजन"
+
+msgid "Workout"
+msgstr "वर्कआउट"
+
+msgid "Water"
+msgstr "पानी"
+
+msgid "No content yet."
+msgstr "अभी कोई सामग्री नहीं है।"
+
+msgid "Select a day to view meals, workouts and water targets"
+msgstr "भोजन, वर्कआउट और पानी के लक्ष्य देखने के लिए दिन चुनें"
+
+msgid "No days yet."
+msgstr "अभी कोई दिन नहीं है।"
+
+msgid "Select a week to view daily content"
+msgstr "दैनिक सामग्री देखने के लिए सप्ताह चुनें"
+
+msgid "No weeks yet."
+msgstr "अभी कोई सप्ताह नहीं है।"
+
+msgid "Your complete guide for today"
+msgstr "आज के लिए आपकी पूरी गाइड"
+
+msgid "No meals added yet."
+msgstr "अभी कोई भोजन जोड़ा नहीं गया है।"
+
+msgid "No workouts added yet."
+msgstr "अभी कोई वर्कआउट जोड़ा नहीं गया है।"
+
+msgid "Reminder every"
+msgstr "रिमाइंडर हर"
+
+msgid "No water targets added yet."
+msgstr "अभी कोई पानी का लक्ष्य जोड़ा नहीं गया है।"

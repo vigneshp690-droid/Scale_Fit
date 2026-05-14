@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScaleFit - Sign Up</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/user_theme.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="user-app {{ active_theme_class|default:'theme-orange' }}">
+    <div class="login-container">
+        <div class="login-wrapper">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h1>Create account</h1>
+                <p>Register with username, mobile number and password</p>
+            </div>
+
+            <form method="POST" class="login-form" id="signupForm">
+                {% csrf_token %}
+
+                {% if messages %}
+                    <div class="messages-container">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}" role="alert">
+                                <i class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% else %}check-circle{% endif %}"></i>
+                                <span>{{ message }}</span>
+                                <button type="button" class="close-alert" onclick="this.parentElement.style.display='none';">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        <i class="fas fa-user"></i> Username
+                    </label>
+                    <input type="text" id="username" name="username" class="form-input" placeholder="Choose a username" required autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="mobile_number" class="form-label">
+                        <i class="fas fa-phone"></i> Mobile Number
+                    </label>
+                    <input type="text" id="mobile_number" name="mobile_number" class="form-input" placeholder="Enter your 10-digit mobile number" required autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="Create a password" required autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password" class="form-label">
+                        <i class="fas fa-lock"></i> Confirm Password
+                    </label>
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-input" placeholder="Repeat your password" required autocomplete="off">
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span>Sign Up</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+
+                <div class="form-footer">
+                    <p>Already have an account? <a href="{% url 'login' %}" class="link-secondary">Sign in instead</a></p>
+                </div>
+            </form>
+
+            <div class="security-info">
+                <i class="fas fa-shield-alt"></i>
+                <span>Your information is secure with us.</span>
+            </div>
+        </div>
+
+        <div class="background-design">
+            <div class="shape-1"></div>
+            <div class="shape-2"></div>
+            <div class="shape-3"></div>
+        </div>
+    </div>
+</body>
+</html>

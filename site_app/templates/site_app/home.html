@@ -1,0 +1,102 @@
+{% extends 'site_app/base.html' %}
+{% load static i18n %}
+{% block title %}{% trans "ScaleFit" %} — {% trans "Transform Your Body" %}{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-particles" id="particles"></div>
+  <div style="position:relative; z-index:1;">
+    <div class="hero-badge">🔥 {% trans "Professional Fitness Plans" %}</div>
+    <h1>{% trans "Transform Your Body" %}<br>{% trans "With" %} <span class="highlight">{% trans "Science-Backed" %}</span> {% trans "Plans" %}</h1>
+    <p>{% trans "Structured day-by-day meal plans, workouts, and hydration guides tailored for your goal." %}</p>
+    <div class="hero-btns">
+      {% if not site_settings or site_settings.enable_weight_loss_programs %}
+      <a href="{% url 'site_goal_plans' 'weight_loss' %}" class="btn btn-primary">
+        <i class="fas fa-fire"></i> {% trans "Lose Weight" %}
+      </a>
+      {% endif %}
+      {% if not site_settings or site_settings.enable_weight_gain_programs %}
+      <a href="{% url 'site_goal_plans' 'weight_gain' %}" class="btn btn-outline">
+        <i class="fas fa-dumbbell"></i> {% trans "Build Muscle" %}
+      </a>
+      {% endif %}
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">2</div><div class="lbl">{% trans "Goal Types" %}</div></div>
+      <div class="hero-stat"><div class="num">4</div><div class="lbl">{% trans "Plans" %}</div></div>
+      <div class="hero-stat"><div class="num">3</div><div class="lbl">{% trans "Daily Sections" %}</div></div>
+      <div class="hero-stat"><div class="num">100%</div><div class="lbl">{% trans "Free" %}</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CHOOSE GOAL -->
+<section class="section">
+  <div class="section-header">
+    <div class="section-tag">{% trans "Get Started" %}</div>
+    <h2 class="section-title">{% trans "Choose Your Goal" %}</h2>
+    <p class="section-sub">{% trans "Pick the path that matches your fitness goal" %}</p>
+  </div>
+  <div class="goal-grid">
+    {% if not site_settings or site_settings.enable_weight_loss_programs %}
+    <a href="{% url 'site_goal_plans' 'weight_loss' %}" class="goal-card reveal">
+      <div class="goal-icon loss">🔥</div>
+      <h3>{% trans "Weight Loss" %}</h3>
+      <p>{% trans "Structured meal plans and cardio-focused workouts designed to burn fat and boost metabolism effectively." %}</p>
+      <div class="goal-arrow">{% trans "Explore Plans" %} <i class="fas fa-arrow-right"></i></div>
+    </a>
+    {% endif %}
+    {% if not site_settings or site_settings.enable_weight_gain_programs %}
+    <a href="{% url 'site_goal_plans' 'weight_gain' %}" class="goal-card gain reveal">
+      <div class="goal-icon gain">💪</div>
+      <h3>{% trans "Weight Gain" %}</h3>
+      <p>{% trans "High-calorie meal plans and strength training programs to build lean muscle mass and increase body weight." %}</p>
+      <div class="goal-arrow">{% trans "Explore Plans" %} <i class="fas fa-arrow-right"></i></div>
+    </a>
+    {% endif %}
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section process-section">
+  <div class="section-header">
+    <div class="section-tag">{% trans "How It Works" %}</div>
+    <h2 class="section-title">{% trans "Simple 3-Step Process" %}</h2>
+  </div>
+  <div class="process-grid">
+    {% for step in "123" %}
+    <div class="process-card reveal">
+      {% if forloop.counter == 1 %}
+      <div style="font-size:40px; margin-bottom:16px;">🎯</div>
+      <h4>{% trans "Choose Your Goal" %}</h4>
+      <p>{% trans "Select weight loss or weight gain based on your fitness target." %}</p>
+      {% elif forloop.counter == 2 %}
+      <div style="font-size:40px; margin-bottom:16px;">📋</div>
+      <h4>{% trans "Pick a Plan" %}</h4>
+      <p>{% trans "Choose from 7-day or 30-day structured fitness plans." %}</p>
+      {% else %}
+      <div style="font-size:40px; margin-bottom:16px;">✅</div>
+      <h4>{% trans "Follow Daily" %}</h4>
+      <p>{% trans "Follow your daily meals, workouts, and water targets." %}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Floating particles
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `left:${Math.random()*100}%; animation-delay:${Math.random()*6}s; animation-duration:${5+Math.random()*5}s; width:${2+Math.random()*3}px; height:${2+Math.random()*3}px;`;
+    container.appendChild(p);
+  }
+</script>
+{% endblock %}

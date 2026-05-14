@@ -1,0 +1,33 @@
+{% extends 'site_app/base.html' %}
+{% load i18n %}
+{% block title %}{{ week.title }} — {% trans "ScaleFit" %}{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="breadcrumb">
+    <a href="{% url 'site_home' %}">{% trans "Home" %}</a>
+    <span class="sep">/</span>
+    <a href="{% url 'site_goal_plans' goal_type %}">{% if goal_type == 'weight_loss' %}{% trans "Weight Loss" %}{% else %}{% trans "Weight Gain" %}{% endif %}</a>
+    <span class="sep">/</span>
+    <a href="{% url 'site_plan_detail' plan.pk %}">{{ plan.name }}</a>
+    <span class="sep">/</span>
+    <span class="current">{{ week.title }}</span>
+  </div>
+  <h1>{{ week.title }}</h1>
+  <p>{{ plan.name }} — {% trans "Select a day to view meals, workouts and water targets" %}</p>
+</div>
+
+<section class="section">
+  <div class="items-grid">
+    {% for day in items %}
+    <a href="{% url 'site_day_detail' day.pk %}" class="item-card reveal">
+      <div class="item-number">{{ day.day_number }}</div>
+      <h4>{{ day.title }}</h4>
+      <div class="item-sub">{% trans "Meals" %} · {% trans "Workout" %} · {% trans "Water" %}</div>
+    </a>
+    {% empty %}
+    <div class="empty"><div class="empty-icon">📅</div><p>{% trans "No days yet." %}</p></div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

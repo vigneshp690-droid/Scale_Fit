@@ -1,0 +1,178 @@
+{% extends "fitness/base_admin.html" %}
+{% load static %}
+
+{% block title %}ScaleFit - Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <section>
+        <div class="hero-section">
+            <h2>Track Your Daily Activities</h2>
+            <p>Manage ScaleFit programs, plans, members, and referral activity from one focused admin dashboard.</p>
+        </div>
+
+        <div class="metric-row">
+            <a class="metric-card cyan" href="{% url 'program_list' goal_type='weight_loss' %}">
+                <span class="metric-icon"><i class="fa-solid fa-arrow-trend-down"></i></span>
+                <h3>Weight Loss</h3>
+                <p>{{ loss_programs|default:"0" }} programs</p>
+            </a>
+            <a class="metric-card orange" href="{% url 'program_list' goal_type='weight_gain' %}">
+                <span class="metric-icon"><i class="fa-solid fa-arrow-trend-up"></i></span>
+                <h3>Weight Gain</h3>
+                <p>{{ gain_programs|default:"0" }} programs</p>
+            </a>
+            <div class="metric-card purple">
+                <span class="metric-icon"><i class="fa-solid fa-calendar-days"></i></span>
+                <h3>Total Plans</h3>
+                <p>{{ total_plans|default:"0" }} plans</p>
+            </div>
+        </div>
+
+        <div class="progress-panel">
+            <div class="panel-title">
+                <h3>Goal Progress</h3>
+                <button type="button">Weekly <i class="fa-solid fa-chevron-down"></i></button>
+            </div>
+            <div class="chart" aria-hidden="true">
+                <div class="bar-group">
+                    <span class="bar cyan" style="height: 46px;"></span>
+                    <span class="bar orange" style="height: 78px;"></span>
+                    <span class="bar purple" style="height: 102px;"></span>
+                </div>
+                <div class="bar-group">
+                    <span class="bar cyan" style="height: 76px;"></span>
+                    <span class="bar orange" style="height: 56px;"></span>
+                    <span class="bar purple" style="height: 84px;"></span>
+                </div>
+                <div class="bar-group">
+                    <span class="bar cyan" style="height: 104px;"></span>
+                    <span class="bar orange" style="height: 84px;"></span>
+                    <span class="bar purple" style="height: 90px;"></span>
+                </div>
+                <div class="bar-group">
+                    <span class="bar cyan" style="height: 86px;"></span>
+                    <span class="bar orange" style="height: 102px;"></span>
+                    <span class="bar purple" style="height: 72px;"></span>
+                </div>
+                <div class="bar-group">
+                    <span class="bar cyan" style="height: 46px;"></span>
+                    <span class="bar orange" style="height: 78px;"></span>
+                    <span class="bar purple" style="height: 92px;"></span>
+                </div>
+                <div class="bar-group">
+                    <span class="bar cyan" style="height: 48px;"></span>
+                    <span class="bar orange" style="height: 80px;"></span>
+                    <span class="bar purple" style="height: 92px;"></span>
+                </div>
+                <div class="bar-group">
+                    <span class="bar cyan" style="height: 48px;"></span>
+                    <span class="bar orange" style="height: 78px;"></span>
+                    <span class="bar purple" style="height: 92px;"></span>
+                </div>
+            </div>
+            <div class="chart-days">
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+                <span>Sun</span>
+            </div>
+            <div class="chart-legend">
+                <span><i style="background: var(--sf-cyan);"></i>Programs</span>
+                <span><i style="background: var(--sf-orange);"></i>Plans</span>
+                <span><i style="background: var(--sf-purple);"></i>Days</span>
+            </div>
+        </div>
+
+        <div class="table-panel">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Section</th>
+                        <th>Type</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="food-dot"><i class="fa-solid fa-arrow-trend-down"></i></span>Weight Loss</td>
+                        <td>Program</td>
+                        <td>{{ loss_programs|default:"0" }}</td>
+                        <td>Active</td>
+                        <td><a href="{% url 'program_list' goal_type='weight_loss' %}">Open</a></td>
+                    </tr>
+                    <tr>
+                        <td><span class="food-dot"><i class="fa-solid fa-arrow-trend-up"></i></span>Weight Gain</td>
+                        <td>Program</td>
+                        <td>{{ gain_programs|default:"0" }}</td>
+                        <td>Active</td>
+                        <td><a href="{% url 'program_list' goal_type='weight_gain' %}">Open</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <aside>
+        <div class="side-header">
+            <h3>My Schedule</h3>
+            <a href="{% url 'program_list' goal_type='weight_loss' %}">View All <i class="fa-solid fa-angle-right"></i></a>
+        </div>
+        <div class="side-panel">
+            <a class="side-card" href="{% url 'program_list' goal_type='weight_loss' %}">
+                <div>
+                    <h4>Weight Loss</h4>
+                    <p>Manage plans</p>
+                </div>
+                <span class="pill">{{ loss_programs|default:"0" }}</span>
+            </a>
+            <a class="side-card" href="{% url 'program_list' goal_type='weight_gain' %}">
+                <div>
+                    <h4>Weight Gain</h4>
+                    <p>Manage plans</p>
+                </div>
+                <span class="pill">{{ gain_programs|default:"0" }}</span>
+            </a>
+            <div class="side-card">
+                <div>
+                    <h4>Total Days</h4>
+                    <p>Across plans</p>
+                </div>
+                <span class="pill">{{ total_days|default:"0" }}</span>
+            </div>
+        </div>
+
+        <div class="side-header">
+            <h3>Goals</h3>
+            <a href="{% url 'members' %}">View All <i class="fa-solid fa-angle-right"></i></a>
+        </div>
+        <div class="side-panel">
+            <a class="side-card" href="{% url 'members' %}">
+                <div>
+                    <h4>Members</h4>
+                    <p>User tools</p>
+                </div>
+                <span class="pill">Open</span>
+            </a>
+            <a class="side-card" href="{% url 'referral' %}">
+                <div>
+                    <h4>Referrals</h4>
+                    <p>Invite tracking</p>
+                </div>
+                <span class="pill">Open</span>
+            </a>
+        </div>
+
+        <div class="promo-panel">
+            <h3>ScaleFit Admin Workspace</h3>
+            <p>Quickly manage programs, plans, members, and referral activity.</p>
+            <a href="{% url 'program_list' goal_type='weight_loss' %}">Manage</a>
+        </div>
+    </aside>
+</div>
+{% endblock %}
