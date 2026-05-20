@@ -16,20 +16,20 @@
 <section class="section">
   <div class="plans-grid">
     {% for plan in plans %}
-    <a href="{% url 'site_plan_detail' plan.pk %}" class="plan-card reveal">
+    <a href="{% url 'site_plan_detail' plan.pk %}" class="plan-card reveal" aria-label="{% trans 'View plan details for' %} {{ plan.translated_name|default:plan.name }}">
       <div class="plan-badge {% if plan.plan_type == 'day' %}badge-day{% elif plan.plan_type == 'weekly' %}badge-weekly{% else %}badge-monthly{% endif %}">
         {% if plan.plan_type == 'day' %}<i class="fas fa-calendar-day"></i> {% trans "Day Plan" %}
         {% elif plan.plan_type == 'weekly' %}<i class="fas fa-calendar-week"></i> {% trans "Weekly Plan" %}
         {% else %}<i class="fas fa-calendar"></i> {% trans "Monthly Plan" %}{% endif %}
       </div>
-      <h3>{{ plan.name }}</h3>
-      {% if plan.description %}<p>{{ plan.description }}</p>{% endif %}
+      <h3>{{ plan.translated_name|default:plan.name }}</h3>
+      {% if plan.translated_description|default:plan.description %}<p>{{ plan.translated_description|default:plan.description }}</p>{% endif %}
       <div class="plan-meta">
         <span class="plan-count">
           <strong>{{ plan.count }}</strong>
           {% if plan.plan_type == 'day' %}{% trans "Days" %}{% elif plan.plan_type == 'weekly' %}{% trans "Weeks" %}{% else %}{% trans "Months" %}{% endif %}
         </span>
-        <span style="color:var(--primary); font-size:13px; font-weight:700;">{% trans "View Plan" %} →</span>
+        <span class="plan-card-action">{% trans "View Plan" %} →</span>
       </div>
     </a>
     {% empty %}

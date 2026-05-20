@@ -1,4 +1,5 @@
 from django.db import OperationalError, ProgrammingError
+from django.conf import settings as django_settings
 from django.utils import timezone, translation
 
 from .models import SiteSettings
@@ -18,7 +19,10 @@ class SiteSettingsMiddleware:
         try:
             settings = SiteSettings.get_solo()
             timezone.activate(settings.timezone)
-            selected_language = request.session.get(LANGUAGE_SESSION_KEY) or translation.get_language_from_request(request)
+            session = getattr(request, 'session', {})
+            session_language = session.get(LANGUAGE_SESSION_KEY) if hasattr(session, 'get') else None
+            cookie_language = request.COOKIES.get(django_settings.LANGUAGE_COOKIE_NAME)
+            selected_language = session_language or cookie_language
             language_code = selected_language or (settings.default_language if is_user_site else 'en')
             translation.activate(language_code)
             request.LANGUAGE_CODE = language_code

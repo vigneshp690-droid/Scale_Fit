@@ -1,163 +1,844 @@
-{% extends "fitness/base_admin.html" %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ action|default:"Create" }} Program - ScaleFit</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard_premium.css' %}">
+    <link rel="stylesheet" href="{% static 'css/premium_components.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .admin-app {
+            --fitness-orange: #ff6b16;
+            --fitness-orange-dark: #e85b0f;
+            --fitness-orange-soft: #fff0e7;
+            --fitness-cyan: #16bfd4;
+            --fitness-purple: #8757e8;
+            --fitness-ink: #263247;
+            --fitness-muted: #7b8798;
+            --fitness-border: #e8edf3;
+            --fitness-shell: #f2f6fa;
+        }
 
-{% block title %}{{ action|default:"Create" }} Program - ScaleFit{% endblock %}
+        body {
+            background:
+                radial-gradient(circle at 8% 10%, rgba(255, 107, 22, 0.12), transparent 24%),
+                radial-gradient(circle at 88% 82%, rgba(135, 87, 232, 0.09), transparent 28%),
+                var(--fitness-shell);
+            color: var(--fitness-ink);
+        }
 
-{% block content %}
-<div class="dashboard-grid">
-    <section>
-        <div class="view-toolbar">
-            <div class="view-heading">
-                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
-                    <a href="{% url 'program_list' goal_type|default:'weight_loss' %}" style="color: var(--sf-orange); font-size: 0.8rem; font-weight: 800; text-decoration: none;">
-                        <i class="fa-solid fa-arrow-left"></i> Programs
-                    </a>
-                </div>
-                <h2>{{ action|default:"Create" }} Program</h2>
-                <p>Manage the program details and configuration.</p>
-            </div>
+        .sidebar {
+            background: #ffffff;
+            border-right: 1px solid var(--fitness-border);
+            box-shadow: 14px 0 34px rgba(38, 50, 71, 0.06);
+            color: var(--fitness-muted);
+        }
+
+        .sidebar-header {
+            border-bottom: 1px solid var(--fitness-border);
+            padding: 30px 24px;
+        }
+
+        .sidebar-header h2 {
+            color: var(--fitness-orange);
+            font-size: 1.2rem;
+        }
+
+        .sidebar-header h2 i {
+            filter: none;
+        }
+
+        .mobile-close {
+            color: var(--fitness-muted);
+        }
+
+        .sidebar-menu {
+            gap: 12px;
+            padding: 24px 18px;
+        }
+
+        .sidebar-menu a {
+            border-radius: 8px;
+            color: var(--fitness-muted);
+            font-size: 0.95rem;
+            gap: 14px;
+            padding: 13px 16px;
+        }
+
+        .sidebar-menu a i {
+            color: #94a0af;
+            font-size: 1.05rem;
+        }
+
+        .sidebar-menu li.active a {
+            background: var(--fitness-orange);
+            box-shadow: 0 12px 26px rgba(255, 107, 22, 0.24);
+            color: #ffffff;
+        }
+
+        .sidebar-menu li.active a i,
+        .sidebar-menu li:not(.active):not(.logout-item) a:hover i {
+            color: inherit;
+        }
+
+        .sidebar-menu li:not(.active):not(.logout-item) a:hover {
+            background: var(--fitness-orange-soft);
+            color: var(--fitness-orange);
+            transform: translateX(4px);
+        }
+
+        .logout-item {
+            border-top: 1px solid var(--fitness-border);
+        }
+
+        .main-wrapper {
+            background: transparent;
+        }
+
+        .topbar {
+            background: rgba(255, 255, 255, 0.92);
+            border-bottom: 1px solid var(--fitness-border);
+            box-shadow: 0 10px 28px rgba(38, 50, 71, 0.05);
+            padding: 18px 32px;
+        }
+
+        .topbar-left h1 {
+            color: var(--fitness-ink);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .topbar-kicker {
+            color: #a3adba;
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            margin-bottom: 2px;
+        }
+
+        .topbar-search {
+            align-items: center;
+            background: #f6f8fb;
+            border: 1px solid var(--fitness-border);
+            border-radius: 8px;
+            color: #96a1b2;
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+            max-width: 420px;
+            padding: 11px 14px;
+            width: min(38vw, 420px);
+        }
+
+        .topbar-search span {
+            color: #9aa6b7;
+            font-size: 0.9rem;
+        }
+
+        .topbar-right {
+            align-items: center;
+            display: flex;
+            gap: 18px;
+            margin-left: 18px;
+        }
+
+        .topbar-icon {
+            align-items: center;
+            background: transparent;
+            border: 0;
+            color: #7a8798;
+            display: inline-flex;
+            font-size: 1rem;
+            height: 34px;
+            justify-content: center;
+            width: 34px;
+        }
+
+        .user-profile {
+            align-items: center;
+            display: flex;
+            gap: 10px;
+        }
+
+        .user-greeting {
+            color: var(--fitness-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .avatar {
+            align-items: center;
+            background: linear-gradient(135deg, #ffb27d, var(--fitness-orange));
+            border-radius: 50%;
+            box-shadow: 0 8px 18px rgba(255, 107, 22, 0.22);
+            color: #ffffff;
+            display: flex;
+            font-weight: 800;
+            height: 38px;
+            justify-content: center;
+            width: 38px;
+        }
+
+        .content-area {
+            max-width: 1240px;
+            padding: 28px;
+        }
+
+        .program-shell {
+            display: grid;
+            gap: 24px;
+            grid-template-columns: minmax(0, 1fr) 320px;
+        }
+
+        .form-hero {
+            align-items: center;
+            background:
+                linear-gradient(100deg, rgba(255, 107, 22, 0.96) 0%, rgba(255, 107, 22, 0.82) 48%, rgba(255, 255, 255, 0.42) 100%),
+                url("https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1100&q=80");
+            background-position: center;
+            background-size: cover;
+            border-radius: 8px;
+            box-shadow: 0 18px 40px rgba(255, 107, 22, 0.18);
+            color: #ffffff;
+            display: flex;
+            min-height: 174px;
+            overflow: hidden;
+            padding: 28px;
+        }
+
+        .form-hero h2 {
+            font-size: clamp(1.55rem, 2vw, 2.15rem);
+            line-height: 1.1;
+            margin: 0 0 10px;
+        }
+
+        .form-hero p {
+            color: rgba(255, 255, 255, 0.86);
+            line-height: 1.6;
+            margin: 0;
+            max-width: 560px;
+        }
+
+        .form-card,
+        .side-card,
+        .summary-card {
+            background: #ffffff;
+            border: 1px solid var(--fitness-border);
+            border-radius: 8px;
+            box-shadow: 0 16px 34px rgba(38, 50, 71, 0.07);
+        }
+
+        .form-card {
+            margin-top: 24px;
+            padding: 28px;
+        }
+
+        .form-section-title {
+            align-items: center;
+            display: flex;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .form-section-title i {
+            align-items: center;
+            background: var(--fitness-orange-soft);
+            border-radius: 8px;
+            color: var(--fitness-orange);
+            display: inline-flex;
+            height: 38px;
+            justify-content: center;
+            width: 38px;
+        }
+
+        .form-section-title h3 {
+            font-size: 1.05rem;
+            margin: 0;
+        }
+
+        .form-section-title p {
+            color: var(--fitness-muted);
+            font-size: 0.86rem;
+            margin: 3px 0 0;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 22px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .form-group {
+            margin: 0;
+        }
+
+        .form-group.full-span {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            color: #4c5a6e;
+            font-size: 0.86rem;
+            font-weight: 700;
+        }
+
+        .form-input,
+        input[type="text"],
+        input[type="number"],
+        input[type="time"],
+        textarea,
+        select {
+            background: #f8fafc;
+            border: 1px solid var(--fitness-border);
+            border-radius: 8px;
+            color: var(--fitness-ink);
+            min-height: 48px;
+        }
+
+        textarea {
+            min-height: 132px;
+        }
+
+        .form-input:focus,
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="time"]:focus,
+        textarea:focus,
+        select:focus {
+            border-color: var(--fitness-orange);
+            box-shadow: 0 0 0 4px rgba(255, 107, 22, 0.12);
+        }
+
+        .errorlist {
+            color: #dc2626;
+            font-size: 0.83rem;
+            list-style: none;
+            margin: 0 0 8px;
+            padding: 0;
+        }
+
+        .status-toggle {
+            align-items: center;
+            background: #f8fafc;
+            border: 1px solid var(--fitness-border);
+            border-radius: 8px;
+            display: flex;
+            gap: 12px;
+            min-height: 48px;
+            padding: 0 14px;
+        }
+
+        .status-toggle input {
+            accent-color: var(--fitness-orange);
+            height: 18px;
+            width: 18px;
+        }
+
+        .side-card {
+            padding: 22px;
+        }
+
+        .side-card + .side-card,
+        .summary-card {
+            margin-top: 18px;
+        }
+
+        .image-upload-card {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: none;
+            padding: 0;
+        }
+
+        .image-upload-card:hover {
+            box-shadow: none;
+            transform: none;
+        }
+
+        .upload-area {
+            background: #f8fafc;
+            border-color: #dfe6ef;
+            border-radius: 8px;
+            padding: 28px 18px;
+        }
+
+        .upload-area i {
+            color: var(--fitness-orange);
+            font-size: 2.1rem;
+        }
+
+        .upload-area.hover {
+            background: var(--fitness-orange-soft);
+            border-color: var(--fitness-orange);
+        }
+
+        #image-preview img {
+            border-radius: 8px;
+            max-height: 220px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        #image-preview .preview-text {
+            display: block;
+        }
+
+        .summary-card {
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .mini-stat {
+            align-items: center;
+            display: flex;
+            gap: 14px;
+            padding: 18px;
+        }
+
+        .mini-stat + .mini-stat {
+            border-top: 1px solid var(--fitness-border);
+        }
+
+        .mini-stat-icon {
+            align-items: center;
+            border-radius: 8px;
+            color: #ffffff;
+            display: inline-flex;
+            height: 42px;
+            justify-content: center;
+            width: 42px;
+        }
+
+        .mini-stat-icon.cyan {
+            background: var(--fitness-cyan);
+        }
+
+        .mini-stat-icon.orange {
+            background: var(--fitness-orange);
+        }
+
+        .mini-stat strong {
+            display: block;
+            font-size: 0.94rem;
+        }
+
+        .mini-stat span {
+            color: var(--fitness-muted);
+            font-size: 0.82rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 14px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .btn-primary {
+            border-radius: 8px;
+            box-shadow: 0 10px 22px rgba(255, 107, 22, 0.22);
+            min-height: 46px;
+        }
+
+        .btn-secondary {
+            background: #eef2f7;
+            box-shadow: none;
+            color: #697589;
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 18px rgba(105, 117, 137, 0.14);
+        }
+
+        @media (max-width: 1180px) {
+            .program-shell {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar-search {
+                display: none;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .content-area {
+                padding: 18px;
+            }
+
+            .topbar {
+                padding: 14px 18px;
+            }
+
+            .user-greeting,
+            .topbar-icon {
+                display: none;
+            }
+
+            .form-hero,
+            .form-card,
+            .side-card {
+                padding: 20px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+
+            .form-actions .btn-primary {
+                width: 100%;
+            }
+        }
+        .avatar,
+        .avatar-button,
+        .profile-menu-avatar {
+            overflow: hidden;
+        }
+
+        .avatar img,
+        .avatar-button img,
+        .profile-menu-avatar img {
+            display: block;
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'css/admin_theme.css' %}">
+</head>
+<body class="admin-app">
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fa-solid fa-dumbbell"></i> ScaleFit</h2>
+            <button class="mobile-close" onclick="toggleSidebar()" aria-label="Close Sidebar"><i class="fa-solid fa-xmark"></i></button>
         </div>
-
-        <form method="POST" enctype="multipart/form-data" class="progress-panel" style="margin-top: 0;">
-            {% csrf_token %}
-            {% if form.non_field_errors %}
-                <div class="alert error">
-                    {{ form.non_field_errors }}
-                </div>
-            {% endif %}
-
-            <div style="display: grid; gap: 20px; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                {% if form.name %}
-                    <div style="grid-column: 1 / -1;">
-                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Program Title</label>
-                        {{ form.name.errors }}
-                        {{ form.name }}
-                    </div>
-                {% endif %}
-
-                {% if form.title %}
-                    <div style="grid-column: 1 / -1;">
-                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Program Title</label>
-                        {{ form.title.errors }}
-                        {{ form.title }}
-                    </div>
-                {% endif %}
-
-                {% if form.goal_type %}
-                    <div>
-                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Goal Type</label>
-                        {{ form.goal_type.errors }}
-                        {{ form.goal_type }}
-                    </div>
-                {% endif %}
-
-                {% if form.difficulty %}
-                    <div>
-                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Difficulty</label>
-                        {{ form.difficulty.errors }}
-                        {{ form.difficulty }}
-                    </div>
-                {% endif %}
-
-                {% if form.duration_weeks %}
-                    <div>
-                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Duration (Weeks)</label>
-                        {{ form.duration_weeks.errors }}
-                        {{ form.duration_weeks }}
-                    </div>
-                {% endif %}
-
-                {% if form.display_order %}
-                    <div>
-                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Display Order</label>
-                        {{ form.display_order.errors }}
-                        {{ form.display_order }}
-                    </div>
-                {% endif %}
-
-                {% if form.description %}
-                    <div style="grid-column: 1 / -1;">
-                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Description</label>
-                        {{ form.description.errors }}
-                        {{ form.description }}
-                    </div>
-                {% endif %}
-
-                {% if form.is_active %}
-                    <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--sf-panel); border-radius: 8px;">
-                        {{ form.is_active }}
-                        <label for="{{ form.is_active.id_for_label }}" style="font-size: 0.85rem; font-weight: 800; color: var(--sf-ink);">Active</label>
-                    </div>
-                {% endif %}
-            </div>
-
-            <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--sf-line);">
-                <a href="{% url 'program_list' goal_type|default:'weight_loss' %}" style="padding: 12px 24px; border-radius: 6px; font-size: 0.85rem; font-weight: 800; text-decoration: none; background: var(--sf-panel); color: var(--sf-muted);">Cancel</a>
-                <button type="submit" class="btn" style="background: var(--sf-orange); color: white; padding: 12px 24px; border: 0; border-radius: 6px; font-size: 0.85rem; font-weight: 800; cursor: pointer;">
-                    {{ action|default:"Save" }} Program
-                </button>
-            </div>
-        </form>
-    </section>
-
-    <aside>
-        {% if form.image %}
-            <div class="side-header">
-                <h3>Program Media</h3>
-            </div>
-            <div class="side-panel" style="padding: 18px;">
-                <div id="upload-area" style="border: 2px dashed var(--sf-line); border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s;">
-                    {{ form.image }}
-                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; color: var(--sf-orange); margin-bottom: 12px; display: block;"></i>
-                    <p style="font-size: 0.75rem; color: var(--sf-muted); font-weight: 800; margin: 0;">Click to upload image</p>
-                </div>
-                <div id="image-preview" style="margin-top: 15px;">
-                    {% if form.instance.image %}
-                        <img src="{{ form.instance.image.url }}" alt="Preview" style="width: 100%; border-radius: 6px; border: 1px solid var(--sf-line);">
-                    {% endif %}
-                </div>
-            </div>
-        {% endif %}
-
-        <div class="promo-panel">
-            <h3>ScaleFit Admin</h3>
-            <p>Maintain consistency across all admin tools while managing your programs.</p>
-        </div>
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'dashboard' %}" title="Overview dashboard"><i class="fa-solid fa-table-cells-large"></i> Overview</a></li>
+            <li class="{% if goal_type == 'weight_loss' %}active{% endif %}"><a href="{% url 'program_list' goal_type='weight_loss' %}"><i class="fa-solid fa-arrow-trend-down"></i> Weight Loss</a></li>
+            <li class="{% if goal_type == 'weight_gain' %}active{% endif %}"><a href="{% url 'program_list' goal_type='weight_gain' %}"><i class="fa-solid fa-arrow-trend-up"></i> Weight Gain</a></li>
+            <li><a href="{% url 'members' %}"><i class="fa-solid fa-users"></i> Members</a></li>
+            <li><a href="{% url 'referral' %}"><i class="fa-solid fa-share-nodes"></i> Referrals</a></li>
+            <li><a href="{% url 'settings' %}"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            <li class="logout-item"><a href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
+        </ul>
     </aside>
-</div>
-{% endblock %}
 
-{% block extra_js %}
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar"><i class="fa-solid fa-bars"></i></button>
+                <div>
+                    <span class="topbar-kicker">{{ formatted_goal_type|default:"Fitness Admin" }}</span>
+                    <h1>{{ action|default:"Create" }} Program</h1>
+                </div>
+            </div>
+            <div class="topbar-search" aria-hidden="true">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>Search</span>
+            </div>
+            <div class="topbar-right">
+                <button class="topbar-icon" type="button" aria-label="Notifications"><i class="fa-solid fa-bell"></i></button>
+                <a class="topbar-icon" href="{% url 'settings' %}" aria-label="Settings"><i class="fa-solid fa-gear"></i></a>
+                <div class="user-profile">
+                    <span class="user-greeting">Hi, {{ user.first_name|default:user.username }}</span>
+                    <div class="avatar">{% if current_user_profile.profile_image %}<img src="{{ current_user_profile.profile_image.url }}" alt="{{ user.username }} profile image">{% else %}{{ user.username|make_list|first|upper }}{% endif %}</div>
+                </div>
+            </div>
+        </header>
+
+        <main class="content-area">
+            <div class="program-shell">
+                <section>
+                    <div class="form-hero">
+                        <div>
+                            <h2>{{ action|default:"Create" }} a Fitness Program</h2>
+                            <p>Manage the program details, schedule, media, and status from one clean workspace.</p>
+                        </div>
+                    </div>
+
+                    <form method="POST" enctype="multipart/form-data" class="form-card">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                            {{ form.non_field_errors }}
+                        {% endif %}
+
+                        <div class="form-section-title">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <div>
+                                <h3>Program Details</h3>
+                                <p>Update the fields below without changing the existing workflow.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            {% if form.name %}
+                                <div class="form-group full-span">
+                                    <label for="{{ form.name.id_for_label }}" class="form-label">Program Title</label>
+                                    {{ form.name.errors }}
+                                    {{ form.name }}
+                                </div>
+                            {% endif %}
+
+                            {% if form.name_ta %}
+                                <div class="form-group">
+                                    <label for="{{ form.name_ta.id_for_label }}" class="form-label">Program Title (Tamil)</label>
+                                    {{ form.name_ta.errors }}
+                                    {{ form.name_ta }}
+                                </div>
+                                <div class="form-group">
+                                    <label for="{{ form.name_hi.id_for_label }}" class="form-label">Program Title (Hindi)</label>
+                                    {{ form.name_hi.errors }}
+                                    {{ form.name_hi }}
+                                </div>
+                            {% endif %}
+
+                            {% if form.title %}
+                                <div class="form-group full-span">
+                                    <label for="{{ form.title.id_for_label }}" class="form-label">Program Title</label>
+                                    {{ form.title.errors }}
+                                    {{ form.title }}
+                                </div>
+                            {% endif %}
+
+                            {% if form.goal_type %}
+                                <div class="form-group">
+                                    <label for="{{ form.goal_type.id_for_label }}" class="form-label">Goal Type</label>
+                                    {{ form.goal_type.errors }}
+                                    {{ form.goal_type }}
+                                </div>
+                            {% endif %}
+
+                            {% if form.day %}
+                                <div class="form-group">
+                                    <label for="{{ form.day.id_for_label }}" class="form-label">Assigned Day</label>
+                                    {{ form.day.errors }}
+                                    {{ form.day }}
+                                </div>
+                            {% endif %}
+
+                            {% if form.meal_category %}
+                                <div class="form-group">
+                                    <label for="{{ form.meal_category.id_for_label }}" class="form-label">Meal Category</label>
+                                    {{ form.meal_category.errors }}
+                                    {{ form.meal_category }}
+                                </div>
+                            {% endif %}
+
+                            {% if form.difficulty %}
+                                <div class="form-group">
+                                    <label for="{{ form.difficulty.id_for_label }}" class="form-label">Difficulty Level</label>
+                                    {{ form.difficulty.errors }}
+                                    {{ form.difficulty }}
+                                </div>
+                            {% endif %}
+
+                            {% if form.start_time %}
+                                <div class="form-group">
+                                    <label for="{{ form.start_time.id_for_label }}" class="form-label">Start Time</label>
+                                    {{ form.start_time.errors }}
+                                    {{ form.start_time }}
+                                </div>
+                            {% endif %}
+
+                            {% if form.end_time %}
+                                <div class="form-group">
+                                    <label for="{{ form.end_time.id_for_label }}" class="form-label">End Time</label>
+                                    {{ form.end_time.errors }}
+                                    {{ form.end_time }}
+                                </div>
+                            {% endif %}
+
+                            {% if form.duration_weeks %}
+                                <div class="form-group">
+                                    <label for="{{ form.duration_weeks.id_for_label }}" class="form-label">Duration (Weeks)</label>
+                                    {{ form.duration_weeks.errors }}
+                                    {{ form.duration_weeks }}
+                                </div>
+                            {% endif %}
+
+                            {% if form.display_order %}
+                                <div class="form-group">
+                                    <label for="{{ form.display_order.id_for_label }}" class="form-label">Display Order</label>
+                                    {{ form.display_order.errors }}
+                                    {{ form.display_order }}
+                                </div>
+                            {% endif %}
+
+                            {% if form.description %}
+                                <div class="form-group full-span">
+                                    <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                                    {{ form.description.errors }}
+                                    {{ form.description }}
+                                </div>
+                            {% endif %}
+
+                            {% if form.description_ta %}
+                                <div class="form-group">
+                                    <label for="{{ form.description_ta.id_for_label }}" class="form-label">Description (Tamil)</label>
+                                    {{ form.description_ta.errors }}
+                                    {{ form.description_ta }}
+                                </div>
+                                <div class="form-group">
+                                    <label for="{{ form.description_hi.id_for_label }}" class="form-label">Description (Hindi)</label>
+                                    {{ form.description_hi.errors }}
+                                    {{ form.description_hi }}
+                                </div>
+                            {% endif %}
+
+                            {% if form.is_active %}
+                                <div class="form-group full-span">
+                                    <label for="{{ form.is_active.id_for_label }}" class="form-label">Status</label>
+                                    {{ form.is_active.errors }}
+                                    <div class="status-toggle">
+                                        {{ form.is_active }}
+                                        <label for="{{ form.is_active.id_for_label }}">Active</label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-actions">
+                            <a href="{% url 'program_list' goal_type=goal_type %}" class="btn-primary btn-secondary">Cancel</a>
+                            <button type="submit" class="btn-primary">
+                                <i class="fa-solid fa-check"></i>
+                                {{ action|default:"Create" }} Program
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <aside>
+                    {% if form.image %}
+                        <div class="side-card">
+                            <div class="form-section-title">
+                                <i class="fa-solid fa-image"></i>
+                                <div>
+                                    <h3>Program Image</h3>
+                                    <p>Upload a clear visual for this program.</p>
+                                </div>
+                            </div>
+                            <div class="image-upload-card">
+                                {{ form.image.errors }}
+                                <div class="upload-area" id="upload-area">
+                                    {{ form.image }}
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    <p><strong>Click to upload</strong> or drag and drop</p>
+                                </div>
+                                <div id="image-preview">
+                                    <span class="preview-text">Image Preview</span>
+                                    {% if form.instance.image %}
+                                        <img src="{{ form.instance.image.url }}" alt="Image Preview">
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="summary-card">
+                        <div class="mini-stat">
+                            <span class="mini-stat-icon cyan"><i class="fa-solid fa-dumbbell"></i></span>
+                            <div>
+                                <strong>{{ formatted_goal_type|default:"Fitness" }}</strong>
+                                <span>Program category</span>
+                            </div>
+                        </div>
+                        <div class="mini-stat">
+                            <span class="mini-stat-icon orange"><i class="fa-solid fa-clock"></i></span>
+                            <div>
+                                <strong>{{ action|default:"Create" }} mode</strong>
+                                <span>Existing form behavior preserved</span>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </main>
+    </div>
+</div>
+
 <script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
+    }
+
     const uploadArea = document.getElementById('upload-area');
-    const imageInput = document.querySelector('input[type="file"]');
+    const imageInput = document.getElementById('id_image');
     const imagePreview = document.getElementById('image-preview');
 
     if (imageInput) {
         imageInput.style.display = 'none';
-        
-        if (uploadArea) {
-            uploadArea.addEventListener('click', () => imageInput.click());
-            
-            imageInput.addEventListener('change', (event) => {
-                const file = event.target.files[0];
-                if (file && file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        let img = imagePreview.querySelector('img');
-                        if (!img) {
-                            img = document.createElement('img');
-                            img.style.width = '100%';
-                            img.style.borderRadius = '6px';
-                            img.style.border = '1px solid var(--sf-line)';
-                            imagePreview.appendChild(img);
-                        }
-                        img.src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
+    }
+
+    if (uploadArea && imageInput && imagePreview) {
+        const previewText = imagePreview.querySelector('.preview-text');
+
+        uploadArea.addEventListener('click', () => imageInput.click());
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+            }, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => uploadArea.classList.add('hover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => uploadArea.classList.remove('hover'), false);
+        });
+
+        uploadArea.addEventListener('drop', (event) => {
+            imageInput.files = event.dataTransfer.files;
+            handleFiles(imageInput.files);
+        });
+
+        imageInput.addEventListener('change', (event) => {
+            handleFiles(event.target.files);
+        });
+
+        function handleFiles(files) {
+            if (!files.length) {
+                return;
+            }
+
+            const file = files[0];
+            if (!file.type.startsWith('image/')) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                let image = imagePreview.querySelector('img');
+                if (!image) {
+                    image = document.createElement('img');
+                    imagePreview.appendChild(image);
                 }
-            });
+                image.src = event.target.result;
+                if (previewText) {
+                    previewText.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
         }
     }
+
+    document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.querySelector('.mobile-toggle');
+        if (window.innerWidth <= 1024 && sidebar && toggleBtn && !sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+    });
 </script>
-{% endblock %}
+</body>
+</html>

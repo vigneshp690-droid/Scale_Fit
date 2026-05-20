@@ -1,6 +1,28 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import UserProfile, SiteSettings, Program, Plan, Day, ProgramItem, WorkoutItem, WaterTarget
+from .media_storage import optimized_cloudinary_url
+from .models import UserProfile, SiteSettings, Program, Plan, Day, ProgramItem, WorkoutItem, DayMedia, WaterTarget
+
+
+def media_link(field_file):
+    if not field_file:
+        return 'No media'
+    url = optimized_cloudinary_url(field_file)
+    return format_html('<a href="{}" target="_blank" rel="noopener">{}</a>', url, url)
+
+
+def image_preview(field_file, alt_text):
+    if not field_file:
+        return 'No image'
+    url = optimized_cloudinary_url(field_file, width=320)
+    return format_html(
+        '<a href="{}" target="_blank" rel="noopener">'
+        '<img src="{}" alt="{}" style="width:72px;height:54px;border-radius:8px;object-fit:cover;" />'
+        '</a>',
+        optimized_cloudinary_url(field_file),
+        url,
+        alt_text,
+    )
 
 
 @admin.register(SiteSettings)
@@ -42,10 +64,10 @@ class SiteSettingsAdmin(admin.ModelAdmin):
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'mobile_number', 'profile_image_preview', 'created_at', 'updated_at')
+    list_display = ('user', 'mobile_number', 'profile_image_preview', 'trainer_image_preview', 'created_at', 'updated_at')
     list_filter = ('created_at', 'updated_at')
     search_fields = ('user__username', 'user__email', 'mobile_number')
-    readonly_fields = ('profile_image_preview', 'created_at', 'updated_at')
+    readonly_fields = ('profile_image_preview', 'trainer_image_preview', 'created_at', 'updated_at')
     
     fieldsets = (
         ('User Information', {
@@ -54,8 +76,8 @@ class UserProfileAdmin(admin.ModelAdmin):
         ('Contact Details', {
             'fields': ('mobile_number',)
         }),
-        ('Profile Image', {
-            'fields': ('profile_image', 'profile_image_preview')
+        ('Media', {
+            'fields': ('profile_image', 'profile_image_preview', 'trainer_image', 'trainer_image_preview')
         }),
         ('Timestamp', {
             'fields': ('created_at', 'updated_at'),
@@ -77,6 +99,21 @@ class UserProfileAdmin(admin.ModelAdmin):
         )
 
     profile_image_preview.short_description = 'Profile image'
+
+    def trainer_image_preview(self, obj):
+        if not obj.trainer_image:
+            return 'No image'
+
+        return format_html(
+            '<a href="{}" target="_blank" rel="noopener">'
+            '<img src="{}" alt="{} trainer image" style="width:48px;height:48px;border-radius:8px;object-fit:cover;" />'
+            '</a>',
+            obj.trainer_image.url,
+            obj.trainer_image.url,
+            obj.user.username,
+        )
+
+    trainer_image_preview.short_description = 'Trainer image'
 
 
 @admin.register(Program)
@@ -138,18 +175,21 @@ class DayAdmin(admin.ModelAdmin):
 
 @admin.register(ProgramItem)
 class ProgramItemAdmin(admin.ModelAdmin):
-    list_display = ('title', 'day', 'meal_category', 'display_order', 'is_active', 'created_at')
+    list_display = ('title', 'day', 'meal_category', 'media_status', 'display_order', 'is_active', 'created_at')
     list_filter = ('day__plan__program__goal_type', 'meal_category', 'is_active')
     search_fields = ('title', 'description', 'day__plan__name')
     ordering = ('day__plan', 'day__day_number', 'display_order')
     list_editable = ('display_order', 'is_active')
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('image_preview', 'video_preview', 'created_at', 'updated_at')
     fieldsets = (
         (None, {
-            'fields': ('day', 'title', 'image', 'description')
+            'fields': ('day', 'title', 'image', 'image_preview', 'video', 'video_preview', 'description')
         }),
         ('Program Settings', {
             'fields': ('meal_category', 'display_order', 'is_active')
+        }),
+        ('Nutritional Information', {
+            'fields': ('calories', 'protein', 'carbs', 'fat', 'fiber', 'vitamins', 'minerals')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
@@ -157,18 +197,36 @@ class ProgramItemAdmin(admin.ModelAdmin):
         }),
     )
 
+    def image_preview(self, obj):
+        return image_preview(obj.image, f'{obj.title} meal image')
+
+    def video_preview(self, obj):
+        return media_link(obj.video)
+
+    def media_status(self, obj):
+        labels = []
+        if obj.image:
+            labels.append('Image/GIF')
+        if obj.video:
+            labels.append('Video')
+        return ', '.join(labels) if labels else 'No media'
+
+    image_preview.short_description = 'Current image/GIF'
+    video_preview.short_description = 'Current video'
+    media_status.short_description = 'Media'
+
 
 @admin.register(WorkoutItem)
 class WorkoutItemAdmin(admin.ModelAdmin):
-    list_display = ('title', 'day', 'duration', 'display_order', 'is_active', 'created_at')
+    list_display = ('title', 'day', 'duration', 'media_status', 'display_order', 'is_active', 'created_at')
     list_filter = ('day__plan__program__goal_type', 'is_active')
     search_fields = ('title', 'description', 'day__plan__name')
     ordering = ('day__plan', 'day__day_number', 'display_order')
     list_editable = ('display_order', 'is_active')
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('image_preview', 'video_preview', 'created_at', 'updated_at')
     fieldsets = (
         (None, {
-            'fields': ('day', 'title', 'image', 'description')
+            'fields': ('day', 'title', 'image', 'image_preview', 'video', 'video_preview', 'description')
         }),
         ('Workout Settings', {
             'fields': ('duration', 'display_order', 'is_active')
@@ -178,6 +236,51 @@ class WorkoutItemAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+
+    def image_preview(self, obj):
+        return image_preview(obj.image, f'{obj.title} workout image')
+
+    def video_preview(self, obj):
+        return media_link(obj.video)
+
+    def media_status(self, obj):
+        labels = []
+        if obj.image:
+            labels.append('Image/GIF')
+        if obj.video:
+            labels.append('Video')
+        return ', '.join(labels) if labels else 'No media'
+
+    image_preview.short_description = 'Current image/GIF'
+    video_preview.short_description = 'Current video'
+    media_status.short_description = 'Media'
+
+
+@admin.register(DayMedia)
+class DayMediaAdmin(admin.ModelAdmin):
+    list_display = ('title', 'day', 'media_type', 'media_link_preview', 'display_order', 'is_active', 'created_at')
+    list_filter = ('day__plan__program__goal_type', 'media_type', 'is_active')
+    search_fields = ('title', 'description', 'day__title', 'day__plan__name')
+    ordering = ('day__plan', 'day__day_number', 'display_order')
+    list_editable = ('display_order', 'is_active')
+    readonly_fields = ('media_link_preview', 'created_at', 'updated_at')
+    fieldsets = (
+        (None, {
+            'fields': ('day', 'media_type', 'title', 'media_file', 'media_link_preview', 'description')
+        }),
+        ('Display Settings', {
+            'fields': ('display_order', 'is_active')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def media_link_preview(self, obj):
+        return media_link(obj.media_file)
+
+    media_link_preview.short_description = 'Current media'
 
 
 @admin.register(WaterTarget)

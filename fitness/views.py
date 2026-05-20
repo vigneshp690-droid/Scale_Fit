@@ -3,13 +3,28 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.utils.translation import check_for_language
+from django.utils.translation import check_for_language, get_language
 from django.views.i18n import set_language as django_set_language
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.models import User
-from .models import UserProfile, ReferralCode, ReferralSignup, SiteTheme, SiteSettings, Program, Plan, Week, Month, Day, ProgramItem, WorkoutItem, WaterTarget
-from .forms import ProgramForm, PlanForm, WeekForm, MonthForm, DayForm, ProgramItemForm, WorkoutItemForm, WaterTargetForm, SiteSettingsForm, SiteAppearanceSettingsForm
+from .models import UserProfile, ReferralCode, ReferralSignup, SiteTheme, SiteSettings, Program, Plan, Week, Month, Day, ProgramItem, WorkoutItem, DayMedia, WaterTarget
+from .forms import (
+    ALLOWED_IMAGE_TYPES,
+    ProgramForm,
+    PlanForm,
+    WeekForm,
+    MonthForm,
+    DayForm,
+    ProgramItemForm,
+    WorkoutItemForm,
+    DayMediaForm,
+    WaterTargetForm,
+    SiteSettingsForm,
+    SiteAppearanceSettingsForm,
+    validate_media_upload,
+)
 from .theme_options import THEME_CHOICES, THEME_SLUGS, get_theme
 
 LANGUAGE_SESSION_KEY = 'django_language'
@@ -119,6 +134,7 @@ def signup_view(request):
 CONTENT_SECTIONS = [
     ('meals', 'Meals'),
     ('workout', 'Workout'),
+    ('media', 'Day Media'),
     ('water', 'Water'),
 ]
 DEFAULT_SECTION = 'meals'
@@ -126,6 +142,8 @@ ITEMS_PER_PAGE = 7
 
 
 def get_content_config(section):
+    if section == 'media':
+        return DayMedia, DayMediaForm, 'Day Media'
     if section == 'workout':
         return WorkoutItem, WorkoutItemForm, 'Workout'
     if section == 'water':
@@ -157,7 +175,12 @@ def program_list(request, goal_type):
     if goal_type not in [Program.WEIGHT_LOSS, Program.WEIGHT_GAIN]:
         return redirect('dashboard')
 
-    programs_queryset = Program.objects.filter(goal_type=goal_type, is_active=True).order_by('name', 'pk')
+    programs_queryset = (
+        Program.objects
+        .filter(goal_type=goal_type, is_active=True)
+        .exclude(name__iexact='Fitness Media Demo')
+        .order_by('name', 'pk')
+    )
     paginator, programs = paginate_queryset(request, programs_queryset)
 
     return render(request, 'fitness/program_list.html', {
@@ -368,6 +391,7 @@ def day_content(request, day_id):
     Show content for a specific day with tabs for Meals/Workout/Water
     """
     day = get_object_or_404(Day, pk=day_id, is_active=True)
+    current_language = get_language()
     section = request.GET.get('section', DEFAULT_SECTION).lower()
     if section not in dict(CONTENT_SECTIONS):
         section = DEFAULT_SECTION
@@ -406,6 +430,7 @@ def day_content(request, day_id):
         'formatted_goal_type': day.plan.program.goal_type.replace('_', ' ').title(),
         'category_choices': allowed_categories.items() if section == 'meals' else ProgramItem.CATEGORY_CHOICES,
         'view_type': 'content',
+        'current_language': current_language,
     })
 
 
@@ -427,7 +452,8 @@ def content_create(request, day_id):
         if form.is_valid():
             item = form.save(commit=False)
             item.day = day
-            item.goal_type = day.plan.program.goal_type
+            if hasattr(item, 'goal_type'):
+                item.goal_type = day.plan.program.goal_type
             item.save()
             messages.success(request, f'{section_label} item created successfully.')
             return redirect(reverse('day_content', kwargs={'day_id': day_id}) + f'?section={section}')
@@ -585,6 +611,11 @@ def settings_view(request):
             })
 
         if 'profile_image' in request.FILES:
+            try:
+                validate_media_upload(request.FILES['profile_image'], ALLOWED_IMAGE_TYPES, 'profile image')
+            except ValidationError as exc:
+                messages.error(request, ' '.join(exc.messages))
+                return redirect('settings')
             if profile.profile_image:
                 profile.profile_image.delete(save=False)
             profile.profile_image = request.FILES['profile_image']

@@ -1,191 +1,938 @@
-{% extends "fitness/base_admin.html" %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ goal_type|title|cut:"_" }} Programs - ScaleFit</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard_premium.css' %}">
+    <link rel="stylesheet" href="{% static 'css/premium_components.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .admin-app {
+            --primary: #ff6818;
+            --primary-soft: #fff1e8;
+            --text-color: #243047;
+            --text-muted: #8592a6;
+            --border-color: #e8edf4;
+            --page-bg: #f3f6fa;
+            --surface-soft: #f7f9fc;
+            --white: #ffffff;
+            --shadow: 0 12px 28px rgba(36, 48, 71, 0.08);
+            --theme-shadow: rgba(255, 104, 24, 0.22);
+            --gradient: linear-gradient(135deg, #8b5de9 0%, #9b7bf0 100%);
+        }
 
-{% block title %}{{ goal_type|title|cut:"_" }} Programs - ScaleFit{% endblock %}
+        .sr-only {
+            border: 0;
+            clip: rect(0, 0, 0, 0);
+            height: 1px;
+            margin: -1px;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            white-space: nowrap;
+            width: 1px;
+        }
 
-{% block content %}
-<div class="dashboard-grid">
-    <section>
-        <div class="view-toolbar">
-            <div class="view-heading">
-                <h2>{{ formatted_goal_type|default:goal_type|title|cut:"_" }} Programs</h2>
-                <p>Manage and configure {{ formatted_goal_type|default:goal_type|title|cut:"_" }} training programs.</p>
-            </div>
-            <div style="display: flex; gap: 12px; align-items: center;">
-                <div class="view-toggle">
-                    <button type="button" class="active" data-view-button="grid" aria-pressed="true" title="Grid View">
-                        <i class="fa-solid fa-grip"></i>
-                    </button>
-                    <button type="button" data-view-button="table" aria-pressed="false" title="Table View">
-                        <i class="fa-solid fa-list"></i>
-                    </button>
-                </div>
-                <a href="{% url 'program_create' goal_type %}" class="panel-title" style="padding: 10px 16px; display: inline-flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-plus"></i> Add Program
-                </a>
-            </div>
+        body {
+            background: var(--page-bg);
+            color: var(--text-color);
+            font-family: "Inter", sans-serif;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .app-container {
+            background: var(--white);
+            box-shadow: none;
+            display: grid;
+            grid-template-columns: 190px minmax(0, 1fr);
+            margin: 0;
+            max-width: none;
+            min-height: 100vh;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .sidebar {
+            background: var(--white);
+            border-right: 1px solid var(--border-color);
+            box-shadow: none;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            min-height: 100%;
+            position: static;
+            width: auto;
+            z-index: 1;
+        }
+
+        .sidebar-header {
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            min-height: 72px;
+            padding: 0 18px;
+        }
+
+        .sidebar-header h2 {
+            color: var(--primary);
+            font-size: 0.98rem;
+            font-weight: 800;
+            gap: 10px;
+            letter-spacing: 0;
+        }
+
+        .sidebar-header h2 i {
+            color: var(--primary);
+            filter: none;
+        }
+
+        .mobile-close {
+            color: var(--text-muted);
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 12px;
+            list-style: none;
+            padding: 22px 20px;
+        }
+
+        .sidebar-menu a {
+            border-radius: 6px;
+            color: var(--text-muted);
+            display: flex;
+            font-size: 0.83rem;
+            font-weight: 700;
+            gap: 14px;
+            padding: 12px 14px;
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+
+        .sidebar-menu a i {
+            color: var(--text-muted);
+            font-size: 1rem;
+            text-align: center;
+            width: 18px;
+        }
+
+        .sidebar-menu li.active a {
+            background: var(--primary);
+            box-shadow: 0 10px 22px var(--theme-shadow);
+            color: var(--white);
+        }
+
+        .sidebar-menu li.active a i {
+            animation: none;
+            color: var(--white);
+        }
+
+        .sidebar-menu li:not(.active):not(.logout-item) a:hover {
+            background: var(--primary-soft);
+            color: var(--primary);
+            transform: translateX(3px);
+        }
+
+        .sidebar-menu li:not(.active):not(.logout-item) a:hover i {
+            color: var(--primary);
+            transform: none;
+        }
+
+        .logout-item {
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+            padding-top: 14px;
+        }
+
+        .main-wrapper {
+            background: var(--page-bg);
+            display: flex;
+            flex-direction: column;
+            margin-left: 0;
+            width: auto;
+        }
+
+
+
+        .content-area {
+            max-width: none;
+            padding: 26px;
+            width: 100%;
+        }
+
+        .program-layout {
+            display: grid;
+            gap: 24px;
+            grid-template-columns: minmax(0, 1fr) 260px;
+        }
+
+        .view-toolbar {
+            align-items: center;
+            display: flex;
+            gap: 16px;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .view-heading h2 {
+            color: var(--text-color);
+            font-size: 1.15rem;
+            font-weight: 800;
+            margin: 0 0 5px;
+        }
+
+        .view-heading p {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .view-toggle {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: inline-flex;
+            gap: 4px;
+            padding: 4px;
+        }
+
+        .view-toggle button {
+            align-items: center;
+            background: transparent;
+            border: 0;
+            border-radius: 6px;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: inline-flex;
+            font: inherit;
+            font-size: 0.76rem;
+            font-weight: 800;
+            gap: 7px;
+            min-height: 34px;
+            padding: 8px 11px;
+        }
+
+        .view-toggle button.active {
+            background: var(--primary);
+            color: var(--white);
+            box-shadow: 0 8px 18px var(--theme-shadow);
+        }
+
+        .program-view[hidden] {
+            display: none;
+        }
+
+        .program-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        }
+
+        .program-card {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            min-height: 210px;
+            overflow: hidden;
+            padding: 18px;
+        }
+
+        .program-card-top {
+            align-items: flex-start;
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .program-icon {
+            align-items: center;
+            background: var(--primary-soft);
+            border-radius: 8px;
+            color: var(--primary);
+            display: inline-flex;
+            flex: 0 0 auto;
+            height: 42px;
+            justify-content: center;
+            width: 42px;
+        }
+
+        .program-card h3 {
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 800;
+            line-height: 1.3;
+            margin: 0;
+        }
+
+        .status-badge {
+            background: var(--primary-soft);
+            border-radius: 999px;
+            color: var(--primary);
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 6px 9px;
+            white-space: nowrap;
+        }
+
+        .status-badge.badge-orange {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+
+        .program-description {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 600;
+            line-height: 1.55;
+            margin: 0 0 18px;
+        }
+
+        .program-actions {
+            margin-top: auto;
+        }
+
+        .program-actions .btn {
+            align-items: center;
+            background: var(--primary);
+            border-radius: 6px;
+            color: var(--white);
+            display: inline-flex;
+            font-size: 0.78rem;
+            font-weight: 800;
+            gap: 8px;
+            justify-content: center;
+            padding: 11px 14px;
+            text-decoration: none;
+            width: 100%;
+        }
+
+        .program-table-card {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .program-table-wrap {
+            overflow-x: auto;
+        }
+
+        .program-table {
+            border-collapse: collapse;
+            min-width: 720px;
+            width: 100%;
+        }
+
+        .program-table th {
+            background: var(--white);
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.76rem;
+            font-weight: 800;
+            padding: 15px 16px;
+            text-align: left;
+            text-transform: uppercase;
+        }
+
+        .program-table td {
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.84rem;
+            font-weight: 700;
+            padding: 15px 16px;
+            vertical-align: middle;
+        }
+
+        .program-table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .table-program-name {
+            align-items: center;
+            color: var(--text-color);
+            display: flex;
+            font-weight: 800;
+            gap: 10px;
+        }
+
+        .table-program-icon {
+            align-items: center;
+            background: var(--primary-soft);
+            border-radius: 8px;
+            color: var(--primary);
+            display: inline-flex;
+            flex: 0 0 auto;
+            height: 34px;
+            justify-content: center;
+            width: 34px;
+        }
+
+        .table-description {
+            color: var(--text-muted);
+            max-width: 360px;
+        }
+
+        .table-action {
+            align-items: center;
+            background: var(--primary);
+            border-radius: 6px;
+            color: var(--white);
+            display: inline-flex;
+            font-size: 0.76rem;
+            font-weight: 800;
+            gap: 7px;
+            justify-content: center;
+            padding: 9px 12px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .messages-container {
+            margin-bottom: 18px;
+        }
+
+        .alert {
+            background: var(--primary-soft);
+            border: 1px solid var(--primary-soft);
+            border-radius: 8px;
+            color: var(--primary);
+            font-size: 0.86rem;
+            font-weight: 700;
+            padding: 14px 16px;
+        }
+
+        .empty-state {
+            background: var(--white);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            color: var(--text-muted);
+            grid-column: 1 / -1;
+            padding: 52px 24px;
+            text-align: center;
+        }
+
+        .empty-state i {
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 14px;
+        }
+
+        .empty-state h3 {
+            color: var(--text-color);
+            font-size: 1rem;
+            margin: 0 0 8px;
+        }
+
+        .empty-state p {
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .pagination-bar {
+            align-items: center;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: space-between;
+            margin-top: 18px;
+            padding: 12px 14px;
+        }
+
+        .pagination-summary {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-weight: 800;
+        }
+
+        .pagination-controls {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pagination-link,
+        .pagination-current {
+            align-items: center;
+            border-radius: 7px;
+            display: inline-flex;
+            font-size: 0.78rem;
+            font-weight: 800;
+            justify-content: center;
+            min-height: 34px;
+            min-width: 34px;
+            padding: 0 11px;
+            text-decoration: none;
+        }
+
+        .pagination-link {
+            background: var(--surface-soft);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+
+        .pagination-link:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .pagination-current {
+            background: var(--primary);
+            border: 1px solid var(--primary);
+            color: var(--white);
+            box-shadow: 0 8px 18px var(--theme-shadow);
+        }
+
+        .side-header {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .side-header h3 {
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .side-header a {
+            color: var(--primary);
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .side-card {
+            align-items: center;
+            background: var(--white);
+            border-radius: 7px;
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding: 14px;
+            text-decoration: none;
+        }
+
+        .side-card h4 {
+            color: var(--text-color);
+            font-size: 0.82rem;
+            margin: 0 0 7px;
+        }
+
+        .side-card p {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .side-card .pill {
+            background: var(--primary-soft);
+            border-radius: 999px;
+            color: var(--primary);
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 6px 8px;
+            white-space: nowrap;
+        }
+
+        .promo-panel {
+            background: var(--gradient);
+            border-radius: 8px;
+            color: var(--white);
+            margin-top: 28px;
+            overflow: hidden;
+            padding: 20px;
+            position: relative;
+        }
+
+        .promo-panel::after {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            bottom: -34px;
+            content: "";
+            height: 120px;
+            position: absolute;
+            right: -22px;
+            width: 120px;
+        }
+
+        .promo-panel h3 {
+            font-size: 0.85rem;
+            margin: 0 0 14px;
+            max-width: 180px;
+        }
+
+        .promo-panel p {
+            color: rgba(255, 255, 255, 0.76);
+            font-size: 0.72rem;
+            line-height: 1.45;
+            margin: 0 0 18px;
+            max-width: 170px;
+        }
+
+        .promo-panel a {
+            background: var(--primary);
+            border-radius: 6px;
+            color: var(--white);
+            display: inline-flex;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 10px 18px;
+            position: relative;
+            text-decoration: none;
+            z-index: 1;
+        }
+
+        @media (max-width: 980px) {
+            body {
+                padding: 0;
+            }
+
+            body::before,
+            body::after {
+                display: none;
+            }
+
+            .app-container {
+                grid-template-columns: 1fr;
+                min-height: 100vh;
+                width: 100%;
+            }
+
+            .sidebar {
+                bottom: 0;
+                height: 100vh;
+                left: 0;
+                max-width: 280px;
+                position: fixed;
+                top: 0;
+                transform: translateX(-100%);
+                transition: transform 0.25s ease;
+                width: 78vw;
+                z-index: 20;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-close,
+            .mobile-toggle {
+                display: inline-flex;
+            }
+
+            .sidebar-header {
+                justify-content: space-between;
+            }
+
+            .topbar {
+                grid-template-columns: auto 1fr auto;
+                padding: 0 18px;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .program-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .content-area {
+                padding: 18px;
+            }
+
+            .view-toolbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .view-toggle {
+                width: 100%;
+            }
+
+            .view-toggle button {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .pagination-bar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .pagination-controls {
+                justify-content: center;
+            }
+
+        }
+        .avatar,
+        .avatar-button,
+        .profile-menu-avatar {
+            overflow: hidden;
+        }
+
+        .avatar img,
+        .avatar-button img,
+        .profile-menu-avatar img {
+            display: block;
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'css/admin_theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin_navbar.css' %}">
+</head>
+<body class="admin-app">
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fa-solid fa-dumbbell"></i> ScaleFit</h2>
+            <button class="mobile-close" onclick="toggleSidebar()" aria-label="Close Sidebar"><i class="fa-solid fa-xmark"></i></button>
         </div>
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'dashboard' %}" title="Overview dashboard"><i class="fa-solid fa-table-cells-large"></i> Overview</a></li>
+            <li class="{% if goal_type == 'weight_loss' %}active{% endif %}"><a href="{% url 'program_list' goal_type='weight_loss' %}" title="Manage weight loss programs"><i class="fa-solid fa-dumbbell"></i> Weight Loss</a></li>
+            <li class="{% if goal_type == 'weight_gain' %}active{% endif %}"><a href="{% url 'program_list' goal_type='weight_gain' %}" title="Manage weight gain programs"><i class="fa-solid fa-bowl-food"></i> Weight Gain</a></li>
+            <li><a href="{% url 'members' %}"><i class="fa-regular fa-circle-user"></i> Members</a></li>
+            <li><a href="{% url 'referral' %}" title="View referral activity"><i class="fa-solid fa-chart-simple"></i> Referrals</a></li>
+            <li><a href="{% url 'settings' %}"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            <li class="logout-item"><a href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
+        </ul>
+    </aside>
 
-        {% if messages %}
-        <div class="messages-container">
-            {% for message in messages %}
-            <div class="alert {{ message.tags }}">
-                {{ message }}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
+    <div class="main-wrapper">
+        {% include "fitness/partials/top_navbar.html" with search_label="Search" %}
 
-        <div id="gridView" class="program-view">
-            <div class="program-grid">
-                {% for program in programs %}
-                <div class="program-card">
-                    <div class="program-card-top">
-                        <div class="program-icon">
-                            {% if goal_type == 'weight_loss' %}
-                                <i class="fa-solid fa-arrow-trend-down"></i>
-                            {% else %}
-                                <i class="fa-solid fa-arrow-trend-up"></i>
-                            {% endif %}
+        <main class="content-area">
+            <div class="program-layout">
+                <section>
+                    {% if messages %}
+                    <div class="messages-container">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                <i class="fas fa-check-circle"></i> {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="view-toolbar">
+                        <div class="view-heading">
+                            <h2 class="sr-only">{{ formatted_goal_type|default:goal_type|title|cut:"_" }}</h2>
+                            <p>Switch between card and table layouts.</p>
                         </div>
-                        <span class="status-badge {% if program.is_active %}badge-green{% else %}badge-orange{% endif %}">
-                            {{ program.is_active|yesno:"Active,Inactive" }}
-                        </span>
+                        <div class="view-toggle" aria-label="Program view mode">
+                            <button type="button" class="active" data-view-button="grid" aria-pressed="true">
+                                <i class="fa-solid fa-grip"></i> Grid
+                            </button>
+                            <button type="button" data-view-button="table" aria-pressed="false">
+                                <i class="fa-solid fa-table-list"></i> Table
+                            </button>
+                        </div>
                     </div>
-                    <h3>{{ program.name }}</h3>
-                    <p class="program-description">{{ program.description|truncatewords:22|default:"No description provided." }}</p>
-                    <div class="program-actions">
-                        <a href="{% url 'plan_list' program.pk %}" class="btn" style="background: var(--sf-orange); color: white;">View Plans</a>
-                    </div>
-                </div>
-                {% empty %}
-                <div class="empty-state">
-                    <i class="fas fa-folder-open"></i>
-                    <h3>No Programs Found</h3>
-                    <p>No {{ formatted_goal_type|default:goal_type|title|cut:"_" }} programs have been created yet.</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
 
-        <div id="tableView" class="program-view" hidden>
-            <div class="table-panel" style="margin-top: 0;">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Program Name</th>
-                            <th>Description</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                    <div class="program-grid program-view" id="gridView">
                         {% for program in programs %}
-                        <tr>
-                            <td>
-                                <div class="table-program-name" style="display: flex; align-items: center; gap: 10px; font-weight: 800; color: var(--sf-ink);">
-                                    <span class="food-dot">
-                                        {% if goal_type == 'weight_loss' %}
-                                            <i class="fa-solid fa-arrow-trend-down"></i>
-                                        {% else %}
-                                            <i class="fa-solid fa-arrow-trend-up"></i>
-                                        {% endif %}
-                                    </span>
-                                    {{ program.name }}
+                        <article class="program-card" style="cursor: pointer;" onclick="window.location.href='{% url 'plan_list' program.pk %}'">
+                            <div class="program-card-top">
+                                <div class="program-icon">
+                                    {% if goal_type == 'weight_loss' %}
+                                        <i class="fa-solid fa-arrow-trend-down"></i>
+                                    {% else %}
+                                        <i class="fa-solid fa-arrow-trend-up"></i>
+                                    {% endif %}
                                 </div>
-                            </td>
-                            <td>{{ program.description|truncatewords:18|default:"No description provided." }}</td>
-                            <td>
-                                <span class="pill" style="background: {% if program.is_active %}#dcfce7{% else %}#fff4ea{% endif %}; color: {% if program.is_active %}#16a34a{% else %}#ff7a00{% endif %}; padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 800;">
+                                <span class="status-badge {% if program.is_active %}badge-green{% else %}badge-orange{% endif %}">
                                     {{ program.is_active|yesno:"Active,Inactive" }}
                                 </span>
-                            </td>
-                            <td>
-                                <a href="{% url 'plan_list' program.pk %}" style="color: var(--sf-orange); font-weight: 800; font-size: 0.8rem;">Open</a>
-                            </td>
-                        </tr>
+                            </div>
+                            <h3>{{ program.name }}</h3>
+                            <p class="program-description">{{ program.description|truncatewords:22|default:"No description provided." }}</p>
+                            <div class="program-actions" onclick="event.stopPropagation()">
+                                <a href="{% url 'plan_list' program.pk %}" class="btn"><i class="fa-solid fa-eye"></i> View Plans</a>
+                            </div>
+                        </article>
+                        {% empty %}
+                        <div class="empty-state">
+                            <i class="fas fa-folder-open"></i>
+                            <h3>No Programs Found</h3>
+                            <p>No {{ formatted_goal_type|default:goal_type|title|cut:"_" }} programs have been created yet.</p>
+                        </div>
                         {% endfor %}
-                    </tbody>
-                </table>
+                    </div>
+
+                    <div class="program-table-card program-view" id="tableView" hidden>
+                        <div class="program-table-wrap">
+                            <table class="program-table">
+                                <thead>
+                                    <tr>
+                                        <th>Program</th>
+                                        <th>Description</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for program in programs %}
+                                    <tr>
+                                        <td>
+                                            <div class="table-program-name">
+                                                <span class="table-program-icon">
+                                                    {% if goal_type == 'weight_loss' %}
+                                                        <i class="fa-solid fa-arrow-trend-down"></i>
+                                                    {% else %}
+                                                        <i class="fa-solid fa-arrow-trend-up"></i>
+                                                    {% endif %}
+                                                </span>
+                                                {{ program.name }}
+                                            </div>
+                                        </td>
+                                        <td class="table-description">{{ program.description|truncatewords:18|default:"No description provided." }}</td>
+                                        <td>
+                                            <span class="status-badge {% if program.is_active %}badge-green{% else %}badge-orange{% endif %}">
+                                                {{ program.is_active|yesno:"Active,Inactive" }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'plan_list' program.pk %}" class="table-action"><i class="fa-solid fa-eye"></i> View Plans</a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4">
+                                            <div class="empty-state">
+                                                <i class="fas fa-folder-open"></i>
+                                                <h3>No Programs Found</h3>
+                                                <p>No {{ formatted_goal_type|default:goal_type|title|cut:"_" }} programs have been created yet.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {% if paginator.num_pages > 1 %}
+                    <nav class="pagination-bar" aria-label="Program pagination">
+                        <div class="pagination-summary">
+                            Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ paginator.count }} programs
+                        </div>
+                        <div class="pagination-controls">
+                            {% if page_obj.has_previous %}
+                                <a class="pagination-link" href="?page=1" aria-label="First page"><i class="fa-solid fa-angles-left"></i></a>
+                                <a class="pagination-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous page"><i class="fa-solid fa-angle-left"></i></a>
+                            {% endif %}
+
+                            {% for page_number in paginator.page_range %}
+                                {% if page_number == page_obj.number %}
+                                    <span class="pagination-current" aria-current="page">{{ page_number }}</span>
+                                {% elif page_number >= page_obj.number|add:"-2" and page_number <= page_obj.number|add:"2" %}
+                                    <a class="pagination-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <a class="pagination-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next page"><i class="fa-solid fa-angle-right"></i></a>
+                                <a class="pagination-link" href="?page={{ paginator.num_pages }}" aria-label="Last page"><i class="fa-solid fa-angles-right"></i></a>
+                            {% endif %}
+                        </div>
+                    </nav>
+                    {% endif %}
+                </section>
+
+                <aside>
+                    <div class="side-header">
+                        <h3 class="sr-only">Program Types</h3>
+                        <a href="{% url 'dashboard' %}">Overview <i class="fa-solid fa-angle-right"></i></a>
+                    </div>
+                    <a class="side-card" href="{% url 'program_list' goal_type='weight_loss' %}">
+                        <div>
+                            <h4>Weight Loss</h4>
+                        </div>
+                        <span class="pill">{% if goal_type == 'weight_loss' %}Active{% else %}Open{% endif %}</span>
+                    </a>
+                    <a class="side-card" href="{% url 'program_list' goal_type='weight_gain' %}">
+                        <div>
+                            <h4>Weight Gain</h4>
+                        </div>
+                        <span class="pill">{% if goal_type == 'weight_gain' %}Active{% else %}Open{% endif %}</span>
+                    </a>
+
+                    <div class="side-header" style="margin-top: 26px;">
+                        <h3>Quick Links</h3>
+                        <a href="{% url 'members' %}">View All <i class="fa-solid fa-angle-right"></i></a>
+                    </div>
+                    <a class="side-card" href="{% url 'members' %}">
+                        <div>
+                            <h4>Members</h4>
+                            <p>User management</p>
+                        </div>
+                        <span class="pill">Open</span>
+                    </a>
+                    <a class="side-card" href="{% url 'referral' %}">
+                        <div>
+                            <h4>Referrals</h4>
+                            <p>Invite tracking</p>
+                        </div>
+                        <span class="pill">Open</span>
+                    </a>
+
+                    <div class="promo-panel">
+                        <h3>{{ formatted_goal_type|default:goal_type|title|cut:"_" }} Admin Area</h3>
+                        <p>Open a program to manage plans, periods, and daily content.</p>
+                        <a href="{% url 'dashboard' %}">Dashboard</a>
+                    </div>
+                </aside>
             </div>
-        </div>
-
-        {% if paginator.num_pages > 1 %}
-        <nav class="pagination-bar" style="margin-top: 24px; padding: 14px; background: white; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--sf-shadow);">
-            <div class="pagination-summary" style="font-size: 0.78rem; color: var(--sf-muted); font-weight: 800;">
-                Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ paginator.count }}
-            </div>
-            <div class="pagination-controls" style="display: flex; gap: 8px;">
-                {% if page_obj.has_previous %}
-                    <a href="?page=1" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--sf-line); border-radius: 6px; color: var(--sf-muted);"><i class="fa-solid fa-angles-left"></i></a>
-                    <a href="?page={{ page_obj.previous_page_number }}" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--sf-line); border-radius: 6px; color: var(--sf-muted);"><i class="fa-solid fa-angle-left"></i></a>
-                {% endif %}
-
-                <span style="background: var(--sf-orange); color: white; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-weight: 800; font-size: 0.8rem;">{{ page_obj.number }}</span>
-
-                {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--sf-line); border-radius: 6px; color: var(--sf-muted);"><i class="fa-solid fa-angle-right"></i></a>
-                    <a href="?page={{ paginator.num_pages }}" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--sf-line); border-radius: 6px; color: var(--sf-muted);"><i class="fa-solid fa-angles-right"></i></a>
-                {% endif %}
-            </div>
-        </nav>
-        {% endif %}
-    </section>
-
-    <aside>
-        <div class="side-header">
-            <h3>Program Types</h3>
-            <a href="{% url 'dashboard' %}">Overview <i class="fa-solid fa-angle-right"></i></a>
-        </div>
-        <div class="side-panel">
-            <a class="side-card" href="{% url 'program_list' goal_type='weight_loss' %}" style="{% if goal_type == 'weight_loss' %}border-left: 3px solid var(--sf-orange);{% endif %}">
-                <div>
-                    <h4>Weight Loss</h4>
-                    <p>Fat loss programs</p>
-                </div>
-                <span class="pill">{% if goal_type == 'weight_loss' %}Active{% else %}Open{% endif %}</span>
-            </a>
-            <a class="side-card" href="{% url 'program_list' goal_type='weight_gain' %}" style="{% if goal_type == 'weight_gain' %}border-left: 3px solid var(--sf-orange);{% endif %}">
-                <div>
-                    <h4>Weight Gain</h4>
-                    <p>Mass gain programs</p>
-                </div>
-                <span class="pill">{% if goal_type == 'weight_gain' %}Active{% else %}Open{% endif %}</span>
-            </a>
-        </div>
-
-        <div class="side-header" style="margin-top: 26px;">
-            <h3>Quick Links</h3>
-            <a href="{% url 'members' %}">View All <i class="fa-solid fa-angle-right"></i></a>
-        </div>
-        <div class="side-panel">
-            <a class="side-card" href="{% url 'members' %}">
-                <div>
-                    <h4>Members</h4>
-                    <p>User management</p>
-                </div>
-                <span class="pill">Open</span>
-            </a>
-            <a class="side-card" href="{% url 'referral' %}">
-                <div>
-                    <h4>Referrals</h4>
-                    <p>Invite tracking</p>
-                </div>
-                <span class="pill">Open</span>
-            </a>
-        </div>
-
-        <div class="promo-panel">
-            <h3>{{ formatted_goal_type|default:goal_type|title|cut:"_" }} Admin Area</h3>
-            <p>Open a program to manage plans, periods, and daily content.</p>
-            <a href="{% url 'dashboard' %}" style="background: white; color: var(--sf-purple); padding: 8px 16px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-top: 10px;">Dashboard</a>
-        </div>
-    </aside>
+        </main>
+    </div>
 </div>
-{% endblock %}
 
-{% block extra_js %}
 <script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
+    }
+
+    const userProfile = document.querySelector('.user-profile');
+    const avatarButton = document.querySelector('.avatar-button');
+
+    if (userProfile && avatarButton) {
+        avatarButton.addEventListener('click', function(event) {
+            event.stopPropagation();
+            const isOpen = userProfile.classList.toggle('open');
+            avatarButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+    }
+
     const viewButtons = document.querySelectorAll('[data-view-button]');
     const gridView = document.getElementById('gridView');
     const tableView = document.getElementById('tableView');
@@ -218,5 +965,27 @@
             applyViewMode(button.dataset.viewButton, true);
         });
     });
+
+    document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.querySelector('.mobile-toggle');
+        if (window.innerWidth <= 980 && sidebar && toggleBtn && !sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+
+        if (userProfile && avatarButton && !userProfile.contains(event.target)) {
+            userProfile.classList.remove('open');
+            avatarButton.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && userProfile && avatarButton && userProfile.classList.contains('open')) {
+            userProfile.classList.remove('open');
+            avatarButton.setAttribute('aria-expanded', 'false');
+            avatarButton.focus();
+        }
+    });
 </script>
-{% endblock %}
+</body>
+</html>

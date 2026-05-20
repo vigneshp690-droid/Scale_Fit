@@ -1,8 +1,13 @@
 
+import os
 from pathlib import Path
 from django.utils.translation import gettext_lazy as _
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+def env_bool(name, default=False):
+    return os.environ.get(name, str(default)).strip().lower() in {'1', 'true', 'yes', 'on'}
 
 
 SECRET_KEY = 'django-insecure-o97f^!jim!$2k+oce&wnw3^esn3rl+g*q!u5x5paf5#ynwjdpc'
@@ -23,6 +28,18 @@ INSTALLED_APPS = [
     'fitness',
     'site_app',
 ]
+
+try:
+    import cloudinary  # noqa: F401
+    import cloudinary_storage  # noqa: F401
+except ImportError:
+    CLOUDINARY_PACKAGES_AVAILABLE = False
+else:
+    CLOUDINARY_PACKAGES_AVAILABLE = True
+    INSTALLED_APPS += [
+        'cloudinary_storage',
+        'cloudinary',
+    ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -112,6 +129,37 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'fitness' / 'static']
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Cloudinary keeps uploaded media out of SQLite and the local filesystem.
+# Existing local files continue to resolve through MEDIA_URL; when Cloudinary
+# credentials are present, new uploads are stored remotely by the hybrid storage
+# backend in fitness.media_storage.
+CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL', '')
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
+    'SECURE': env_bool('CLOUDINARY_SECURE', True),
+}
+CLOUDINARY_CONFIGURED = bool(
+    CLOUDINARY_URL or all(CLOUDINARY_STORAGE[key] for key in ('CLOUD_NAME', 'API_KEY', 'API_SECRET'))
+)
+USE_CLOUDINARY_STORAGE = (
+    CLOUDINARY_PACKAGES_AVAILABLE
+    and CLOUDINARY_CONFIGURED
+    and env_bool('USE_CLOUDINARY_STORAGE', True)
+)
+
+if USE_CLOUDINARY_STORAGE:
+    STORAGES = {
+        'default': {
+            'BACKEND': 'fitness.media_storage.ScaleFitCloudinaryMediaStorage',
+        },
+        'staticfiles': {
+            'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
+        },
+    }
+    DEFAULT_FILE_STORAGE = 'fitness.media_storage.ScaleFitCloudinaryMediaStorage'
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -1,138 +1,915 @@
-{% extends "fitness/base_admin.html" %}
-{% load static %}
+{% load static cloudinary_media %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ day.title }} - Content - ScaleFit</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard_premium.css' %}">
+    <link rel="stylesheet" href="{% static 'css/premium_components.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .admin-app {
+            --primary: #ff6818;
+            --primary-soft: #fff1e8;
+            --text-color: #243047;
+            --text-muted: #8592a6;
+            --border-color: #e8edf4;
+            --page-bg: #f3f6fa;
+            --surface-soft: #f7f9fc;
+            --white: #ffffff;
+            --shadow: 0 12px 28px rgba(36, 48, 71, 0.08);
+            --theme-shadow: rgba(255, 104, 24, 0.22);
+        }
+        body {
+            background: var(--page-bg);
+            color: var(--text-color);
+            font-family: "Inter", sans-serif;
+            min-height: 100vh;
+            padding: 0;
+        }
 
-{% block title %}{{ day.title }} Content - ScaleFit{% endblock %}
+        .app-container {
+            background: var(--white);
+            display: grid;
+            grid-template-columns: 190px minmax(0, 1fr);
+            min-height: 100vh;
+            overflow: hidden;
+            width: 100%;
+        }
 
-{% block content %}
-<div class="dashboard-grid">
-    <section>
-        <div class="view-toolbar">
-            <div class="view-heading">
-                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
-                    <a href="javascript:history.back()" style="color: var(--sf-orange); font-size: 0.8rem; font-weight: 800; text-decoration: none;">
-                        <i class="fa-solid fa-arrow-left"></i> Back
-                    </a>
-                </div>
-                <h2>{{ section_label }} Content</h2>
-                <p>{{ program.name }} · {{ plan.name }} · Day {{ day.day_number }}</p>
-            </div>
-            <div class="toolbar-actions">
-                <a href="{% url 'content_create' day_id=day.pk %}?section={{ section }}" class="panel-title" style="padding: 10px 16px; display: inline-flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-plus"></i> Add {{ section_label }}
-                </a>
-            </div>
+        .sidebar {
+            background: var(--white);
+            border-right: 1px solid var(--border-color);
+            box-shadow: none;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            min-height: 100%;
+            position: static;
+            width: auto;
+        }
+
+        .sidebar-header {
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            min-height: 72px;
+            padding: 0 18px;
+        }
+
+        .sidebar-header h2 {
+            color: var(--primary);
+            font-size: 0.98rem;
+            font-weight: 800;
+            gap: 10px;
+            letter-spacing: 0;
+        }
+
+        .sidebar-header h2 i {
+            color: var(--primary);
+            filter: none;
+        }
+
+        .mobile-close {
+            color: var(--text-muted);
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 12px;
+            list-style: none;
+            padding: 22px 20px;
+        }
+
+        .sidebar-menu a {
+            border-radius: 6px;
+            color: var(--text-muted);
+            display: flex;
+            font-size: 0.83rem;
+            font-weight: 700;
+            gap: 14px;
+            padding: 12px 14px;
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+
+        .sidebar-menu a i {
+            color: var(--text-muted);
+            font-size: 1rem;
+            text-align: center;
+            width: 18px;
+        }
+
+        .sidebar-menu li.active a {
+            background: var(--primary);
+            box-shadow: 0 10px 22px var(--theme-shadow);
+            color: var(--white);
+        }
+
+        .sidebar-menu li.active a i {
+            animation: none;
+            color: var(--white);
+        }
+
+        .sidebar-menu li:not(.active):not(.logout-item) a:hover {
+            background: var(--primary-soft);
+            color: var(--primary);
+            transform: translateX(3px);
+        }
+
+        .sidebar-menu li:not(.active):not(.logout-item) a:hover i {
+            color: var(--primary);
+            transform: none;
+        }
+
+        .logout-item {
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+            padding-top: 14px;
+        }
+
+        .main-wrapper {
+            background: var(--page-bg);
+            display: flex;
+            flex-direction: column;
+            margin-left: 0;
+            width: auto;
+        }
+
+        .topbar {
+            align-items: center;
+            background: var(--white);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: none;
+            display: grid;
+            gap: 18px;
+            grid-template-columns: minmax(170px, auto) minmax(260px, 1fr) auto;
+            min-height: 72px;
+            padding: 0 26px;
+            position: static;
+        }
+
+        .topbar-left {
+            align-items: center;
+            display: flex;
+            gap: 12px;
+        }
+
+        .topbar-left h1 {
+            color: var(--text-color);
+            font-size: 0.95rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .topbar-left span {
+            color: var(--text-muted);
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+
+        .mobile-toggle {
+            background: none;
+            border: 0;
+            color: var(--text-color);
+            display: none;
+            font-size: 1.2rem;
+        }
+
+        .search-box {
+            align-items: center;
+            background: var(--surface-soft);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            height: 34px;
+            padding: 0 12px;
+        }
+
+        .search-box i {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: 0;
+            color: var(--text-color);
+            font: inherit;
+            font-size: 0.82rem;
+            outline: 0;
+            width: 100%;
+        }
+
+        .topbar-right {
+            align-items: center;
+            display: flex;
+            gap: 14px;
+        }
+
+        .icon-btn,
+        .notification-btn {
+            align-items: center;
+            background: transparent;
+            border: 0;
+            color: var(--text-muted);
+            display: inline-flex;
+            font-size: 0.95rem;
+            height: 32px;
+            justify-content: center;
+            position: relative;
+            width: 32px;
+        }
+
+        .notification-btn .badge {
+            background: var(--primary);
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            height: 8px;
+            position: absolute;
+            right: 7px;
+            top: 7px;
+            width: 8px;
+        }
+
+        .user-profile {
+            align-items: center;
+            display: flex;
+            gap: 10px;
+        }
+
+        .user-greeting {
+            display: none;
+        }
+
+        .avatar {
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-soft), var(--primary));
+            border-radius: 50%;
+            color: var(--white);
+            display: flex;
+            font-size: 0.9rem;
+            font-weight: 800;
+            height: 36px;
+            justify-content: center;
+            width: 36px;
+        }
+
+        .content-area {
+            max-width: none;
+            padding: 26px;
+            width: 100%;
+        }
+
+        .content-layout {
+            display: grid;
+            gap: 24px;
+            grid-template-columns: minmax(0, 1fr) 260px;
+        }
+
+        .content-toolbar {
+            align-items: center;
+            display: flex;
+            gap: 14px;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .content-title h2 {
+            color: var(--text-color);
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin: 0 0 6px;
+        }
+
+        .content-title p {
+            color: var(--text-muted);
+            font-size: 0.84rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .toolbar-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            align-items: center;
+            border-radius: 6px;
+            display: inline-flex;
+            font-size: 0.78rem;
+            font-weight: 800;
+            gap: 8px;
+            justify-content: center;
+            min-height: 40px;
+            padding: 10px 14px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+
+        .messages-container {
+            margin-bottom: 18px;
+        }
+
+        .alert {
+            background: var(--primary-soft);
+            border: 1px solid var(--primary-soft);
+            border-radius: 8px;
+            color: var(--primary);
+            font-size: 0.86rem;
+            font-weight: 700;
+            padding: 14px 16px;
+        }
+
+        .tabs-panel {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
+            padding: 12px;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tab {
+            background: var(--surface-soft);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            color: var(--text-muted);
+            font-size: 0.76rem;
+            font-weight: 800;
+            padding: 9px 13px;
+            text-decoration: none;
+        }
+
+        .tab.active,
+        .tab:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--white);
+        }
+
+        .content-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        }
+
+        .item-card {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            min-height: 246px;
+            padding: 18px;
+        }
+
+        .item-media {
+            align-items: center;
+            background: var(--surface-soft);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-muted);
+            display: flex;
+            font-size: 0.76rem;
+            font-weight: 800;
+            height: 132px;
+            justify-content: center;
+            margin-bottom: 14px;
+            overflow: hidden;
+        }
+
+        .item-media img,
+        .item-media video {
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .item-top {
+            align-items: flex-start;
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .item-card h3 {
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 800;
+            line-height: 1.3;
+            margin: 0;
+        }
+
+        .status-badge {
+            background: var(--primary-soft);
+            border-radius: 999px;
+            color: var(--primary);
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 6px 9px;
+            white-space: nowrap;
+        }
+
+        .status-badge.inactive {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+
+        .item-description {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 600;
+            line-height: 1.55;
+            margin: 0 0 14px;
+        }
+
+        .item-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 0 0 16px;
+        }
+
+        .meta-pill {
+            background: var(--surface-soft);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 6px 9px;
+        }
+
+        .item-actions {
+            display: grid;
+            gap: 8px;
+            grid-template-columns: 1fr 1fr;
+            margin-top: auto;
+        }
+
+        .item-actions a {
+            align-items: center;
+            border-radius: 6px;
+            display: inline-flex;
+            font-size: 0.76rem;
+            font-weight: 800;
+            gap: 7px;
+            justify-content: center;
+            min-height: 38px;
+            padding: 9px 11px;
+            text-decoration: none;
+        }
+
+        .btn-edit {
+            background: var(--surface-soft);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+
+        .btn-delete {
+            background: #fff1f1;
+            border: 1px solid #ffd6d6;
+            color: #d83b3b;
+        }
+
+        .empty-state {
+            background: var(--white);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            color: var(--text-muted);
+            grid-column: 1 / -1;
+            padding: 52px 24px;
+            text-align: center;
+        }
+
+        .empty-state i {
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 14px;
+        }
+
+        .empty-state h3 {
+            color: var(--text-color);
+            font-size: 1rem;
+            margin: 0 0 8px;
+        }
+
+        .empty-state p {
+            font-size: 0.85rem;
+            margin: 0 0 18px;
+        }
+
+        .side-header {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .side-header h3 {
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .side-header a {
+            color: var(--primary);
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .side-card {
+            align-items: center;
+            background: var(--white);
+            border-radius: 7px;
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding: 14px;
+            text-decoration: none;
+        }
+
+        .side-card h4 {
+            color: var(--text-color);
+            font-size: 0.82rem;
+            margin: 0 0 7px;
+        }
+
+        .side-card p {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .side-card .pill {
+            background: var(--primary-soft);
+            border-radius: 999px;
+            color: var(--primary);
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 6px 8px;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 980px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                bottom: 0;
+                height: 100vh;
+                left: 0;
+                max-width: 280px;
+                position: fixed;
+                top: 0;
+                transform: translateX(-100%);
+                transition: transform 0.25s ease;
+                width: 78vw;
+                z-index: 20;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-close,
+            .mobile-toggle {
+                display: inline-flex;
+            }
+
+            .sidebar-header {
+                justify-content: space-between;
+            }
+
+            .topbar {
+                grid-template-columns: auto 1fr auto;
+                padding: 0 18px;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .content-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .content-area {
+                padding: 18px;
+            }
+
+            .content-toolbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .toolbar-actions {
+                justify-content: flex-start;
+                width: 100%;
+            }
+
+            .toolbar-actions .btn {
+                width: 100%;
+            }
+        }
+        .avatar,
+        .avatar-button,
+        .profile-menu-avatar {
+            overflow: hidden;
+        }
+
+        .avatar img,
+        .avatar-button img,
+        .profile-menu-avatar img {
+            display: block;
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'css/admin_theme.css' %}">
+</head>
+<body class="admin-app">
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fa-solid fa-dumbbell"></i> ScaleFit</h2>
+            <button class="mobile-close" onclick="toggleSidebar()" aria-label="Close Sidebar"><i class="fa-solid fa-xmark"></i></button>
         </div>
-
-        {% if messages %}
-        <div class="messages-container">
-            {% for message in messages %}
-            <div class="alert {{ message.tags }}">
-                {{ message }}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        <div class="tabs-panel" style="margin-bottom: 24px; padding: 12px; background: white; border-radius: 8px; box-shadow: var(--sf-shadow);">
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                {% for value, display in section_choices %}
-                    <a href="?section={{ value }}" style="padding: 8px 16px; border-radius: 6px; font-size: 0.78rem; font-weight: 800; text-decoration: none; background: {% if section == value %}var(--sf-orange){% else %}var(--sf-panel){% endif %}; color: {% if section == value %}white{% else %}var(--sf-muted){% endif %};">
-                        {{ display }}
-                    </a>
-                {% endfor %}
-            </div>
-        </div>
-
-        {% if section == 'meals' %}
-        <div style="margin-bottom: 24px; display: flex; gap: 8px; flex-wrap: wrap;">
-            {% for value, display in category_choices %}
-                <a href="?section=meals&meal_category={{ value }}" style="padding: 6px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 800; text-decoration: none; border: 1px solid {% if meal_category == value %}var(--sf-orange){% else %}var(--sf-line){% endif %}; background: {% if meal_category == value %}var(--sf-orange-soft){% else %}white{% endif %}; color: {% if meal_category == value %}var(--sf-orange){% else %}var(--sf-muted){% endif %};">
-                    {{ display }}
-                </a>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        <div class="plans-grid">
-            {% for item in items %}
-            <div class="program-card">
-                {% if section == 'meals' or section == 'workout' %}
-                    <div style="height: 140px; background: var(--sf-panel); border-radius: 8px; margin-bottom: 15px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid var(--sf-line);">
-                        {% if item.image %}
-                            <img src="{{ item.image.url }}" alt="{{ item.title }}" style="width: 100%; height: 100%; object-fit: cover;">
-                        {% else %}
-                            <i class="fa-solid fa-image" style="font-size: 2rem; color: var(--sf-line);"></i>
-                        {% endif %}
-                    </div>
-                {% endif %}
-
-                <div class="program-card-top">
-                    <div class="program-icon">
-                        {% if section == 'meals' %}<i class="fa-solid fa-utensils"></i>
-                        {% elif section == 'workout' %}<i class="fa-solid fa-dumbbell"></i>
-                        {% else %}<i class="fa-solid fa-glass-water"></i>{% endif %}
-                    </div>
-                    <span class="status-badge {% if item.is_active %}badge-green{% else %}badge-orange{% endif %}">
-                        {{ item.is_active|yesno:"Active,Inactive" }}
-                    </span>
-                </div>
-                
-                <h3>
-                    {% if section == 'water' %}{{ item.target_amount }}{% else %}{{ item.title }}{% endif %}
-                </h3>
-                
-                {% if section == 'water' %}
-                    <p class="program-description">{{ item.reminder_note|default:"No reminder note." }}</p>
-                {% else %}
-                    <p class="program-description">{{ item.description|truncatewords:15|default:"No description." }}</p>
-                {% endif %}
-
-                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px;">
-                    {% if section == 'meals' %}
-                        <span style="font-size: 0.65rem; font-weight: 800; background: var(--sf-orange-soft); color: var(--sf-orange); padding: 4px 8px; border-radius: 4px;">{{ item.get_meal_category_display }}</span>
-                        <span style="font-size: 0.65rem; font-weight: 800; background: var(--sf-panel); color: var(--sf-muted); padding: 4px 8px; border-radius: 4px;">{{ item.start_time|time:"H:i" }}</span>
-                    {% elif section == 'workout' %}
-                        <span style="font-size: 0.65rem; font-weight: 800; background: var(--sf-orange-soft); color: var(--sf-orange); padding: 4px 8px; border-radius: 4px;">{{ item.duration }}</span>
-                    {% endif %}
-                    <span style="font-size: 0.65rem; font-weight: 800; background: var(--sf-panel); color: var(--sf-muted); padding: 4px 8px; border-radius: 4px;">Order {{ item.display_order }}</span>
-                </div>
-
-                <div style="display: flex; gap: 8px;">
-                    <a href="{% url 'content_edit' day_id=day.pk pk=item.pk %}?section={{ section }}" class="btn" style="background: var(--sf-panel); color: var(--sf-ink); flex: 1; font-size: 0.75rem;">Edit</a>
-                    <a href="{% url 'content_delete' day_id=day.pk pk=item.pk %}?section={{ section }}" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--sf-line); border-radius: 6px; color: #ef4444;"><i class="fa-solid fa-trash"></i></a>
-                </div>
-            </div>
-            {% empty %}
-            <div class="empty-state">
-                <i class="fa-solid fa-folder-open"></i>
-                <h3>No Items Found</h3>
-                <p>Add the first {{ section_label|lower }} item for this day.</p>
-                <a href="{% url 'content_create' day_id=day.pk %}?section={{ section }}" class="btn" style="background: var(--sf-orange); color: white; display: inline-flex; margin-top: 15px;">Add {{ section_label }}</a>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
-
-    <aside>
-        <div class="side-header">
-            <h3>Schedule Overview</h3>
-            <a href="{% url 'day_list' plan_id=plan.pk %}">Days <i class="fa-solid fa-angle-right"></i></a>
-        </div>
-        <div class="side-panel">
-            <div class="side-card">
-                <div>
-                    <h4>Day {{ day.day_number }}</h4>
-                    <p>{{ day.title }}</p>
-                </div>
-                <span class="pill">{{ items.count }} Items</span>
-            </div>
-        </div>
-
-        <div class="promo-panel">
-            <h3>Content Editor</h3>
-            <p>Customize every detail of your members' daily experience.</p>
-            <a href="{% url 'dashboard' %}" style="background: white; color: var(--sf-purple); padding: 8px 16px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-top: 10px;">Dashboard</a>
-        </div>
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'dashboard' %}" title="Overview dashboard"><i class="fa-solid fa-table-cells-large"></i> Overview</a></li>
+            <li class="{% if goal_type == 'weight_loss' %}active{% endif %}"><a href="{% url 'program_list' goal_type='weight_loss' %}" title="Manage weight loss programs"><i class="fa-solid fa-dumbbell"></i> Weight Loss</a></li>
+            <li class="{% if goal_type == 'weight_gain' %}active{% endif %}"><a href="{% url 'program_list' goal_type='weight_gain' %}" title="Manage weight gain programs"><i class="fa-solid fa-bowl-food"></i> Weight Gain</a></li>
+            <li><a href="{% url 'members' %}"><i class="fa-regular fa-circle-user"></i> Members</a></li>
+            <li><a href="{% url 'referral' %}" title="View referral activity"><i class="fa-solid fa-chart-simple"></i> Referrals</a></li>
+            <li><a href="{% url 'settings' %}"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            <li class="logout-item"><a href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
+        </ul>
     </aside>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar"><i class="fa-solid fa-bars"></i></button>
+                <div>
+                    {% if goal_type != 'weight_loss' %}
+                    <span>Hello, {{ user.first_name|default:user.username }}</span>
+                    {% endif %}
+                    <h1>{{ day.title }} Content</h1>
+                </div>
+            </div>
+            <label class="search-box" aria-label="Search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Search">
+            </label>
+            <div class="topbar-right">
+                <button class="notification-btn" type="button" aria-label="Notifications"><i class="fa-solid fa-bell"></i><span class="badge"></span></button>
+                <a class="icon-btn" href="{% url 'settings' %}" aria-label="Settings"><i class="fa-solid fa-gear"></i></a>
+                <div class="user-profile">
+                    <span class="user-greeting">Hi, {{ user.first_name|default:user.username }}</span>
+                    <div class="avatar">{% if current_user_profile.profile_image %}<img src="{{ current_user_profile.profile_image.url }}" alt="{{ user.username }} profile image">{% else %}{{ user.username|make_list|first|upper }}{% endif %}</div>
+                </div>
+            </div>
+        </header>
+
+        <main class="content-area">
+            <div class="content-layout">
+                <section>
+                    <div class="content-toolbar">
+                        <div class="content-title">
+                            <h2>{{ section_label }} Content</h2>
+                            <p>{{ program.name }} · {{ plan.name }} · Day {{ day.day_number }}</p>
+                        </div>
+                        <div class="toolbar-actions">
+                            <a href="{% url 'day_list' plan_id=plan.pk %}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+                            <a href="{% url 'content_create' day_id=day.pk %}?section={{ section }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add {{ section_label }}</a>
+                        </div>
+                    </div>
+
+                    {% if messages %}
+                    <div class="messages-container">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                <i class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% else %}check-circle{% endif %}"></i>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="tabs-panel">
+                        <div class="tabs">
+                            {% for value, display in section_choices %}
+                                <a href="?section={{ value }}" class="tab {% if section == value %}active{% endif %}">{{ display }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    {% if section == 'meals' %}
+                    <div class="tabs-panel">
+                        <div class="tabs">
+                            {% for value, display in category_choices %}
+                                <a href="?section=meals&meal_category={{ value }}" class="tab {% if meal_category == value %}active{% endif %}">{{ display }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="content-grid">
+                        {% for item in items %}
+                        <article class="item-card">
+                            {% if section == 'meals' or section == 'workout' %}
+                                <div class="item-media">
+                                    {% if item.video %}
+                                        <video controls preload="metadata" playsinline{% if item.image %} poster="{{ item.image|optimized_media_url:640 }}"{% endif %}>
+                                            <source src="{{ item.video|video_media_url }}" type="video/mp4">
+                                        </video>
+                                    {% elif item.image %}
+                                        <img src="{{ item.image|optimized_media_url:640 }}" alt="{{ item.translated_title|default:item.title }}">
+                                    {% else %}
+                                        <span>No Image</span>
+                                    {% endif %}
+                                </div>
+                            {% elif section == 'media' %}
+                                <div class="item-media">
+                                    {% if item.media_file %}
+                                        {% if item.media_type == 'workout_video' %}
+                                            <video controls preload="metadata" playsinline>
+                                                <source src="{{ item.media_file|video_media_url }}" type="video/mp4">
+                                            </video>
+                                        {% else %}
+                                            <img src="{{ item.media_file|optimized_media_url:640 }}" alt="{{ item.translated_title|default:item.title }}">
+                                        {% endif %}
+                                    {% else %}
+                                        <span>No Media</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+
+                            <div class="item-top">
+                                <h3>
+                                    {% if section == 'water' %}
+                                        {{ item.translated_target_amount|default:item.target_amount }}
+                                    {% else %}
+                                        {{ item.translated_title|default:item.title }}
+                                    {% endif %}
+                                </h3>
+                                <span class="status-badge {% if not item.is_active %}inactive{% endif %}">{{ item.is_active|yesno:"Active,Inactive" }}</span>
+                            </div>
+
+                            {% if section == 'water' %}
+                                <p class="item-description">{{ item.translated_reminder_note|default:"No reminder note." }}</p>
+                            {% else %}
+                                <p class="item-description">{{ item.translated_description|truncatewords:18|default:"No description provided." }}</p>
+                                {% if section == 'meals' %}
+                                    {% if item.vitamins or item.minerals %}
+                                    <p class="item-description" style="font-size: 0.72rem; margin-top: -8px;">
+                                        {% if item.vitamins %}<strong>Vitamins:</strong> {{ item.vitamins }}<br>{% endif %}
+                                        {% if item.minerals %}<strong>Minerals:</strong> {{ item.minerals }}{% endif %}
+                                    </p>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+
+                            <div class="item-meta">
+                                {% if section == 'meals' %}
+                                    <span class="meta-pill">{{ item.get_meal_category_display }}</span>
+                                    <span class="meta-pill">{{ item.start_time|time:"H:i"|default:"No start" }}</span>
+                                    <span class="meta-pill">{{ item.end_time|time:"H:i"|default:"No end" }}</span>
+                                    {% if item.calories %}<span class="meta-pill"><i class="fa-solid fa-fire"></i> {{ item.calories }} kcal</span>{% endif %}
+                                    {% if item.protein %}<span class="meta-pill">Protein: {{ item.protein }}g</span>{% endif %}
+                                    {% if item.carbs %}<span class="meta-pill">Carbs: {{ item.carbs }}g</span>{% endif %}
+                                    {% if item.fat %}<span class="meta-pill">Fat: {{ item.fat }}g</span>{% endif %}
+                                    {% if item.fiber %}<span class="meta-pill">Fiber: {{ item.fiber }}g</span>{% endif %}
+                                {% elif section == 'water' %}
+                                    <span class="meta-pill">Water Target</span>
+                                {% elif section == 'media' %}
+                                    <span class="meta-pill">{{ item.get_media_type_display }}</span>
+                                {% else %}
+                                    <span class="meta-pill">{{ item.duration|default:"No duration" }}</span>
+                                {% endif %}
+                                <span class="meta-pill">Order {{ item.display_order }}</span>
+                            </div>
+
+                            <div class="item-actions">
+                                <a href="{% url 'content_edit' day_id=day.pk pk=item.pk %}?section={{ section }}" class="btn-edit"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+                                <a href="{% url 'content_delete' day_id=day.pk pk=item.pk %}?section={{ section }}" class="btn-delete"><i class="fa-solid fa-trash"></i> Delete</a>
+                            </div>
+                        </article>
+                        {% empty %}
+                        <div class="empty-state">
+                            <i class="fas fa-folder-open"></i>
+                            <h3>No {{ section_label }} Items Found</h3>
+                            <p>Add the first {{ section_label|lower }} item for this day.</p>
+                            <a href="{% url 'content_create' day_id=day.pk %}?section={{ section }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add {{ section_label }}</a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <aside>
+                    <div class="side-header">
+                        <h3>Day</h3>
+                        <a href="{% url 'day_list' plan_id=plan.pk %}">Back <i class="fa-solid fa-angle-right"></i></a>
+                    </div>
+                    <a class="side-card" href="{% url 'day_list' plan_id=plan.pk %}">
+                        <div>
+                            <h4>{{ day.title }}</h4>
+                            <p>Day {{ day.day_number }}</p>
+                        </div>
+                        <span class="pill">Open</span>
+                    </a>
+                    <a class="side-card" href="{% url 'plan_list' program_id=program.pk %}">
+                        <div>
+                            <h4>{{ plan.name }}</h4>
+                            <p>{{ plan.get_plan_type_display }}</p>
+                        </div>
+                        <span class="pill">Plan</span>
+                    </a>
+                    <a class="side-card" href="{% url 'program_list' goal_type=goal_type %}">
+                        <div>
+                            <h4>{{ program.name }}</h4>
+                            <p>{{ formatted_goal_type }}</p>
+                        </div>
+                        <span class="pill">Program</span>
+                    </a>
+
+                    <div class="side-header" style="margin-top: 26px;">
+                        <h3>Admin Links</h3>
+                        <a href="{% url 'dashboard' %}">View All <i class="fa-solid fa-angle-right"></i></a>
+                    </div>
+                    <a class="side-card" href="{% url 'members' %}">
+                        <div>
+                            <h4>Members</h4>
+                            <p>User management</p>
+                        </div>
+                        <span class="pill">Open</span>
+                    </a>
+                    <a class="side-card" href="{% url 'referral' %}">
+                        <div>
+                            <h4>Referrals</h4>
+                            <p>Invite tracking</p>
+                        </div>
+                        <span class="pill">Open</span>
+                    </a>
+                </aside>
+            </div>
+        </main>
+    </div>
 </div>
-{% endblock %}
+
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
+    }
+
+    document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.querySelector('.mobile-toggle');
+        if (window.innerWidth <= 980 && sidebar && toggleBtn && !sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+    });
+</script>
+</body>
+</html>

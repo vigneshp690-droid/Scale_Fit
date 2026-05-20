@@ -1,0 +1,63 @@
+{% extends 'site_app/base.html' %}
+{% load i18n cloudinary_media %}
+{% block title %}{{ workout.translated_title|default:workout.title }} — {% trans "Workout Details" %} — {% trans "ScaleFit" %}{% endblock %}
+
+{% block content %}
+<div class="page-hero meal-detail-hero">
+  <div class="breadcrumb">
+    <a href="{% url 'site_home' %}">{% trans "Home" %}</a>
+    <span class="sep">/</span>
+    <a href="{% url 'site_goal_plans' goal_type %}">{% if goal_type == 'weight_loss' %}{% trans "Weight Loss" %}{% else %}{% trans "Weight Gain" %}{% endif %}</a>
+    <span class="sep">/</span>
+    <a href="{% url 'site_plan_detail' plan.pk %}">{{ plan.translated_name|default:plan.name }}</a>
+    <span class="sep">/</span>
+    <a href="{% url 'site_day_detail' day.pk %}">{{ day.translated_title|default:day.title }}</a>
+    <span class="sep">/</span>
+    <span class="current">{{ workout.translated_title|default:workout.title }}</span>
+  </div>
+  <h1>{{ workout.translated_title|default:workout.title }}</h1>
+  <p><i class="fas fa-stopwatch"></i> {{ workout.duration|default:site_settings.workout_duration_label }}</p>
+</div>
+
+<section class="section meal-detail-section">
+  <div class="meal-detail-actions">
+    <a class="back-link" href="{% url 'site_day_detail' day.pk %}">
+      <i class="fas fa-arrow-left" aria-hidden="true"></i>
+      <span>{% trans "Back to Day Plan" %}</span>
+    </a>
+  </div>
+
+  <div class="meal-detail-layout">
+    <article class="meal-detail-main reveal">
+      {% if workout.video %}
+      <video class="meal-detail-image" controls preload="metadata" playsinline{% if workout.image %} poster="{{ workout.image|optimized_media_url:960 }}"{% endif %}>
+        <source src="{{ workout.video|video_media_url }}" type="video/mp4">
+        {% trans "Your browser does not support video playback." %}
+      </video>
+      {% elif workout.image %}
+      <img class="meal-detail-image" src="{{ workout.image|optimized_media_url:960 }}" srcset="{% responsive_image_srcset workout.image '480,768,960,1280' %}" sizes="(max-width: 900px) 100vw, 60vw" alt="{{ workout.translated_title|default:workout.title }}" loading="lazy">
+      {% endif %}
+      <div class="meal-detail-copy">
+        <div class="meal-detail-heading">
+          <div>
+            <h2>{{ workout.translated_title|default:workout.title }}</h2>
+            {% if workout.translated_description|default:workout.description %}<p>{{ workout.translated_description|default:workout.description }}</p>{% endif %}
+          </div>
+        </div>
+
+        <div class="content-meta meal-detail-badges">
+          <span class="meta-tag meta-duration"><i class="fas fa-stopwatch"></i> {{ workout.duration|default:site_settings.workout_duration_label }}</span>
+          {% if goal_type == 'weight_loss' %}<span class="meta-tag meta-goal"><i class="fas fa-fire"></i> {% trans "Weight loss friendly" %}</span>{% else %}<span class="meta-tag meta-goal"><i class="fas fa-dumbbell"></i> {% trans "Muscle gain friendly" %}</span>{% endif %}
+        </div>
+      </div>
+    </article>
+
+    <aside class="meal-detail-side reveal">
+      <div class="quick-panel">
+        <h3>{% trans "Quick Guidance" %}</h3>
+        <div class="quick-row"><span>{% trans "Duration" %}</span><strong>{{ workout.duration|default:site_settings.workout_duration_label }}</strong></div>
+      </div>
+    </aside>
+  </div>
+</section>
+{% endblock %}

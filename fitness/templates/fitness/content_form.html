@@ -1,164 +1,1123 @@
-{% extends "fitness/base_admin.html" %}
-{% load static %}
-
-{% block title %}{{ action }} {{ section_label }} - ScaleFit{% endblock %}
-
-{% block content %}
-<div class="dashboard-grid">
-    <section>
-        <div class="view-toolbar">
-            <div class="view-heading">
-                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
-                    <a href="{% url 'day_content' day_id=day.pk %}?section={{ section }}" style="color: var(--sf-orange); font-size: 0.8rem; font-weight: 800; text-decoration: none;">
-                        <i class="fa-solid fa-arrow-left"></i> Back to Content
-                    </a>
-                </div>
-                <h2>{{ action }} {{ section_label }}</h2>
-                <p>{{ program.name }} · {{ plan.name }} · Day {{ day.day_number }}</p>
-            </div>
-        </div>
-
-        <form method="POST" enctype="multipart/form-data" class="progress-panel" style="margin-top: 0;">
-            {% csrf_token %}
-            {% if form.non_field_errors %}
-                <div class="alert error">
-                    {{ form.non_field_errors }}
-                </div>
-            {% endif %}
-
-            <div style="display: grid; gap: 20px; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                {% if section != 'water' %}
-                    <div style="grid-column: 1 / -1;">
-                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Title</label>
-                        {{ form.title.errors }}
-                        {{ form.title }}
-                    </div>
-                    
-                    <div style="grid-column: 1 / -1;">
-                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Description</label>
-                        {{ form.description.errors }}
-                        {{ form.description }}
-                    </div>
-                {% endif %}
-
-                {% if section == 'meals' %}
-                    <div>
-                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Meal Category</label>
-                        {{ form.meal_category.errors }}
-                        {{ form.meal_category }}
-                    </div>
-                    <div>
-                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Start Time</label>
-                        {{ form.start_time.errors }}
-                        {{ form.start_time }}
-                    </div>
-                    <div>
-                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">End Time</label>
-                        {{ form.end_time.errors }}
-                        {{ form.end_time }}
-                    </div>
-                {% endif %}
-
-                {% if section == 'workout' %}
-                    <div>
-                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Duration</label>
-                        {{ form.duration.errors }}
-                        {{ form.duration }}
-                    </div>
-                {% endif %}
-
-                {% if section == 'water' %}
-                    <div>
-                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Target Amount</label>
-                        {{ form.target_amount.errors }}
-                        {{ form.target_amount }}
-                    </div>
-                    <div style="grid-column: 1 / -1;">
-                        <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Reminder Note</label>
-                        {{ form.reminder_note.errors }}
-                        {{ form.reminder_note }}
-                    </div>
-                {% endif %}
-
-                <div>
-                    <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Display Order</label>
-                    {{ form.display_order.errors }}
-                    {{ form.display_order }}
-                </div>
-
-                <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--sf-panel); border-radius: 8px;">
-                    {{ form.is_active }}
-                    <label for="{{ form.is_active.id_for_label }}" style="font-size: 0.85rem; font-weight: 800; color: var(--sf-ink);">Active</label>
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--sf-line);">
-                <a href="{% url 'day_content' day_id=day.pk %}?section={{ section }}" style="padding: 12px 24px; border-radius: 6px; font-size: 0.85rem; font-weight: 800; text-decoration: none; background: var(--sf-panel); color: var(--sf-muted);">Cancel</a>
-                <button type="submit" class="btn" style="background: var(--sf-orange); color: white; padding: 12px 24px; border: 0; border-radius: 6px; font-size: 0.85rem; font-weight: 800; cursor: pointer;">
-                    {{ action }} {{ section_label }}
-                </button>
-            </div>
-        </form>
-    </section>
-
-    <aside>
-        {% if section != 'water' %}
-            <div class="side-header">
-                <h3>Content Media</h3>
-            </div>
-            <div class="side-panel" style="padding: 18px;">
-                <div id="upload-area" style="border: 2px dashed var(--sf-line); border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s;">
-                    {{ form.image }}
-                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; color: var(--sf-orange); margin-bottom: 12px; display: block;"></i>
-                    <p style="font-size: 0.75rem; color: var(--sf-muted); font-weight: 800; margin: 0;">Click to upload image</p>
-                </div>
-                <div id="image-preview" style="margin-top: 15px;">
-                    {% if item and item.image %}
-                        <img src="{{ item.image.url }}" alt="Preview" style="width: 100%; border-radius: 6px; border: 1px solid var(--sf-line);">
-                    {% endif %}
-                </div>
-            </div>
-        {% endif %}
-
-        <div class="promo-panel">
-            <h3>Content Editor</h3>
-            <p>Ensure all instructions, media, and timing details are accurate for the best member experience.</p>
-        </div>
-    </aside>
-</div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    const uploadArea = document.getElementById('upload-area');
-    const imageInput = document.querySelector('input[type="file"]');
-    const imagePreview = document.getElementById('image-preview');
-
-    if (imageInput) {
-        imageInput.style.display = 'none';
-        
-        if (uploadArea) {
-            uploadArea.addEventListener('click', () => imageInput.click());
-            
-            imageInput.addEventListener('change', (event) => {
-                const file = event.target.files[0];
-                if (file && file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        let img = imagePreview.querySelector('img');
-                        if (!img) {
-                            img = document.createElement('img');
-                            img.style.width = '100%';
-                            img.style.borderRadius = '6px';
-                            img.style.border = '1px solid var(--sf-line)';
-                            imagePreview.appendChild(img);
-                        }
-                        img.src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
+{% load static cloudinary_media %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ action }} {{ section_label }} - ScaleFit</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard_premium.css' %}">
+    <link rel="stylesheet" href="{% static 'css/premium_components.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .admin-app {
+            --sf-orange: #ff6818;
+            --sf-orange-soft: #fff1e8;
+            --sf-ink: #243047;
+            --sf-muted: #8592a6;
+            --sf-line: #e8edf4;
+            --sf-panel: #f3f6fa;
+            --sf-shadow: 0 12px 28px rgba(36, 48, 71, 0.08);
         }
+
+        body {
+            background: var(--sf-panel);
+            color: var(--sf-ink);
+            font-family: "Inter", sans-serif;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .app-container {
+            background: #ffffff;
+            display: grid;
+            grid-template-columns: 190px minmax(0, 1fr);
+            min-height: 100vh;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .sidebar {
+            background: #ffffff;
+            border-right: 1px solid var(--sf-line);
+            box-shadow: none;
+            color: var(--sf-muted);
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            min-height: 100%;
+            position: static;
+            width: auto;
+        }
+
+        .sidebar-header {
+            align-items: center;
+            border-bottom: 1px solid var(--sf-line);
+            display: flex;
+            justify-content: center;
+            min-height: 72px;
+            padding: 0 18px;
+        }
+
+        .sidebar-header h2 {
+            color: var(--sf-orange);
+            font-size: 0.98rem;
+            font-weight: 800;
+            gap: 10px;
+            letter-spacing: 0;
+        }
+
+        .sidebar-header h2 i {
+            color: var(--sf-orange);
+            filter: none;
+        }
+
+        .mobile-close {
+            color: var(--sf-muted);
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 12px;
+            list-style: none;
+            padding: 22px 20px;
+        }
+
+        .sidebar-menu a {
+            border-radius: 6px;
+            color: #758296;
+            display: flex;
+            font-size: 0.83rem;
+            font-weight: 700;
+            gap: 14px;
+            padding: 12px 14px;
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+
+        .sidebar-menu a i {
+            color: #8290a3;
+            font-size: 1rem;
+            text-align: center;
+            width: 18px;
+        }
+
+        .sidebar-menu li.active a {
+            background: var(--sf-orange);
+            box-shadow: 0 10px 22px rgba(255, 104, 24, 0.22);
+            color: #ffffff;
+        }
+
+        .sidebar-menu li.active a i {
+            animation: none;
+            color: #ffffff;
+        }
+
+        .sidebar-menu li:not(.active):not(.logout-item) a:hover {
+            background: var(--sf-orange-soft);
+            color: var(--sf-orange);
+            transform: translateX(3px);
+        }
+
+        .sidebar-menu li:not(.active):not(.logout-item) a:hover i {
+            color: var(--sf-orange);
+            transform: none;
+        }
+
+        .logout-item {
+            border-top: 1px solid var(--sf-line);
+            margin-top: auto;
+            padding-top: 14px;
+        }
+
+        .main-wrapper {
+            background: var(--sf-panel);
+            display: flex;
+            flex-direction: column;
+            margin-left: 0;
+            width: auto;
+        }
+
+        .topbar {
+            align-items: center;
+            background: #ffffff;
+            border-bottom: 1px solid var(--sf-line);
+            box-shadow: none;
+            display: grid;
+            gap: 18px;
+            grid-template-columns: minmax(170px, auto) minmax(260px, 1fr) auto;
+            min-height: 72px;
+            padding: 0 26px;
+            position: static;
+        }
+
+        .topbar-left {
+            align-items: center;
+            display: flex;
+            gap: 12px;
+        }
+
+        .topbar-left h1 {
+            color: var(--sf-ink);
+            font-size: 0.95rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .topbar-left span {
+            color: #a0aabc;
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+
+        .mobile-toggle {
+            background: none;
+            border: 0;
+            color: var(--sf-ink);
+            display: none;
+            font-size: 1.2rem;
+        }
+
+        .search-box {
+            align-items: center;
+            background: #f7f9fc;
+            border: 1px solid var(--sf-line);
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            height: 34px;
+            padding: 0 12px;
+        }
+
+        .search-box i {
+            color: #9aa6b8;
+            font-size: 0.9rem;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: 0;
+            color: var(--sf-ink);
+            font: inherit;
+            font-size: 0.82rem;
+            outline: 0;
+            width: 100%;
+        }
+
+        .topbar-right {
+            align-items: center;
+            display: flex;
+            gap: 14px;
+        }
+
+        .icon-btn,
+        .notification-btn {
+            align-items: center;
+            background: transparent;
+            border: 0;
+            color: #728098;
+            display: inline-flex;
+            font-size: 0.95rem;
+            height: 32px;
+            justify-content: center;
+            position: relative;
+            width: 32px;
+        }
+
+        .notification-btn .badge {
+            background: var(--sf-orange);
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            height: 8px;
+            position: absolute;
+            right: 7px;
+            top: 7px;
+            width: 8px;
+        }
+
+        .user-profile {
+            align-items: center;
+            display: flex;
+            gap: 10px;
+        }
+
+        .user-greeting {
+            display: none;
+        }
+
+        .avatar {
+            align-items: center;
+            background: linear-gradient(135deg, #ffb377, var(--sf-orange));
+            border-radius: 50%;
+            color: #ffffff;
+            display: flex;
+            font-size: 0.9rem;
+            font-weight: 800;
+            height: 36px;
+            justify-content: center;
+            width: 36px;
+        }
+
+        .content-area {
+            max-width: none;
+            padding: 26px;
+            width: 100%;
+        }
+
+        .form-layout {
+            display: grid;
+            gap: 24px;
+            grid-template-columns: minmax(0, 1fr) 260px;
+        }
+
+        .form-toolbar {
+            align-items: center;
+            display: flex;
+            gap: 14px;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .form-title h2 {
+            color: var(--sf-ink);
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin: 0 0 6px;
+        }
+
+        .form-title p {
+            color: var(--sf-muted);
+            font-size: 0.84rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .form-card {
+            background: #ffffff;
+            border: 1px solid var(--sf-line);
+            border-radius: 8px;
+            box-shadow: var(--sf-shadow);
+            padding: 22px;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 18px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .form-group {
+            margin: 0;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            color: #4f5d73;
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="time"],
+        input[type="file"],
+        textarea,
+        select,
+        .form-input {
+            background: #f7f9fc;
+            border: 1px solid var(--sf-line);
+            border-radius: 8px;
+            color: var(--sf-ink);
+            font: inherit;
+            font-size: 0.9rem;
+            min-height: 46px;
+            padding: 12px 14px;
+            width: 100%;
+        }
+
+        textarea {
+            min-height: 132px;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: var(--sf-orange);
+            box-shadow: 0 0 0 4px rgba(255, 104, 24, 0.12);
+            outline: none;
+        }
+
+        .errorlist {
+            color: #d83b3b;
+            font-size: 0.78rem;
+            font-weight: 700;
+            list-style: none;
+            margin: 0 0 8px;
+            padding: 0;
+        }
+
+        .form-help {
+            color: var(--sf-muted);
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin-top: 7px;
+        }
+
+        .upload-panel {
+            background: #f7f9fc;
+            border: 1px solid var(--sf-line);
+            border-radius: 8px;
+            display: grid;
+            gap: 14px;
+            padding: 14px;
+        }
+
+        .current-file-row {
+            align-items: center;
+            display: grid;
+            gap: 12px;
+            grid-template-columns: 76px minmax(0, 1fr) auto;
+        }
+
+        .current-image {
+            background: #ffffff;
+            border: 1px solid var(--sf-line);
+            border-radius: 8px;
+            overflow: hidden;
+            padding: 6px;
+        }
+
+        .current-image img {
+            border-radius: 6px;
+            display: block;
+            height: 62px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .current-file-meta {
+            min-width: 0;
+        }
+
+        .current-file-meta strong {
+            color: var(--sf-ink);
+            display: block;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+        }
+
+        .current-file-meta a {
+            color: var(--sf-orange);
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 800;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .clear-image-option {
+            align-items: center;
+            color: #6d7a90;
+            display: inline-flex;
+            font-size: 0.76rem;
+            font-weight: 800;
+            gap: 7px;
+            white-space: nowrap;
+        }
+
+        .clear-image-option input {
+            accent-color: var(--sf-orange);
+            height: 16px;
+            width: 16px;
+        }
+
+        .upload-input-row {
+            display: grid;
+            gap: 8px;
+        }
+
+        .upload-input-row span {
+            color: #4f5d73;
+            font-size: 0.78rem;
+            font-weight: 800;
+        }
+
+        .status-toggle {
+            align-items: center;
+            background: #f7f9fc;
+            border: 1px solid var(--sf-line);
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            min-height: 46px;
+            padding: 0 14px;
+        }
+
+        .status-toggle input {
+            accent-color: var(--sf-orange);
+            height: 18px;
+            width: 18px;
+        }
+
+        .form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 22px;
+        }
+
+        .btn {
+            align-items: center;
+            border: 0;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            font: inherit;
+            font-size: 0.78rem;
+            font-weight: 800;
+            gap: 8px;
+            justify-content: center;
+            min-height: 40px;
+            padding: 10px 14px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--sf-orange);
+            color: #ffffff;
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            border: 1px solid var(--sf-line);
+            color: #6d7a90;
+        }
+
+        .messages-container {
+            margin-bottom: 18px;
+        }
+
+        .alert {
+            background: #e8fbef;
+            border: 1px solid #cdf4dc;
+            border-radius: 8px;
+            color: #1aaa5b;
+            font-size: 0.86rem;
+            font-weight: 700;
+            padding: 14px 16px;
+        }
+
+        .side-header {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .side-header h3 {
+            color: var(--sf-ink);
+            font-size: 1rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .side-header a {
+            color: var(--sf-orange);
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .side-card {
+            align-items: center;
+            background: #ffffff;
+            border-radius: 7px;
+            box-shadow: var(--sf-shadow);
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding: 14px;
+            text-decoration: none;
+        }
+
+        .side-card h4 {
+            color: var(--sf-ink);
+            font-size: 0.82rem;
+            margin: 0 0 7px;
+        }
+
+        .side-card p {
+            color: var(--sf-muted);
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .side-card .pill {
+            background: var(--sf-orange-soft);
+            border-radius: 999px;
+            color: var(--sf-orange);
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 6px 8px;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 980px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                bottom: 0;
+                height: 100vh;
+                left: 0;
+                max-width: 280px;
+                position: fixed;
+                top: 0;
+                transform: translateX(-100%);
+                transition: transform 0.25s ease;
+                width: 78vw;
+                z-index: 20;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-close,
+            .mobile-toggle {
+                display: inline-flex;
+            }
+
+            .sidebar-header {
+                justify-content: space-between;
+            }
+
+            .topbar {
+                grid-template-columns: auto 1fr auto;
+                padding: 0 18px;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .form-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .content-area {
+                padding: 18px;
+            }
+
+            .form-toolbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+            }
+        }
+        .avatar,
+        .avatar-button,
+        .profile-menu-avatar {
+            overflow: hidden;
+        }
+
+        .avatar img,
+        .avatar-button img,
+        .profile-menu-avatar img {
+            display: block;
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'css/admin_theme.css' %}">
+</head>
+<body class="admin-app">
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fa-solid fa-dumbbell"></i> ScaleFit</h2>
+            <button class="mobile-close" onclick="toggleSidebar()" aria-label="Close Sidebar"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'dashboard' %}" title="Overview dashboard"><i class="fa-solid fa-table-cells-large"></i> Overview</a></li>
+            <li class="{% if goal_type == 'weight_loss' %}active{% endif %}"><a href="{% url 'program_list' goal_type='weight_loss' %}" title="Manage weight loss programs"><i class="fa-solid fa-dumbbell"></i> Weight Loss</a></li>
+            <li class="{% if goal_type == 'weight_gain' %}active{% endif %}"><a href="{% url 'program_list' goal_type='weight_gain' %}" title="Manage weight gain programs"><i class="fa-solid fa-bowl-food"></i> Weight Gain</a></li>
+            <li><a href="{% url 'members' %}"><i class="fa-regular fa-circle-user"></i> Members</a></li>
+            <li><a href="{% url 'referral' %}" title="View referral activity"><i class="fa-solid fa-chart-simple"></i> Referrals</a></li>
+            <li><a href="{% url 'settings' %}"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            <li class="logout-item"><a href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
+        </ul>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar"><i class="fa-solid fa-bars"></i></button>
+                <div>
+                    {% if goal_type != 'weight_loss' %}
+                    <span>Hello, {{ user.first_name|default:user.username }}</span>
+                    {% endif %}
+                    <h1>{{ action }} {{ section_label }}</h1>
+                </div>
+            </div>
+            <label class="search-box" aria-label="Search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Search">
+            </label>
+            <div class="topbar-right">
+                <button class="notification-btn" type="button" aria-label="Notifications"><i class="fa-solid fa-bell"></i><span class="badge"></span></button>
+                <a class="icon-btn" href="{% url 'settings' %}" aria-label="Settings"><i class="fa-solid fa-gear"></i></a>
+                <div class="user-profile">
+                    <span class="user-greeting">Hi, {{ user.first_name|default:user.username }}</span>
+                    <div class="avatar">{% if current_user_profile.profile_image %}<img src="{{ current_user_profile.profile_image.url }}" alt="{{ user.username }} profile image">{% else %}{{ user.username|make_list|first|upper }}{% endif %}</div>
+                </div>
+            </div>
+        </header>
+
+        <main class="content-area">
+            <div class="form-layout">
+                <section>
+                    <div class="form-toolbar">
+                        <div class="form-title">
+                            <h2>{{ action }} {{ section_label }}</h2>
+                            <p>{{ program.name }} · {{ plan.name }} · Day {{ day.day_number }}</p>
+                        </div>
+                        <a href="{% url 'day_content' day_id=day.pk %}?section={{ section }}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+                    </div>
+
+                    {% if messages %}
+                    <div class="messages-container">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                <i class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% else %}check-circle{% endif %}"></i>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="form-card">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% if form.non_field_errors %}
+                                {{ form.non_field_errors }}
+                            {% endif %}
+
+                            <div class="form-grid">
+                                {% if section == 'media' %}
+                                    <div class="form-group full">
+                                        <label class="form-label" for="{{ form.title.id_for_label }}">Title</label>
+                                        {{ form.title.errors }}
+                                        {{ form.title }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.title_ta.id_for_label }}">Title (Tamil)</label>
+                                        {{ form.title_ta.errors }}
+                                        {{ form.title_ta }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.title_hi.id_for_label }}">Title (Hindi)</label>
+                                        {{ form.title_hi.errors }}
+                                        {{ form.title_hi }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.media_type.id_for_label }}">Media Type</label>
+                                        {{ form.media_type.errors }}
+                                        {{ form.media_type }}
+                                    </div>
+                                    <div class="form-group full">
+                                        <label class="form-label" for="{{ form.media_file.id_for_label }}">Media File</label>
+                                        {{ form.media_file.errors }}
+                                        <div class="upload-panel">
+                                            {% if item and item.media_file %}
+                                                <div class="current-file-row">
+                                                    <div class="current-file-meta">
+                                                        <strong>Current media</strong>
+                                                        <a href="{{ item.media_file|video_media_url }}" target="_blank" rel="noopener">{{ item.media_file.name }}</a>
+                                                    </div>
+                                                    <label class="clear-image-option" for="media_file-clear_id">
+                                                        <input type="checkbox" name="media_file-clear" id="media_file-clear_id">
+                                                        Clear
+                                                    </label>
+                                                </div>
+                                            {% endif %}
+                                            <div class="upload-input-row">
+                                                <span>{% if item and item.media_file %}Change media{% else %}Upload media{% endif %}</span>
+                                                <input type="file" name="media_file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" id="{{ form.media_file.id_for_label }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group full">
+                                        <label class="form-label" for="{{ form.description.id_for_label }}">Instructions / Description</label>
+                                        {{ form.description.errors }}
+                                        {{ form.description }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.description_ta.id_for_label }}">Description (Tamil)</label>
+                                        {{ form.description_ta.errors }}
+                                        {{ form.description_ta }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.description_hi.id_for_label }}">Description (Hindi)</label>
+                                        {{ form.description_hi.errors }}
+                                        {{ form.description_hi }}
+                                    </div>
+                                {% elif section != 'water' %}
+                                    <div class="form-group full">
+                                        <label class="form-label" for="{{ form.title.id_for_label }}">Title</label>
+                                        {{ form.title.errors }}
+                                        {{ form.title }}
+                                    </div>
+                                    {% if form.title_ta %}
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.title_ta.id_for_label }}">Title (Tamil)</label>
+                                        {{ form.title_ta.errors }}
+                                        {{ form.title_ta }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.title_hi.id_for_label }}">Title (Hindi)</label>
+                                        {{ form.title_hi.errors }}
+                                        {{ form.title_hi }}
+                                    </div>
+                                    {% endif %}
+                                    <div class="form-group full">
+                                        <label class="form-label" for="{{ form.image.id_for_label }}">Image</label>
+                                        {{ form.image.errors }}
+                                        <div class="upload-panel">
+                                            {% if item and item.image %}
+                                                <div class="current-file-row">
+                                                    <div class="current-image">
+                                                        <img src="{{ item.image|optimized_media_url:320 }}" alt="{{ item.title }}">
+                                                    </div>
+                                                    <div class="current-file-meta">
+                                                        <strong>Current image</strong>
+                                                        <a href="{{ item.image|optimized_media_url }}" target="_blank" rel="noopener">{{ item.image.name }}</a>
+                                                    </div>
+                                                    <label class="clear-image-option" for="image-clear_id">
+                                                        <input type="checkbox" name="image-clear" id="image-clear_id">
+                                                        Clear
+                                                    </label>
+                                                </div>
+                                            {% endif %}
+                                            <div class="upload-input-row">
+                                                <span>{% if item and item.image %}Change image{% else %}Upload image{% endif %}</span>
+                                                <input type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" id="{{ form.image.id_for_label }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if section != 'water' %}
+                                    <div class="form-group full">
+                                        <label class="form-label" for="{{ form.video.id_for_label }}">{% if section == 'workout' %}Exercise Video{% else %}Meal Video{% endif %}</label>
+                                        {{ form.video.errors }}
+                                        <div class="upload-panel">
+                                            {% if item and item.video %}
+                                                <div class="current-file-row">
+                                                    <div class="current-file-meta">
+                                                        <strong>Current video</strong>
+                                                        <a href="{{ item.video|video_media_url }}" target="_blank" rel="noopener">{{ item.video.name }}</a>
+                                                    </div>
+                                                    <label class="clear-image-option" for="video-clear_id">
+                                                        <input type="checkbox" name="video-clear" id="video-clear_id">
+                                                        Clear
+                                                    </label>
+                                                </div>
+                                            {% endif %}
+                                            <div class="upload-input-row">
+                                                <span>{% if item and item.video %}Change video{% else %}Upload video{% endif %}</span>
+                                                <input type="file" name="video" accept="video/mp4,video/webm,video/quicktime" id="{{ form.video.id_for_label }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    <div class="form-group full">
+                                        <label class="form-label" for="{{ form.description.id_for_label }}">Description</label>
+                                        {{ form.description.errors }}
+                                        {{ form.description }}
+                                    </div>
+                                    {% if form.description_ta %}
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.description_ta.id_for_label }}">Description (Tamil)</label>
+                                        {{ form.description_ta.errors }}
+                                        {{ form.description_ta }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.description_hi.id_for_label }}">Description (Hindi)</label>
+                                        {{ form.description_hi.errors }}
+                                        {{ form.description_hi }}
+                                    </div>
+                                    {% endif %}
+                                {% endif %}
+
+                                {% if section == 'meals' %}
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.meal_category.id_for_label }}">Meal Category</label>
+                                        {{ form.meal_category.errors }}
+                                        {{ form.meal_category }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.start_time.id_for_label }}">Start Time</label>
+                                        {{ form.start_time.errors }}
+                                        {{ form.start_time }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.end_time.id_for_label }}">End Time</label>
+                                        {{ form.end_time.errors }}
+                                        {{ form.end_time }}
+                                    </div>
+
+                                    <div class="form-group full">
+                                        <h4 style="margin: 14px 0 6px; color: var(--sf-ink); border-bottom: 1px solid var(--sf-line); padding-bottom: 8px;">Nutritional Information</h4>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.calories.id_for_label }}">Calories (kcal)</label>
+                                        {{ form.calories.errors }}
+                                        {{ form.calories }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.protein.id_for_label }}">Protein (g)</label>
+                                        {{ form.protein.errors }}
+                                        {{ form.protein }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.carbs.id_for_label }}">Carbs (g)</label>
+                                        {{ form.carbs.errors }}
+                                        {{ form.carbs }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.fat.id_for_label }}">Fat (g)</label>
+                                        {{ form.fat.errors }}
+                                        {{ form.fat }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.fiber.id_for_label }}">Fiber (g)</label>
+                                        {{ form.fiber.errors }}
+                                        {{ form.fiber }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.vitamins.id_for_label }}">Vitamins</label>
+                                        {{ form.vitamins.errors }}
+                                        {{ form.vitamins }}
+                                    </div>
+                                    <div class="form-group full">
+                                        <label class="form-label" for="{{ form.minerals.id_for_label }}">Minerals</label>
+                                        {{ form.minerals.errors }}
+                                        {{ form.minerals }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.hydration.id_for_label }}">Hydration Suggestion</label>
+                                        {{ form.hydration.errors }}
+                                        {{ form.hydration }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.diet_type.id_for_label }}">Diet Type</label>
+                                        {{ form.diet_type.errors }}
+                                        {{ form.diet_type }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.hydration_ta.id_for_label }}">Hydration (Tamil)</label>
+                                        {{ form.hydration_ta.errors }}
+                                        {{ form.hydration_ta }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.hydration_hi.id_for_label }}">Hydration (Hindi)</label>
+                                        {{ form.hydration_hi.errors }}
+                                        {{ form.hydration_hi }}
+                                    </div>
+                                    <div class="form-group full">
+                                        <label class="form-label" for="{{ form.benefits.id_for_label }}">Fitness Benefits</label>
+                                        {{ form.benefits.errors }}
+                                        {{ form.benefits }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.benefits_ta.id_for_label }}">Benefits (Tamil)</label>
+                                        {{ form.benefits_ta.errors }}
+                                        {{ form.benefits_ta }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.benefits_hi.id_for_label }}">Benefits (Hindi)</label>
+                                        {{ form.benefits_hi.errors }}
+                                        {{ form.benefits_hi }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.sugar.id_for_label }}">Sugar (g)</label>
+                                        {{ form.sugar.errors }}
+                                        {{ form.sugar }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.sodium.id_for_label }}">Sodium (mg)</label>
+                                        {{ form.sodium.errors }}
+                                        {{ form.sodium }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.cholesterol.id_for_label }}">Cholesterol (mg)</label>
+                                        {{ form.cholesterol.errors }}
+                                        {{ form.cholesterol }}
+                                    </div>
+                                {% endif %}
+
+                                {% if section == 'workout' %}
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.duration.id_for_label }}">Duration</label>
+                                        {{ form.duration.errors }}
+                                        {{ form.duration }}
+                                    </div>
+                                {% endif %}
+
+                                {% if section == 'water' %}
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.target_amount.id_for_label }}">Target Amount</label>
+                                        {{ form.target_amount.errors }}
+                                        {{ form.target_amount }}
+                                    </div>
+                                    {% if form.target_amount_ta %}
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.target_amount_ta.id_for_label }}">Target Amount (Tamil)</label>
+                                        {{ form.target_amount_ta.errors }}
+                                        {{ form.target_amount_ta }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.target_amount_hi.id_for_label }}">Target Amount (Hindi)</label>
+                                        {{ form.target_amount_hi.errors }}
+                                        {{ form.target_amount_hi }}
+                                    </div>
+                                    {% endif %}
+                                    <div class="form-group full">
+                                        <label class="form-label" for="{{ form.reminder_note.id_for_label }}">Reminder Note</label>
+                                        {{ form.reminder_note.errors }}
+                                        {{ form.reminder_note }}
+                                    </div>
+                                    {% if form.reminder_note_ta %}
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.reminder_note_ta.id_for_label }}">Reminder Note (Tamil)</label>
+                                        {{ form.reminder_note_ta.errors }}
+                                        {{ form.reminder_note_ta }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="{{ form.reminder_note_hi.id_for_label }}">Reminder Note (Hindi)</label>
+                                        {{ form.reminder_note_hi.errors }}
+                                        {{ form.reminder_note_hi }}
+                                    </div>
+                                    {% endif %}
+                                {% endif %}
+
+                                <div class="form-group">
+                                    <label class="form-label" for="{{ form.display_order.id_for_label }}">Display Order</label>
+                                    {{ form.display_order.errors }}
+                                    {{ form.display_order }}
+                                    <small class="form-help">Lower numbers appear first.</small>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="{{ form.is_active.id_for_label }}">Status</label>
+                                    {{ form.is_active.errors }}
+                                    <div class="status-toggle">
+                                        {{ form.is_active }}
+                                        <label for="{{ form.is_active.id_for_label }}">Active</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <a href="{% url 'day_content' day_id=day.pk %}?section={{ section }}" class="btn btn-secondary">Back</a>
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> {{ action }} {{ section_label }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <aside>
+                    <div class="side-header">
+                        <h3>Day</h3>
+                        <a href="{% url 'day_content' day_id=day.pk %}?section={{ section }}">Back <i class="fa-solid fa-angle-right"></i></a>
+                    </div>
+                    <a class="side-card" href="{% url 'day_content' day_id=day.pk %}?section={{ section }}">
+                        <div>
+                            <h4>{{ day.title }}</h4>
+                            <p>Day {{ day.day_number }}</p>
+                        </div>
+                        <span class="pill">{{ section_label }}</span>
+                    </a>
+                    <a class="side-card" href="{% url 'plan_list' program_id=program.pk %}">
+                        <div>
+                            <h4>{{ plan.name }}</h4>
+                            <p>{{ plan.get_plan_type_display }}</p>
+                        </div>
+                        <span class="pill">Plan</span>
+                    </a>
+                    <a class="side-card" href="{% url 'program_list' goal_type=goal_type %}">
+                        <div>
+                            <h4>{{ program.name }}</h4>
+                            <p>{{ formatted_goal_type }}</p>
+                        </div>
+                        <span class="pill">Program</span>
+                    </a>
+
+                    <div class="side-header" style="margin-top: 26px;">
+                        <h3>Admin Links</h3>
+                        <a href="{% url 'dashboard' %}">View All <i class="fa-solid fa-angle-right"></i></a>
+                    </div>
+                    <a class="side-card" href="{% url 'members' %}">
+                        <div>
+                            <h4>Members</h4>
+                            <p>User management</p>
+                        </div>
+                        <span class="pill">Open</span>
+                    </a>
+                    <a class="side-card" href="{% url 'referral' %}">
+                        <div>
+                            <h4>Referrals</h4>
+                            <p>Invite tracking</p>
+                        </div>
+                        <span class="pill">Open</span>
+                    </a>
+                </aside>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
     }
+
+    document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.querySelector('.mobile-toggle');
+        if (window.innerWidth <= 980 && sidebar && toggleBtn && !sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+    });
 </script>
-{% endblock %}
+</body>
+</html>

@@ -1,142 +1,1122 @@
-{% extends "fitness/base_admin.html" %}
 {% load static %}
-
-{% block title %}{{ plan.name }} - ScaleFit{% endblock %}
-
-{% block content %}
-<div class="dashboard-grid">
-    <section>
-        <div class="view-toolbar">
-            <div class="view-heading">
-                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
-                    <a href="{% url 'plan_list' program_id=program.pk %}" style="color: var(--sf-orange); font-size: 0.8rem; font-weight: 800; text-decoration: none;">
-                        <i class="fa-solid fa-arrow-left"></i> Plans
-                    </a>
-                </div>
-                <h2>{{ plan.name }}</h2>
-                <p>{{ program.name }} · {{ plan.get_plan_type_display }}</p>
-            </div>
-            
-            <div class="view-toggle">
-                <button type="button" id="gridToggle" class="active"><i class="fa-solid fa-grip"></i> Grid</button>
-                <button type="button" id="tableToggle"><i class="fa-solid fa-list"></i> Table</button>
-            </div>
-        </div>
-
-        <div id="gridView" class="period-grid">
-            {% for day in days %}
-            <div class="period-card" style="background: white; border-radius: 8px; border: 1px solid var(--sf-line); padding: 20px; box-shadow: var(--sf-card-shadow);">
-                <div class="period-card-top" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
-                    <div class="period-icon" style="width: 40px; height: 40px; background: var(--sf-orange-soft); color: var(--sf-orange); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
-                        <i class="fa-solid fa-calendar-day"></i>
-                    </div>
-                    <span class="period-number" style="background: var(--sf-panel); color: var(--sf-muted); font-size: 0.7rem; font-weight: 800; padding: 4px 10px; border-radius: 20px;">
-                        DAY {{ day.day_number }}
-                    </span>
-                </div>
-                <h3 style="color: var(--sf-ink); margin: 0 0 10px; font-size: 1.1rem;">{{ day.title|default:"Untitled Day" }}</h3>
-                <p style="color: var(--sf-muted); font-size: 0.85rem; line-height: 1.5; margin-bottom: 20px; flex-grow: 1;">
-                    {{ day.description|truncatewords:15|default:"No description provided for this day." }}
-                </p>
-                <div class="period-actions" style="border-top: 1px solid var(--sf-line); padding-top: 15px;">
-                    <a href="{% url 'day_content' day_id=day.pk %}" class="btn" style="width: 100%; background: var(--sf-orange); color: white; justify-content: center; font-weight: 800;">
-                        Manage Content <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
-                    </a>
-                </div>
-            </div>
-            {% empty %}
-            <div class="empty-state" style="grid-column: 1 / -1; padding: 60px; text-align: center; background: white; border-radius: 8px; border: 1px dashed var(--sf-line);">
-                <i class="fa-solid fa-calendar-plus" style="font-size: 3rem; color: var(--sf-line); margin-bottom: 20px; display: block;"></i>
-                <h3 style="color: var(--sf-ink);">No Days Found</h3>
-                <p style="color: var(--sf-muted); margin-bottom: 20px;">Start by creating days for this plan.</p>
-            </div>
-            {% endfor %}
-        </div>
-
-        <div id="tableView" class="table-panel" hidden style="margin-top: 0;">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Day</th>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th style="text-align: right;">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for day in days %}
-                    <tr>
-                        <td style="font-weight: 800; color: var(--sf-orange);">Day {{ day.day_number }}</td>
-                        <td style="font-weight: 800; color: var(--sf-ink);">{{ day.title|default:"-" }}</td>
-                        <td style="color: var(--sf-muted); font-size: 0.85rem;">{{ day.description|truncatewords:10|default:"-" }}</td>
-                        <td style="text-align: right;">
-                            <a href="{% url 'day_content' day_id=day.pk %}" class="btn" style="background: var(--sf-orange-soft); color: var(--sf-orange); padding: 6px 12px; font-size: 0.75rem;">
-                                Edit <i class="fa-solid fa-chevron-right" style="margin-left: 5px;"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <aside>
-        <div class="side-header">
-            <h3>Plan Info</h3>
-        </div>
-        <div class="side-panel">
-            <div class="side-card">
-                <div>
-                    <h4>Type</h4>
-                    <p>{{ plan.get_plan_type_display }}</p>
-                </div>
-                <span class="pill">Active</span>
-            </div>
-            <div class="side-card">
-                <div>
-                    <h4>Program</h4>
-                    <p>{{ program.name }}</p>
-                </div>
-                <i class="fa-solid fa-dumbbell" style="color: var(--sf-orange);"></i>
-            </div>
-        </div>
-
-        <div class="promo-panel">
-            <h3>Management</h3>
-            <p>Define daily tasks, meals, and workouts for this plan to guide your members.</p>
-        </div>
-    </aside>
-</div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    const gridToggle = document.getElementById('gridToggle');
-    const tableToggle = document.getElementById('tableToggle');
-    const gridView = document.getElementById('gridView');
-    const tableView = document.getElementById('tableView');
-
-    function setView(view) {
-        if (view === 'table') {
-            gridView.hidden = true;
-            tableView.hidden = false;
-            tableToggle.classList.add('active');
-            gridToggle.classList.remove('active');
-        } else {
-            gridView.hidden = false;
-            tableView.hidden = true;
-            gridToggle.classList.add('active');
-            tableToggle.classList.remove('active');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ plan.name }} - ScaleFit</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard_premium.css' %}">
+    <link rel="stylesheet" href="{% static 'css/premium_components.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .admin-app {
+            --primary: #ff6818;
+            --primary-soft: #fff1e8;
+            --text-color: #243047;
+            --text-muted: #8592a6;
+            --border-color: #e8edf4;
+            --page-bg: #f3f6fa;
+            --surface-soft: #f7f9fc;
+            --white: #ffffff;
+            --shadow: 0 12px 28px rgba(36, 48, 71, 0.08);
+            --theme-shadow: rgba(255, 104, 24, 0.22);
         }
-        localStorage.setItem('dayListView', view);
+        body {
+            background: var(--page-bg);
+            color: var(--text-color);
+            font-family: "Inter", sans-serif;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .app-container {
+            background: var(--white);
+            display: grid;
+            grid-template-columns: 190px minmax(0, 1fr);
+            min-height: 100vh;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .sidebar {
+            background: var(--white);
+            border-right: 1px solid var(--border-color);
+            box-shadow: none;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            min-height: 100%;
+            position: static;
+            width: auto;
+        }
+
+        .sidebar-header {
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            min-height: 72px;
+            padding: 0 18px;
+        }
+
+        .sidebar-header h2 {
+            color: var(--primary);
+            font-size: 0.98rem;
+            font-weight: 800;
+            gap: 10px;
+            letter-spacing: 0;
+        }
+
+        .sidebar-header h2 i {
+            color: var(--primary);
+            filter: none;
+        }
+
+        .mobile-close {
+            color: var(--text-muted);
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 12px;
+            list-style: none;
+            padding: 22px 20px;
+        }
+
+        .sidebar-menu a {
+            border-radius: 6px;
+            color: var(--text-muted);
+            display: flex;
+            font-size: 0.83rem;
+            font-weight: 700;
+            gap: 14px;
+            padding: 12px 14px;
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+
+        .sidebar-menu a i {
+            color: var(--text-muted);
+            font-size: 1rem;
+            text-align: center;
+            width: 18px;
+        }
+
+        .sidebar-menu li.active a {
+            background: var(--primary);
+            box-shadow: 0 10px 22px var(--theme-shadow);
+            color: var(--white);
+        }
+
+        .sidebar-menu li.active a i {
+            animation: none;
+            color: var(--white);
+        }
+
+        .sidebar-menu li:not(.active):not(.logout-item) a:hover {
+            background: var(--primary-soft);
+            color: var(--primary);
+            transform: translateX(3px);
+        }
+
+        .sidebar-menu li:not(.active):not(.logout-item) a:hover i {
+            color: var(--primary);
+            transform: none;
+        }
+
+        .logout-item {
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+            padding-top: 14px;
+        }
+
+        .main-wrapper {
+            background: var(--page-bg);
+            display: flex;
+            flex-direction: column;
+            margin-left: 0;
+            width: auto;
+        }
+
+        .topbar {
+            align-items: center;
+            background: var(--white);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: none;
+            display: grid;
+            gap: 18px;
+            grid-template-columns: minmax(170px, auto) minmax(260px, 1fr) auto;
+            min-height: 72px;
+            padding: 0 26px;
+            position: static;
+        }
+
+        .topbar-left {
+            align-items: center;
+            display: flex;
+            gap: 12px;
+        }
+
+        .topbar-left h1 {
+            color: var(--text-color);
+            font-size: 0.95rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .topbar-left span {
+            color: var(--text-muted);
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+
+        .mobile-toggle {
+            background: none;
+            border: 0;
+            color: var(--text-color);
+            display: none;
+            font-size: 1.2rem;
+        }
+
+        .search-box {
+            align-items: center;
+            background: var(--surface-soft);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            height: 34px;
+            padding: 0 12px;
+        }
+
+        .search-box i {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: 0;
+            color: var(--text-color);
+            font: inherit;
+            font-size: 0.82rem;
+            outline: 0;
+            width: 100%;
+        }
+
+        .topbar-right {
+            align-items: center;
+            display: flex;
+            gap: 14px;
+        }
+
+        .icon-btn,
+        .notification-btn {
+            align-items: center;
+            background: transparent;
+            border: 0;
+            color: var(--text-muted);
+            display: inline-flex;
+            font-size: 0.95rem;
+            height: 32px;
+            justify-content: center;
+            position: relative;
+            width: 32px;
+        }
+
+        .notification-btn .badge {
+            background: var(--primary);
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            height: 8px;
+            position: absolute;
+            right: 7px;
+            top: 7px;
+            width: 8px;
+        }
+
+        .user-profile {
+            align-items: center;
+            display: flex;
+            gap: 10px;
+        }
+
+        .user-greeting {
+            display: none;
+        }
+
+        .avatar {
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-soft), var(--primary));
+            border-radius: 50%;
+            color: var(--white);
+            display: flex;
+            font-size: 0.9rem;
+            font-weight: 800;
+            height: 36px;
+            justify-content: center;
+            width: 36px;
+        }
+
+        .content-area {
+            max-width: none;
+            padding: 26px;
+            width: 100%;
+        }
+
+        .period-layout {
+            display: grid;
+            gap: 24px;
+            grid-template-columns: minmax(0, 1fr) 260px;
+        }
+
+        .period-toolbar {
+            align-items: center;
+            display: flex;
+            gap: 14px;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .period-title h2 {
+            color: var(--text-color);
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin: 0 0 6px;
+        }
+
+        .period-title p {
+            color: var(--text-muted);
+            font-size: 0.84rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .back-btn {
+            align-items: center;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-muted);
+            display: inline-flex;
+            font-size: 0.78rem;
+            font-weight: 800;
+            gap: 8px;
+            padding: 11px 14px;
+            text-decoration: none;
+        }
+
+        .view-toolbar {
+            align-items: center;
+            display: flex;
+            gap: 16px;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .view-heading h2 {
+            color: var(--text-color);
+            font-size: 1.15rem;
+            font-weight: 800;
+            margin: 0 0 5px;
+        }
+
+        .view-heading p {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .view-toggle {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: inline-flex;
+            gap: 4px;
+            padding: 4px;
+        }
+
+        .view-toggle button {
+            align-items: center;
+            background: transparent;
+            border: 0;
+            border-radius: 6px;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: inline-flex;
+            font: inherit;
+            font-size: 0.76rem;
+            font-weight: 800;
+            gap: 7px;
+            min-height: 34px;
+            padding: 8px 11px;
+        }
+
+        .view-toggle button.active {
+            background: var(--primary);
+            color: var(--white);
+            box-shadow: 0 8px 18px var(--theme-shadow);
+        }
+
+        .period-view[hidden] {
+            display: none;
+        }
+
+        .period-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        }
+
+        .period-card {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            min-height: 210px;
+            padding: 18px;
+        }
+
+        .period-card-top {
+            align-items: flex-start;
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .period-icon {
+            align-items: center;
+            background: var(--primary-soft);
+            border-radius: 8px;
+            color: var(--primary);
+            display: inline-flex;
+            flex: 0 0 auto;
+            height: 42px;
+            justify-content: center;
+            width: 42px;
+        }
+
+        .period-number {
+            background: var(--primary-soft);
+            border-radius: 999px;
+            color: var(--primary);
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 6px 9px;
+            white-space: nowrap;
+        }
+
+        .period-card h3 {
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 800;
+            line-height: 1.3;
+            margin: 0 0 9px;
+        }
+
+        .period-description {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 600;
+            line-height: 1.55;
+            margin: 0 0 16px;
+        }
+
+        .period-stats {
+            border-bottom: 1px solid var(--border-color);
+            border-top: 1px solid var(--border-color);
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(3, 1fr);
+            margin: 0 0 16px;
+            padding: 13px 0;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat strong {
+            color: var(--text-color);
+            display: block;
+            font-size: 1rem;
+            font-weight: 800;
+        }
+
+        .stat span {
+            color: var(--text-muted);
+            display: block;
+            font-size: 0.64rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .period-actions {
+            margin-top: auto;
+        }
+
+        .period-actions a {
+            align-items: center;
+            background: var(--primary);
+            border-radius: 6px;
+            color: var(--white);
+            display: inline-flex;
+            font-size: 0.78rem;
+            font-weight: 800;
+            gap: 8px;
+            justify-content: center;
+            padding: 11px 14px;
+            text-decoration: none;
+            width: 100%;
+        }
+
+        .period-table-card {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .period-table-wrap {
+            overflow-x: auto;
+        }
+
+        .period-table {
+            border-collapse: collapse;
+            min-width: 780px;
+            width: 100%;
+        }
+
+        .period-table th {
+            background: var(--white);
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.76rem;
+            font-weight: 800;
+            padding: 15px 16px;
+            text-align: left;
+            text-transform: uppercase;
+        }
+
+        .period-table td {
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.84rem;
+            font-weight: 700;
+            padding: 15px 16px;
+            vertical-align: middle;
+        }
+
+        .period-table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .table-period-name {
+            align-items: center;
+            color: var(--text-color);
+            display: flex;
+            font-weight: 800;
+            gap: 10px;
+        }
+
+        .table-period-icon {
+            align-items: center;
+            background: var(--primary-soft);
+            border-radius: 8px;
+            color: var(--primary);
+            display: inline-flex;
+            flex: 0 0 auto;
+            height: 34px;
+            justify-content: center;
+            width: 34px;
+        }
+
+        .table-description {
+            color: var(--text-muted);
+            max-width: 340px;
+        }
+
+        .table-action {
+            align-items: center;
+            background: var(--primary);
+            border-radius: 6px;
+            color: var(--white);
+            display: inline-flex;
+            font-size: 0.76rem;
+            font-weight: 800;
+            gap: 7px;
+            justify-content: center;
+            min-height: 36px;
+            padding: 8px 11px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .empty-state {
+            background: var(--white);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            color: var(--text-muted);
+            grid-column: 1 / -1;
+            padding: 52px 24px;
+            text-align: center;
+        }
+
+        .empty-state i {
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 14px;
+        }
+
+        .empty-state h3 {
+            color: var(--text-color);
+            font-size: 1rem;
+            margin: 0 0 8px;
+        }
+
+        .pagination-bar {
+            align-items: center;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: space-between;
+            margin-top: 18px;
+            padding: 12px 14px;
+        }
+
+        .pagination-summary {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-weight: 800;
+        }
+
+        .pagination-controls {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pagination-link,
+        .pagination-current {
+            align-items: center;
+            border-radius: 7px;
+            display: inline-flex;
+            font-size: 0.78rem;
+            font-weight: 800;
+            justify-content: center;
+            min-height: 34px;
+            min-width: 34px;
+            padding: 0 11px;
+            text-decoration: none;
+        }
+
+        .pagination-link {
+            background: var(--surface-soft);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+
+        .pagination-link:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .pagination-current {
+            background: var(--primary);
+            border: 1px solid var(--primary);
+            box-shadow: 0 8px 18px var(--theme-shadow);
+            color: var(--white);
+        }
+
+        .side-header {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .side-header h3 {
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .side-header a {
+            color: var(--primary);
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .side-card {
+            align-items: center;
+            background: var(--white);
+            border-radius: 7px;
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding: 14px;
+            text-decoration: none;
+        }
+
+        .side-card h4 {
+            color: var(--text-color);
+            font-size: 0.82rem;
+            margin: 0 0 7px;
+        }
+
+        .side-card p {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .side-card .pill {
+            background: var(--primary-soft);
+            border-radius: 999px;
+            color: var(--primary);
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 6px 8px;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 980px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                bottom: 0;
+                height: 100vh;
+                left: 0;
+                max-width: 280px;
+                position: fixed;
+                top: 0;
+                transform: translateX(-100%);
+                transition: transform 0.25s ease;
+                width: 78vw;
+                z-index: 20;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-close,
+            .mobile-toggle {
+                display: inline-flex;
+            }
+
+            .sidebar-header {
+                justify-content: space-between;
+            }
+
+            .topbar {
+                grid-template-columns: auto 1fr auto;
+                padding: 0 18px;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .period-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .content-area {
+                padding: 18px;
+            }
+
+            .period-toolbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .view-toolbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .view-toggle {
+                width: 100%;
+            }
+
+            .view-toggle button {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .pagination-bar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .pagination-controls {
+                width: 100%;
+            }
+        }
+        .avatar,
+        .avatar-button,
+        .profile-menu-avatar {
+            overflow: hidden;
+        }
+
+        .avatar img,
+        .avatar-button img,
+        .profile-menu-avatar img {
+            display: block;
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'css/admin_theme.css' %}">
+</head>
+<body class="admin-app">
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fa-solid fa-dumbbell"></i> ScaleFit</h2>
+            <button class="mobile-close" onclick="toggleSidebar()" aria-label="Close Sidebar"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'dashboard' %}" title="Overview dashboard"><i class="fa-solid fa-table-cells-large"></i> Overview</a></li>
+            <li class="{% if goal_type == 'weight_loss' %}active{% endif %}"><a href="{% url 'program_list' goal_type='weight_loss' %}" title="Manage weight loss programs"><i class="fa-solid fa-dumbbell"></i> Weight Loss</a></li>
+            <li class="{% if goal_type == 'weight_gain' %}active{% endif %}"><a href="{% url 'program_list' goal_type='weight_gain' %}" title="Manage weight gain programs"><i class="fa-solid fa-bowl-food"></i> Weight Gain</a></li>
+            <li><a href="{% url 'members' %}"><i class="fa-regular fa-circle-user"></i> Members</a></li>
+            <li><a href="{% url 'referral' %}" title="View referral activity"><i class="fa-solid fa-chart-simple"></i> Referrals</a></li>
+            <li><a href="{% url 'settings' %}"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            <li class="logout-item"><a href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
+        </ul>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar"><i class="fa-solid fa-bars"></i></button>
+                <div>
+                    {% if goal_type != 'weight_loss' %}
+                    <span>Hello, {{ user.first_name|default:user.username }}</span>
+                    {% endif %}
+                    <h1>{{ plan.name }}</h1>
+                </div>
+            </div>
+            <label class="search-box" aria-label="Search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Search">
+            </label>
+            <div class="topbar-right">
+                <button class="notification-btn" type="button" aria-label="Notifications"><i class="fa-solid fa-bell"></i><span class="badge"></span></button>
+                <a class="icon-btn" href="{% url 'settings' %}" aria-label="Settings"><i class="fa-solid fa-gear"></i></a>
+                <div class="user-profile">
+                    <span class="user-greeting">Hi, {{ user.first_name|default:user.username }}</span>
+                    <div class="avatar">{% if current_user_profile.profile_image %}<img src="{{ current_user_profile.profile_image.url }}" alt="{{ user.username }} profile image">{% else %}{{ user.username|make_list|first|upper }}{% endif %}</div>
+                </div>
+            </div>
+        </header>
+
+        <main class="content-area">
+            <div class="period-layout">
+                <section>
+                    <div class="period-toolbar">
+                        <div class="period-title">
+                            <h2>{{ plan.name }} {{ plan.get_period_label }}s</h2>
+                            <p>{{ program.name }} · {{ plan.get_plan_type_display }}</p>
+                        </div>
+                        <a href="{% url 'plan_list' program.pk %}" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Plans</a>
+                    </div>
+
+                    <div class="view-toolbar">
+                        <div class="view-heading">
+                            <h2>{{ plan.get_period_label }} View</h2>
+                            <p>Switch between card and table layouts.</p>
+                        </div>
+                        <div class="view-toggle" aria-label="Period view mode">
+                            <button type="button" class="active" data-view-button="grid" aria-pressed="true">
+                                <i class="fa-solid fa-grip"></i> Grid
+                            </button>
+                            <button type="button" data-view-button="table" aria-pressed="false">
+                                <i class="fa-solid fa-table-list"></i> Table
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="period-grid period-view" id="gridView">
+                        {% for item in items %}
+                        <article class="period-card">
+                            <div class="period-card-top">
+                                <div class="period-icon">
+                                    {% if item_type == 'month' %}
+                                        <i class="fa-solid fa-calendar"></i>
+                                    {% elif item_type == 'week' %}
+                                        <i class="fa-solid fa-calendar-week"></i>
+                                    {% else %}
+                                        <i class="fa-solid fa-calendar-day"></i>
+                                    {% endif %}
+                                </div>
+                                <span class="period-number">
+                                    {% if item_type == 'month' %}Month {{ item.month_number }}
+                                    {% elif item_type == 'week' %}Week {{ item.week_number }}
+                                    {% else %}Day {{ item.day_number }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <h3>{{ item.title }}</h3>
+                            {% if item.description %}
+                                <p class="period-description">{{ item.description|truncatewords:18 }}</p>
+                            {% else %}
+                                <p class="period-description">Open this item to manage the next level of content.</p>
+                            {% endif %}
+
+                            {% if item_type == 'day' %}
+                            <div class="period-stats">
+                                <div class="stat">
+                                    <strong>{{ item.program_items.count }}</strong>
+                                    <span>Meals</span>
+                                </div>
+                                <div class="stat">
+                                    <strong>{{ item.workout_items.count }}</strong>
+                                    <span>Workouts</span>
+                                </div>
+                                <div class="stat">
+                                    <strong>{{ item.water_targets.count }}</strong>
+                                    <span>Water</span>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="period-actions">
+                                {% if item_type == 'month' %}
+                                    <a href="{% url 'month_detail' month_id=item.pk %}"><i class="fa-solid fa-eye"></i> View Weeks</a>
+                                {% elif item_type == 'week' %}
+                                    <a href="{% url 'week_detail' week_id=item.pk %}"><i class="fa-solid fa-eye"></i> View Days</a>
+                                {% else %}
+                                    <a href="{% url 'day_content' day_id=item.pk %}"><i class="fa-solid fa-pen-to-square"></i> Manage Content</a>
+                                {% endif %}
+                            </div>
+                        </article>
+                        {% empty %}
+                        <div class="empty-state">
+                            <i class="fas fa-calendar"></i>
+                            <h3>Nothing here yet</h3>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="period-table-card period-view" id="tableView" hidden>
+                        <div class="period-table-wrap">
+                            <table class="period-table">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Number</th>
+                                        <th>Description</th>
+                                        {% if item_type == 'day' %}
+                                            <th>Meals</th>
+                                            <th>Workouts</th>
+                                            <th>Water</th>
+                                        {% endif %}
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in items %}
+                                    <tr>
+                                        <td>
+                                            <div class="table-period-name">
+                                                <span class="table-period-icon">
+                                                    {% if item_type == 'month' %}
+                                                        <i class="fa-solid fa-calendar"></i>
+                                                    {% elif item_type == 'week' %}
+                                                        <i class="fa-solid fa-calendar-week"></i>
+                                                    {% else %}
+                                                        <i class="fa-solid fa-calendar-day"></i>
+                                                    {% endif %}
+                                                </span>
+                                                {{ item.title }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="period-number">
+                                                {% if item_type == 'month' %}Month {{ item.month_number }}
+                                                {% elif item_type == 'week' %}Week {{ item.week_number }}
+                                                {% else %}Day {{ item.day_number }}
+                                                {% endif %}
+                                            </span>
+                                        </td>
+                                        <td class="table-description">{{ item.description|truncatewords:16|default:"Open this item to manage the next level of content." }}</td>
+                                        {% if item_type == 'day' %}
+                                            <td>{{ item.program_items.count }}</td>
+                                            <td>{{ item.workout_items.count }}</td>
+                                            <td>{{ item.water_targets.count }}</td>
+                                        {% endif %}
+                                        <td>
+                                            {% if item_type == 'month' %}
+                                                <a href="{% url 'month_detail' month_id=item.pk %}" class="table-action"><i class="fa-solid fa-eye"></i> View Weeks</a>
+                                            {% elif item_type == 'week' %}
+                                                <a href="{% url 'week_detail' week_id=item.pk %}" class="table-action"><i class="fa-solid fa-eye"></i> View Days</a>
+                                            {% else %}
+                                                <a href="{% url 'day_content' day_id=item.pk %}" class="table-action"><i class="fa-solid fa-pen-to-square"></i> Manage Content</a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="{% if item_type == 'day' %}7{% else %}4{% endif %}">
+                                            <div class="empty-state">
+                                                <i class="fas fa-calendar"></i>
+                                                <h3>Nothing here yet</h3>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {% if paginator.num_pages > 1 %}
+                    <nav class="pagination-bar" aria-label="{{ plan.get_period_label }} pagination">
+                        <div class="pagination-summary">
+                            Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ paginator.count }} {{ plan.get_period_label|lower }}s
+                        </div>
+                        <div class="pagination-controls">
+                            {% if page_obj.has_previous %}
+                                <a class="pagination-link" href="?page=1" aria-label="First page"><i class="fa-solid fa-angles-left"></i></a>
+                                <a class="pagination-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous page"><i class="fa-solid fa-angle-left"></i></a>
+                            {% endif %}
+
+                            {% for page_number in paginator.page_range %}
+                                {% if page_number == page_obj.number %}
+                                    <span class="pagination-current" aria-current="page">{{ page_number }}</span>
+                                {% elif page_number >= page_obj.number|add:"-2" and page_number <= page_obj.number|add:"2" %}
+                                    <a class="pagination-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <a class="pagination-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next page"><i class="fa-solid fa-angle-right"></i></a>
+                                <a class="pagination-link" href="?page={{ paginator.num_pages }}" aria-label="Last page"><i class="fa-solid fa-angles-right"></i></a>
+                            {% endif %}
+                        </div>
+                    </nav>
+                    {% endif %}
+                </section>
+
+                <aside>
+                    <div class="side-header">
+                        <h3>Plan</h3>
+                        <a href="{% url 'plan_list' program.pk %}">Back <i class="fa-solid fa-angle-right"></i></a>
+                    </div>
+                    <a class="side-card" href="{% url 'plan_list' program.pk %}">
+                        <div>
+                            <h4>{{ plan.name }}</h4>
+                            <p>{{ plan.get_duration_display }}</p>
+                        </div>
+                        <span class="pill">Open</span>
+                    </a>
+                    <a class="side-card" href="{% url 'program_list' goal_type=goal_type %}">
+                        <div>
+                            <h4>{{ program.name }}</h4>
+                            <p>{{ formatted_goal_type }}</p>
+                        </div>
+                        <span class="pill">Program</span>
+                    </a>
+
+                    <div class="side-header" style="margin-top: 26px;">
+                        <h3>Admin Links</h3>
+                        <a href="{% url 'dashboard' %}">View All <i class="fa-solid fa-angle-right"></i></a>
+                    </div>
+                    <a class="side-card" href="{% url 'members' %}">
+                        <div>
+                            <h4>Members</h4>
+                            <p>User management</p>
+                        </div>
+                        <span class="pill">Open</span>
+                    </a>
+                    <a class="side-card" href="{% url 'referral' %}">
+                        <div>
+                            <h4>Referrals</h4>
+                            <p>Invite tracking</p>
+                        </div>
+                        <span class="pill">Open</span>
+                    </a>
+                </aside>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
     }
 
-    gridToggle.addEventListener('click', () => setView('grid'));
-    tableToggle.addEventListener('click', () => setView('table'));
+    const viewButtons = document.querySelectorAll('[data-view-button]');
+    const gridView = document.getElementById('gridView');
+    const tableView = document.getElementById('tableView');
+    const viewStorageKey = 'scalefit-day-list-view';
 
-    // Load saved view preference
-    const savedView = localStorage.getItem('dayListView');
-    if (savedView) setView(savedView);
+    function applyViewMode(selectedView, shouldPersist) {
+        const viewMode = selectedView === 'table' ? 'table' : 'grid';
+        const showTable = viewMode === 'table';
+
+        if (gridView && tableView) {
+            gridView.hidden = showTable;
+            tableView.hidden = !showTable;
+        }
+
+        viewButtons.forEach((item) => {
+            const isActive = item.dataset.viewButton === viewMode;
+            item.classList.toggle('active', isActive);
+            item.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+
+        if (shouldPersist) {
+            localStorage.setItem(viewStorageKey, viewMode);
+        }
+    }
+
+    applyViewMode(localStorage.getItem(viewStorageKey), false);
+
+    viewButtons.forEach((button) => {
+        button.addEventListener('click', function() {
+            applyViewMode(button.dataset.viewButton, true);
+        });
+    });
+
+    document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.querySelector('.mobile-toggle');
+        if (window.innerWidth <= 980 && sidebar && toggleBtn && !sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+    });
 </script>
-{% endblock %}
+</body>
+</html>

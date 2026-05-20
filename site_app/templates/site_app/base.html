@@ -1,4 +1,4 @@
-{% load static i18n %}
+{% load static i18n cloudinary_media %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:site_settings.default_language|default:'en' }}" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}">
 <head>
@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{% trans "ScaleFit" %}{% endblock %}</title>
   {% if site_settings and site_settings.favicon %}
-  <link rel="icon" href="{{ site_settings.favicon.url }}">
+  <link rel="icon" href="{{ site_settings.favicon|optimized_media_url:64 }}">
   {% endif %}
   <link rel="stylesheet" href="{% static 'css/user_theme.css' %}">
   <link rel="stylesheet" href="{% static 'site_app/css/site.css' %}">
@@ -38,7 +38,7 @@
 <nav class="nav">
   <a href="{% url 'site_home' %}" class="nav-brand">
     {% if site_settings and site_settings.site_logo %}
-    <img src="{{ site_settings.site_logo.url }}" alt="{% trans 'ScaleFit logo' %}" class="nav-logo">
+    <img src="{{ site_settings.site_logo|optimized_media_url:160 }}" alt="{% trans 'ScaleFit logo' %}" class="nav-logo">
     {% else %}
     <span class="icon"><i class="fas fa-dumbbell"></i></span>
     {% endif %}
@@ -74,16 +74,280 @@
 
 {% block content %}{% endblock %}
 
-<footer class="footer">
-  <p>© 2026 <strong>ScaleFit</strong> - {% trans "Transform Your Body, Transform Your Life" %}</p>
-  {% if site_settings %}
-  <p>
-    <a href="mailto:{{ site_settings.support_email }}">{{ site_settings.support_email }}</a>
-    {% if site_settings.support_phone %} · <a href="tel:{{ site_settings.support_phone }}">{{ site_settings.support_phone }}</a>{% endif %}
-    {% if site_settings.support_working_hours %} · {{ site_settings.support_working_hours }}{% endif %}
-    {% if site_settings.help_center_url %} · <a href="{{ site_settings.help_center_url }}" target="_blank" rel="noopener">{% trans "Help Center" %}</a>{% endif %}
-  </p>
-  {% endif %}
+<style>
+/* CTA Section */
+.cta-section {
+  width: min(1200px, calc(100% - 48px));
+  margin: 60px auto 40px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 20px;
+  padding: 48px 30px;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 16px 32px var(--primary-glow);
+  position: relative;
+  overflow: hidden;
+}
+.cta-content {
+  position: relative;
+  z-index: 2;
+}
+.cta-section h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+.cta-section p {
+  font-size: 1.05rem;
+  opacity: 0.9;
+  max-width: 500px;
+  margin: 0 auto 24px;
+}
+.cta-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.cta-btn {
+  padding: 12px 28px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.cta-btn:hover {
+  transform: translateY(-2px);
+}
+.cta-btn.primary-btn {
+  background: #fff;
+  color: var(--primary-dark);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+.cta-btn.secondary-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+.cta-btn.secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Modern Footer */
+.modern-footer {
+  background: var(--panel);
+  border-top: 1px solid var(--line);
+  padding: 60px 24px 24px;
+  margin-top: 40px;
+  color: var(--text-muted);
+}
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+.footer-brand .footer-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-color);
+  text-decoration: none;
+  margin-bottom: 16px;
+}
+.footer-brand .footer-logo span {
+  color: var(--primary);
+}
+.footer-brand .footer-logo i {
+  color: var(--primary);
+}
+.brand-desc {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-width: 320px;
+  margin: 0;
+}
+.footer-links h4, .footer-contact h4 {
+  color: var(--text-color);
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+.footer-links ul, .footer-contact ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.2s, transform 0.2s;
+  display: inline-block;
+}
+.footer-links a:hover {
+  color: var(--primary);
+  transform: translateX(4px);
+}
+.footer-contact li {
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.footer-contact i {
+  color: var(--primary);
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+}
+.footer-bottom {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 20px;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+}
+.social-icons {
+  display: flex;
+  gap: 16px;
+}
+.social-icons a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface-soft);
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+.social-icons a:hover {
+  background: var(--primary);
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px var(--primary-glow);
+}
+.copyright {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .footer-bottom {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+@media (max-width: 992px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 576px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .cta-section {
+    width: calc(100% - 32px);
+    padding: 36px 20px;
+  }
+  .cta-section h2 {
+    font-size: 1.5rem;
+  }
+}
+</style>
+
+<section class="cta-section reveal">
+  <div class="cta-content">
+    <h2>{% trans "Start Your Fitness Journey Today" %}</h2>
+    <p>{% trans "Discover personalized plans designed to help you reach your fitness goals." %}</p>
+    <div class="cta-buttons">
+      <a href="{% url 'site_goal_plans' 'weight_loss' %}" class="cta-btn primary-btn">{% trans "Explore Plans" %}</a>
+      <a href="#" class="cta-btn secondary-btn">{% trans "Join Now" %}</a>
+    </div>
+  </div>
+</section>
+
+<footer class="modern-footer reveal">
+  <div class="footer-container">
+    <div class="footer-grid">
+      <!-- Section 1: Branding -->
+      <div class="footer-brand">
+        <a href="{% url 'site_home' %}" class="footer-logo">
+          {% if site_settings and site_settings.site_logo %}
+          <img src="{{ site_settings.site_logo|optimized_media_url:160 }}" alt="ScaleFit" style="height:40px;">
+          {% else %}
+          <i class="fas fa-dumbbell"></i> Scale<span>Fit</span>
+          {% endif %}
+        </a>
+        <p class="brand-desc">{% trans "Transform your fitness journey with personalized workout plans, meal guidance, and progress tracking." %}</p>
+      </div>
+      
+      <!-- Section 2: Quick Links -->
+      <div class="footer-links">
+        <h4>{% trans "Quick Links" %}</h4>
+        <ul>
+          <li><a href="{% url 'site_home' %}">{% trans "Home" %}</a></li>
+          <li><a href="{% url 'site_goal_plans' 'weight_loss' %}">{% trans "Weight Loss" %}</a></li>
+          <li><a href="{% url 'site_goal_plans' 'weight_gain' %}">{% trans "Weight Gain" %}</a></li>
+          <li><a href="{% url 'site_goal_plans' 'weight_loss' %}">{% trans "Explore Plans" %}</a></li>
+          <li><a href="#">{% trans "Contact" %}</a></li>
+        </ul>
+      </div>
+
+      <!-- Section 3: Fitness Resources -->
+      <div class="footer-links">
+        <h4>{% trans "Fitness Resources" %}</h4>
+        <ul>
+          <li><a href="#">{% trans "Workout Plans" %}</a></li>
+          <li><a href="#">{% trans "Nutrition Guidance" %}</a></li>
+          <li><a href="#">{% trans "Health Tips" %}</a></li>
+          <li><a href="#">{% trans "Daily Challenges" %}</a></li>
+          <li><a href="#">{% trans "FAQs" %}</a></li>
+        </ul>
+      </div>
+
+      <!-- Section 4: Contact -->
+      <div class="footer-contact">
+        <h4>{% trans "Contact Information" %}</h4>
+        <ul>
+          <li><i class="fas fa-envelope"></i> {{ site_settings.support_email|default:"support@scalefit.com" }}</li>
+          <li><i class="fas fa-phone"></i> {{ site_settings.support_phone|default:"+1 234 567 890" }}</li>
+          <li><i class="fas fa-location-dot"></i> {% trans "123 Fitness Ave, NY" %}</li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Section 5: Bottom & Social -->
+    <div class="footer-bottom">
+      <p class="copyright">© 2026 ScaleFit. {% trans "All rights reserved." %}</p>
+      <div class="social-icons">
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+      </div>
+    </div>
+  </div>
 </footer>
 
 {% if site_settings.enable_live_chat %}
@@ -107,6 +371,16 @@
 
   document.querySelectorAll('[data-language-select]').forEach(select => {
     select.addEventListener('change', () => select.form.submit());
+  });
+
+  document.querySelectorAll('.plan-card[href], .goal-card[href], .item-card[href], [data-card-url]').forEach(card => {
+    card.addEventListener('click', event => {
+      const interactive = event.target.closest('a, button, video, input, select, textarea, label');
+      if (interactive && interactive !== card) return;
+
+      const url = card.getAttribute('href') || card.dataset.cardUrl;
+      if (url) window.location.href = url;
+    });
   });
 </script>
 

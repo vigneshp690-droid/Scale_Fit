@@ -1,108 +1,165 @@
-{% extends "fitness/base_admin.html" %}
 {% load static %}
-
-{% block title %}
-    {% if month %}{{ month.title }} - Weeks{% elif week %}{{ week.title }} - Days{% endif %} - ScaleFit
-{% endblock %}
-
-{% block content %}
-<div class="dashboard-grid">
-    <section>
-        <div class="view-toolbar">
-            <div class="view-heading">
-                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
-                    <a href="javascript:history.back()" style="color: var(--sf-orange); font-size: 0.8rem; font-weight: 800; text-decoration: none;">
-                        <i class="fa-solid fa-arrow-left"></i> Back
-                    </a>
-                </div>
-                <h2>
-                    {% if month %}{{ month.title }}{% elif week %}{{ week.title }}{% else %}Plan Schedule{% endif %}
-                </h2>
-                <p>{{ plan.name }} ({{ plan.get_plan_type_display }})</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ plan.name }} - ScaleFit</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin_theme.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-app">
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div><i class="fas fa-dumbbell"></i></div>
+                <span>ScaleFit Admin</span>
             </div>
-        </div>
+            <div class="section-title">Program Types</div>
+            <nav>
+                <a class="{% if goal_type == 'weight_loss' %}active{% endif %}" href="{% url 'program_list' goal_type='weight_loss' %}">Weight Loss</a>
+                <a class="{% if goal_type == 'weight_gain' %}active{% endif %}" href="{% url 'program_list' goal_type='weight_gain' %}">Weight Gain</a>
+            </nav>
+            <div class="section-title">Quick Links</div>
+            <nav>
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'members' %}">Members</a>
+                <a href="{% url 'settings' %}">Settings</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            </nav>
+        </aside>
 
-        {% if messages %}
-        <div class="messages-container">
-            {% for message in messages %}
-            <div class="alert {{ message.tags }}">
-                {{ message }}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        <div class="plans-grid">
-            {% for item in items %}
-            <div class="program-card" style="min-height: auto;">
-                <div class="program-card-top">
-                    <div class="program-icon">
-                        <i class="fa-solid fa-calendar-{% if item_type == 'week' %}week{% else %}day{% endif %}"></i>
-                    </div>
-                    <span class="status-badge badge-orange">
-                        {% if item_type == 'week' %}Week {{ item.week_number }}{% else %}Day {{ item.day_number }}{% endif %}
-                    </span>
+        <main class="main-content">
+            <div class="topbar">
+                <div class="page-heading">
+                    <h1>
+                        {% if month %}{{ month.title }} — Weeks
+                        {% elif week %}{{ week.title }} — Days
+                        {% endif %}
+                    </h1>
+                    <p>{{ plan.name }} ({{ plan.get_plan_type_display }})</p>
                 </div>
-                <h3>{{ item.title }}</h3>
-                {% if item.description %}
-                    <p class="program-description">{{ item.description|truncatewords:20 }}</p>
-                {% endif %}
-                
-                {% if item_type == 'day' %}
-                <div style="display: flex; gap: 12px; margin: 15px 0; padding: 12px; background: var(--sf-panel); border-radius: 8px;">
-                    <div style="text-align: center; flex: 1;">
-                        <span style="display: block; font-size: 1.1rem; font-weight: 800; color: var(--sf-ink);">{{ item.program_items.count }}</span>
-                        <span style="font-size: 0.65rem; font-weight: 800; color: var(--sf-muted); text-transform: uppercase;">Meals</span>
-                    </div>
-                    <div style="text-align: center; flex: 1;">
-                        <span style="display: block; font-size: 1.1rem; font-weight: 800; color: var(--sf-ink);">{{ item.workout_items.count }}</span>
-                        <span style="font-size: 0.65rem; font-weight: 800; color: var(--sf-muted); text-transform: uppercase;">Workouts</span>
-                    </div>
-                    <div style="text-align: center; flex: 1;">
-                        <span style="display: block; font-size: 1.1rem; font-weight: 800; color: var(--sf-ink);">{{ item.water_targets.count }}</span>
-                        <span style="font-size: 0.65rem; font-weight: 800; color: var(--sf-muted); text-transform: uppercase;">Water</span>
-                    </div>
-                </div>
-                {% endif %}
-
-                <div class="program-actions">
-                    {% if item_type == 'week' %}
-                        <a href="{% url 'week_detail' week_id=item.pk %}" class="btn" style="background: var(--sf-orange); color: white;">View Days</a>
-                    {% else %}
-                        <a href="{% url 'day_content' day_id=item.pk %}" class="btn" style="background: var(--sf-orange); color: white;">Manage Content</a>
+                <div class="breadcrumb">
+                    <a href="{% url 'program_list' goal_type=goal_type %}">{{ formatted_goal_type }}</a> >
+                    <a href="{% url 'plan_list' program_id=program.pk %}">{{ program.name }}</a> >
+                    <a href="{% url 'day_list' plan_id=plan.pk %}">{{ plan.name }}</a> >
+                    {% if month %}
+                        <span>{{ month.title }}</span>
+                    {% elif week %}
+                        {% if week.plan.plan_type == 'monthly' %}
+                            {# link back to month #}
+                            <a href="javascript:history.back()">Month</a> >
+                        {% endif %}
+                        <span>{{ week.title }}</span>
                     {% endif %}
                 </div>
-            </div>
-            {% empty %}
-            <div class="empty-state">
-                <i class="fa-solid fa-calendar"></i>
-                <h3>No items found</h3>
-                <p>Nothing has been added here yet.</p>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
-
-    <aside>
-        <div class="side-header">
-            <h3>Plan Overview</h3>
-            <a href="{% url 'plan_list' program.pk %}">Plans <i class="fa-solid fa-angle-right"></i></a>
-        </div>
-        <div class="side-panel">
-            <div class="side-card">
-                <div>
-                    <h4>{{ plan.name }}</h4>
-                    <p>{{ plan.plan_type|title }}</p>
+                <div class="topbar-actions">
+                    <a href="javascript:history.back()" class="btn-submit" style="background:var(--text-muted); padding: 12px 18px;">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
                 </div>
-                <span class="pill">{{ items.count }} Items</span>
             </div>
-        </div>
 
-        <div class="promo-panel">
-            <h3>Schedule Management</h3>
-            <p>Drill down into weeks and days to manage specific content for your members.</p>
-            <a href="{% url 'dashboard' %}" style="background: white; color: var(--sf-purple); padding: 8px 16px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-top: 10px;">Dashboard</a>
-        </div>
-    </aside>
-</div>
-{% endblock %}
+            <div class="card">
+                <div class="day-grid">
+                    {% for item in items %}
+                        <div class="day-card">
+                            <div class="day-header">
+                                <h3>{{ item.title }}</h3>
+                                <span class="day-number">
+                                    {% if item_type == 'week' %}Week {{ item.week_number }}
+                                    {% else %}Day {{ item.day_number }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            {% if item.description %}
+                                <p class="day-description">{{ item.description }}</p>
+                            {% endif %}
+                            {% if item_type == 'day' %}
+                            <div class="day-stats">
+                                <div class="stat">
+                                    <span class="stat-number">{{ item.program_items.count }}</span>
+                                    <span class="stat-label">Meals</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-number">{{ item.workout_items.count }}</span>
+                                    <span class="stat-label">Workouts</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-number">{{ item.water_targets.count }}</span>
+                                    <span class="stat-label">Water</span>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="day-actions">
+                                {% if item_type == 'week' %}
+                                    <a href="{% url 'week_detail' week_id=item.pk %}" class="btn-submit">
+                                        <i class="fas fa-calendar-day"></i> View Days
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'day_content' day_id=item.pk %}" class="btn-submit">
+                                        <i class="fas fa-edit"></i> Manage Content
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="empty-state">
+                            <i class="fas fa-calendar"></i>
+                            <h3>Nothing here yet</h3>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <style>
+        .admin-app {
+            --primary: #ff6818;
+            --primary-soft: #fff1e8;
+            --text-color: #243047;
+            --text-muted: #8592a6;
+            --border-color: #e8edf4;
+            --page-bg: #f3f6fa;
+            --surface-soft: #f7f9fc;
+            --surface: #ffffff;
+            --white: #ffffff;
+            --shadow: 0 12px 28px rgba(36, 48, 71, 0.08);
+        }
+        .breadcrumb { font-size: 14px; color: var(--text-muted); margin-top: 8px; }
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .day-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .day-card { border: 1px solid var(--border-color); border-radius: 12px; padding: 24px; background: var(--surface); transition: all 0.3s ease; }
+        .day-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); transform: translateY(-2px); }
+        .day-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .day-header h3 { margin: 0; color: var(--text-color); font-size: 18px; font-weight: 600; }
+        .day-number { background: var(--primary-soft); color: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .day-description { color: var(--text-muted); margin: 12px 0; line-height: 1.5; }
+        .day-stats { display: flex; justify-content: space-around; margin: 20px 0; padding: 16px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+        .stat { text-align: center; }
+        .stat-number { display: block; font-size: 24px; font-weight: 700; color: var(--text-color); }
+        .stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+        .day-actions { margin-top: 16px; }
+        .day-actions .btn-submit { width: 100%; text-align: center; padding: 12px; font-size: 14px; }
+        .empty-state { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .empty-state i { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+        .avatar,
+        .avatar-button,
+        .profile-menu-avatar {
+            overflow: hidden;
+        }
+
+        .avatar img,
+        .avatar-button img,
+        .profile-menu-avatar img {
+            display: block;
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
+        }
+    </style>
+</body>
+</html>

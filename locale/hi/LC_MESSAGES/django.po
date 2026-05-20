@@ -244,3 +244,81 @@ msgstr "रिमाइंडर हर"
 
 msgid "No water targets added yet."
 msgstr "अभी कोई पानी का लक्ष्य जोड़ा नहीं गया है।"
+
+msgid "Breakfast"
+msgstr "नाश्ता"
+
+msgid "Lunch"
+msgstr "दोपहर का भोजन"
+
+msgid "Dinner"
+msgstr "रात का खाना"
+
+msgid "Snacks"
+msgstr "नाश्ता (स्नैक)"
+
+msgid "Nutrition Facts"
+msgstr "पोषण जानकारी"
+
+msgid "Cals"
+msgstr "कैलोरी"
+
+msgid "kcal"
+msgstr "कैलोरी"
+
+msgid "Prot"
+msgstr "प्रोटीन"
+
+msgid "g"
+msgstr "ग्राम"
+
+msgid "Carbs"
+msgstr "कार्बोहाइड्रेट"
+
+msgid "Fat"
+msgstr "वसा"
+
+msgid "Fiber"
+msgstr "फाइबर"
+
+msgid "Vitamins"
+msgstr "विटामिन"
+
+msgid "Minerals"
+msgstr "खनिज"
+
+msgid "Workout Plans"
+msgstr "वर्कआउट योजना"
+
+msgid "Nutrition Guidance"
+msgstr "पोषण मार्गदर्शन"
+
+msgid "Health Tips"
+msgstr "स्वास्थ्य सुझाव"
+
+msgid "Daily Challenges"
+msgstr "दैनिक चुनौतियाँ"
+
+msgid "FAQs"
+msgstr "सामान्य प्रश्न"
+
+msgid "Start Your Fitness Journey Today"
+msgstr "आज ही अपनी फिटनेस यात्रा शुरू करें"
+
+msgid "Discover personalized plans designed to help you reach your fitness goals."
+msgstr "अपने फिटनेस लक्ष्यों को प्राप्त करने में मदद के लिए डिज़ाइन की गई व्यक्तिगत योजनाओं की खोज करें।"
+
+msgid "Join Now"
+msgstr "अभी जुड़ें"
+
+msgid "Calories"
+msgstr "कैलोरी"
+
+msgid "Protein"
+msgstr "प्रोटीन"
+
+msgid "Carbohydrates"
+msgstr "कार्बोहाइड्रेट"
+
+msgid "Fats"
+msgstr "वसा"

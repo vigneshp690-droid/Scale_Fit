@@ -1,6 +1,6 @@
 {% extends 'site_app/base.html' %}
 {% load i18n %}
-{% block title %}{{ plan.name }} — {% trans "ScaleFit" %}{% endblock %}
+{% block title %}{{ plan.translated_name|default:plan.name }} — {% trans "ScaleFit" %}{% endblock %}
 
 {% block content %}
 <div class="page-hero">
@@ -9,9 +9,9 @@
     <span class="sep">/</span>
     <a href="{% url 'site_goal_plans' goal_type %}">{% if goal_type == 'weight_loss' %}{% trans "Weight Loss" %}{% else %}{% trans "Weight Gain" %}{% endif %}</a>
     <span class="sep">/</span>
-    <span class="current">{{ plan.name }}</span>
+    <span class="current">{{ plan.translated_name|default:plan.name }}</span>
   </div>
-  <h1>{{ plan.name }}</h1>
+  <h1>{{ plan.translated_name|default:plan.name }}</h1>
   <p>
     {{ plan.get_duration_display }} —
     {% if item_type == 'monthly' %}{% trans "Follow each month for best results" %}
@@ -33,7 +33,7 @@
         {% elif item_type == 'weekly' %}{{ item.week_number }}
         {% else %}{{ item.day_number }}{% endif %}
       </div>
-      <h4>{{ item.title }}</h4>
+      <h4>{{ item.translated_title|default:item.title }}</h4>
       <div class="item-sub">
         {% if item_type == 'monthly' %}{% trans "4 Weeks Inside" %}
         {% elif item_type == 'weekly' %}{% trans "7 Days Inside" %}

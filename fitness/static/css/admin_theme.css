@@ -10,3 +10,10 @@
     --sf-panel: #f8fafc;
     --sf-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
 }
+
+/* Highlight Weight Loss and Weight Gain texts in Django admin */
+td.field-goal_type,
+.field-goal_type .readonly {
+    color: #ff6818 !important;
+    font-weight: 600;
+}

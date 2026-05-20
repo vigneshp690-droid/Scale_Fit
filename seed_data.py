@@ -281,7 +281,10 @@ def seed_day(day, goal_type, day_num):
             goal_type=goal_type, meal_category=cat,
             image=get_meal_img(cat, day_num + order),
             start_time=start, end_time=end,
-            display_order=order, is_active=True
+            display_order=order, is_active=True,
+            calories=450 if goal_type == 'weight_loss' else 750,
+            protein=30.0, carbs=45.0, fat=15.0, fiber=8.0,
+            vitamins='Vitamin A, Vitamin C', minerals='Iron, Calcium'
         )
 
     # 2 workouts

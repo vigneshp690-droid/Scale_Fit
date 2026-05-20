@@ -2,6 +2,29 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
+from django.utils.translation import get_language
+
+from .media_storage import cloudinary_upload_path
+
+try:
+    from cloudinary.models import CloudinaryField
+except ImportError:
+    CloudinaryField = None
+
+
+def cloudinary_or_file_field(resource_type, folder, fallback_field=models.FileField, **kwargs):
+    if CloudinaryField:
+        return CloudinaryField(resource_type=resource_type, folder=f'cloudinary/{folder}', **kwargs)
+    return fallback_field(upload_to=cloudinary_upload_path(folder), **kwargs)
+
+
+def get_localized_field_value(instance, field_name):
+    language_code = (get_language() or 'en').split('-')[0]
+    if language_code in {'ta', 'hi'}:
+        translated_value = getattr(instance, f'{field_name}_{language_code}', '')
+        if translated_value:
+            return translated_value
+    return getattr(instance, field_name, '')
 
 
 class SiteSettings(models.Model):
@@ -105,8 +128,10 @@ class SiteSettings(models.Model):
     primary_theme_color = models.CharField(max_length=7, default='#ff6417')
     secondary_theme_color = models.CharField(max_length=7, default='#19b8c9')
     enable_dark_mode = models.BooleanField(default=False)
-    site_logo = models.ImageField(upload_to='site_settings/', blank=True, null=True)
-    favicon = models.ImageField(upload_to='site_settings/', blank=True, null=True)
+    # Site branding uploads to Cloudinary when configured. The database stores
+    # only the media path/URL, not binary image data.
+    site_logo = models.ImageField(upload_to=cloudinary_upload_path('site_settings'), blank=True, null=True)
+    favicon = models.ImageField(upload_to=cloudinary_upload_path('site_settings'), blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -163,7 +188,16 @@ class SiteSettings(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    profile_image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    # Profile and trainer images use Cloudinary-backed storage for scalable
+    # uploads while legacy local profile paths remain readable.
+    profile_image = models.ImageField(upload_to=cloudinary_upload_path('profile_images'), blank=True, null=True)
+    trainer_image = cloudinary_or_file_field(
+        'image',
+        'trainer_images',
+        fallback_field=models.ImageField,
+        blank=True,
+        null=True,
+    )
     mobile_number = models.CharField(
         max_length=10,
         validators=[
@@ -250,8 +284,12 @@ class Program(models.Model):
     ]
 
     name = models.CharField(max_length=100)
+    name_ta = models.CharField(max_length=100, blank=True)
+    name_hi = models.CharField(max_length=100, blank=True)
     goal_type = models.CharField(max_length=20, choices=GOAL_CHOICES)
     description = models.TextField(blank=True)
+    description_ta = models.TextField(blank=True)
+    description_hi = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -263,6 +301,14 @@ class Program(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.get_goal_type_display()})"
+
+    @property
+    def translated_name(self):
+        return get_localized_field_value(self, 'name')
+
+    @property
+    def translated_description(self):
+        return get_localized_field_value(self, 'description')
 
     def save(self, *args, **kwargs):
         settings = SiteSettings.get_solo()
@@ -283,10 +329,14 @@ class Plan(models.Model):
 
     program = models.ForeignKey(Program, on_delete=models.CASCADE, related_name='plans')
     name = models.CharField(max_length=100)
+    name_ta = models.CharField(max_length=100, blank=True)
+    name_hi = models.CharField(max_length=100, blank=True)
     plan_type = models.CharField(max_length=20, choices=PLAN_TYPE_CHOICES, default=PLAN_DAY)
     count = models.PositiveIntegerField(default=1, help_text='Number of days/weeks/months')
     display_order = models.PositiveIntegerField(default=0)
     description = models.TextField(blank=True)
+    description_ta = models.TextField(blank=True)
+    description_hi = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -298,6 +348,14 @@ class Plan(models.Model):
 
     def __str__(self):
         return f"{self.program.name} - {self.name} ({self.get_plan_type_display()})"
+
+    @property
+    def translated_name(self):
+        return get_localized_field_value(self, 'name')
+
+    @property
+    def translated_description(self):
+        return get_localized_field_value(self, 'description')
 
     def get_period_count(self):
         """Get count based on plan type"""
@@ -339,7 +397,11 @@ class Week(models.Model):
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE, related_name='weeks')
     week_number = models.PositiveIntegerField()
     title = models.CharField(max_length=200, blank=True)
+    title_ta = models.CharField(max_length=200, blank=True)
+    title_hi = models.CharField(max_length=200, blank=True)
     description = models.TextField(blank=True)
+    description_ta = models.TextField(blank=True)
+    description_hi = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -353,6 +415,14 @@ class Week(models.Model):
     def __str__(self):
         return f"Week {self.week_number} - {self.plan.name}"
 
+    @property
+    def translated_title(self):
+        return get_localized_field_value(self, 'title')
+
+    @property
+    def translated_description(self):
+        return get_localized_field_value(self, 'description')
+
     def save(self, *args, **kwargs):
         if not self.title:
             self.title = f"Week {self.week_number}"
@@ -364,7 +434,11 @@ class Month(models.Model):
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE, related_name='months')
     month_number = models.PositiveIntegerField()
     title = models.CharField(max_length=200, blank=True)
+    title_ta = models.CharField(max_length=200, blank=True)
+    title_hi = models.CharField(max_length=200, blank=True)
     description = models.TextField(blank=True)
+    description_ta = models.TextField(blank=True)
+    description_hi = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -378,6 +452,14 @@ class Month(models.Model):
     def __str__(self):
         return f"Month {self.month_number} - {self.plan.name}"
 
+    @property
+    def translated_title(self):
+        return get_localized_field_value(self, 'title')
+
+    @property
+    def translated_description(self):
+        return get_localized_field_value(self, 'description')
+
     def save(self, *args, **kwargs):
         if not self.title:
             self.title = f"Month {self.month_number}"
@@ -389,7 +471,11 @@ class Day(models.Model):
     week = models.ForeignKey(Week, on_delete=models.CASCADE, related_name='days', null=True, blank=True)
     day_number = models.PositiveIntegerField()
     title = models.CharField(max_length=200, blank=True)
+    title_ta = models.CharField(max_length=200, blank=True)
+    title_hi = models.CharField(max_length=200, blank=True)
     description = models.TextField(blank=True)
+    description_ta = models.TextField(blank=True)
+    description_hi = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -403,6 +489,14 @@ class Day(models.Model):
         if self.week:
             return f"Day {self.day_number} - {self.week.title}"
         return f"Day {self.day_number} - {self.plan.name}"
+
+    @property
+    def translated_title(self):
+        return get_localized_field_value(self, 'title')
+
+    @property
+    def translated_description(self):
+        return get_localized_field_value(self, 'description')
 
     def save(self, *args, **kwargs):
         if not self.title:
@@ -428,15 +522,49 @@ class ProgramItem(models.Model):
         (DINNER, 'Dinner'),
         (SNACKS, 'Snacks'),
     ]
+    DIET_VEGETARIAN = 'vegetarian'
+    DIET_NON_VEGETARIAN = 'non_vegetarian'
+    DIET_VEGAN = 'vegan'
+    DIET_TYPE_CHOICES = [
+        (DIET_VEGETARIAN, 'Vegetarian'),
+        (DIET_NON_VEGETARIAN, 'Non-vegetarian'),
+        (DIET_VEGAN, 'Vegan'),
+    ]
 
     day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name='program_items', null=True, blank=True)
     title = models.CharField(max_length=200)
-    image = models.ImageField(upload_to='program_images/', blank=True, null=True)
+    title_ta = models.CharField(max_length=200, blank=True)
+    title_hi = models.CharField(max_length=200, blank=True)
+    # Meal media supports images/GIFs plus optional Cloudinary-hosted videos.
+    image = models.ImageField(upload_to=cloudinary_upload_path('program_images'), blank=True, null=True)
+    video = cloudinary_or_file_field('video', 'program_videos', blank=True, null=True)
     description = models.TextField(blank=True)
+    description_ta = models.TextField(blank=True)
+    description_hi = models.TextField(blank=True)
     goal_type = models.CharField(max_length=20, choices=GOAL_CHOICES)
     meal_category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
+
+    # Nutritional Information (Universal Standard)
+    calories = models.PositiveIntegerField(blank=True, null=True, help_text="Total calories (kcal)")
+    protein = models.FloatField(blank=True, null=True, help_text="Protein in grams")
+    carbs = models.FloatField(blank=True, null=True, help_text="Carbohydrates in grams")
+    fat = models.FloatField(blank=True, null=True, help_text="Fat in grams")
+    fiber = models.FloatField(blank=True, null=True, help_text="Fiber in grams")
+    vitamins = models.CharField(max_length=255, blank=True, help_text="e.g., Vitamin A, Vitamin C")
+    minerals = models.CharField(max_length=255, blank=True, help_text="e.g., Iron, Calcium")
+    hydration = models.CharField(max_length=120, blank=True, help_text="e.g., Drink 500ml water")
+    hydration_ta = models.CharField(max_length=120, blank=True)
+    hydration_hi = models.CharField(max_length=120, blank=True)
+    benefits = models.CharField(max_length=255, blank=True, help_text="e.g., High protein, Muscle recovery")
+    benefits_ta = models.CharField(max_length=255, blank=True)
+    benefits_hi = models.CharField(max_length=255, blank=True)
+    diet_type = models.CharField(max_length=24, choices=DIET_TYPE_CHOICES, blank=True)
+    sugar = models.FloatField(blank=True, null=True, help_text="Sugar in grams")
+    sodium = models.FloatField(blank=True, null=True, help_text="Sodium in milligrams")
+    cholesterol = models.FloatField(blank=True, null=True, help_text="Cholesterol in milligrams")
+
     display_order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -450,6 +578,22 @@ class ProgramItem(models.Model):
     def __str__(self):
         return f"{self.title} (Day {self.day.day_number})"
 
+    @property
+    def translated_title(self):
+        return get_localized_field_value(self, 'title')
+
+    @property
+    def translated_description(self):
+        return get_localized_field_value(self, 'description')
+
+    @property
+    def translated_hydration(self):
+        return get_localized_field_value(self, 'hydration')
+
+    @property
+    def translated_benefits(self):
+        return get_localized_field_value(self, 'benefits')
+
 
 class WorkoutItem(models.Model):
     WEIGHT_LOSS = 'weight_loss'
@@ -461,8 +605,15 @@ class WorkoutItem(models.Model):
 
     day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name='workout_items', null=True, blank=True)
     title = models.CharField(max_length=200)
-    image = models.ImageField(upload_to='workout_images/', blank=True, null=True)
+    title_ta = models.CharField(max_length=200, blank=True)
+    title_hi = models.CharField(max_length=200, blank=True)
+    # Images support JPG/PNG/WEBP/GIF uploads. Videos are optional and stream
+    # from Cloudinary when configured, keeping SQLite limited to paths/URLs.
+    image = models.ImageField(upload_to=cloudinary_upload_path('workout_images'), blank=True, null=True)
+    video = cloudinary_or_file_field('video', 'workout_videos', blank=True, null=True)
     description = models.TextField(blank=True)
+    description_ta = models.TextField(blank=True)
+    description_hi = models.TextField(blank=True)
     duration = models.CharField(max_length=100, blank=True)
     goal_type = models.CharField(max_length=20, choices=GOAL_CHOICES)
     display_order = models.PositiveIntegerField(default=0)
@@ -478,10 +629,73 @@ class WorkoutItem(models.Model):
     def __str__(self):
         return f"{self.title} (Day {self.day.day_number})"
 
+    @property
+    def translated_title(self):
+        return get_localized_field_value(self, 'title')
+
+    @property
+    def translated_description(self):
+        return get_localized_field_value(self, 'description')
+
     def save(self, *args, **kwargs):
         if not self.duration:
             self.duration = SiteSettings.get_solo().workout_duration_label
         super().save(*args, **kwargs)
+
+
+class DayMedia(models.Model):
+    WORKOUT_VIDEO = 'workout_video'
+    EXERCISE_GIF = 'exercise_gif'
+    EXERCISE_IMAGE = 'exercise_image'
+    MEAL_IMAGE = 'meal_image'
+    MEDIA_TYPE_CHOICES = [
+        (WORKOUT_VIDEO, 'Workout Video'),
+        (EXERCISE_GIF, 'Exercise GIF'),
+        (EXERCISE_IMAGE, 'Exercise Image'),
+        (MEAL_IMAGE, 'Meal Image'),
+    ]
+
+    day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name='media_items')
+    media_type = models.CharField(max_length=24, choices=MEDIA_TYPE_CHOICES)
+    media_file = cloudinary_or_file_field('auto', 'day_media', blank=True, null=True)
+    title = models.CharField(max_length=200)
+    title_ta = models.CharField(max_length=200, blank=True)
+    title_hi = models.CharField(max_length=200, blank=True)
+    description = models.TextField(blank=True)
+    description_ta = models.TextField(blank=True)
+    description_hi = models.TextField(blank=True)
+    display_order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['display_order', 'title']
+        verbose_name = 'Day Media'
+        verbose_name_plural = 'Day Media'
+
+    def __str__(self):
+        return f"{self.title} - {self.get_media_type_display()} (Day {self.day.day_number})"
+
+    @property
+    def translated_title(self):
+        return get_localized_field_value(self, 'title')
+
+    @property
+    def translated_description(self):
+        return get_localized_field_value(self, 'description')
+
+    @property
+    def is_video(self):
+        return self.media_type == self.WORKOUT_VIDEO
+
+    @property
+    def is_exercise_demo(self):
+        return self.media_type in {self.EXERCISE_GIF, self.EXERCISE_IMAGE}
+
+    @property
+    def is_meal_image(self):
+        return self.media_type == self.MEAL_IMAGE
 
 
 class WaterTarget(models.Model):
@@ -494,7 +708,11 @@ class WaterTarget(models.Model):
 
     day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name='water_targets', null=True, blank=True)
     target_amount = models.CharField(max_length=100)
+    target_amount_ta = models.CharField(max_length=100, blank=True)
+    target_amount_hi = models.CharField(max_length=100, blank=True)
     reminder_note = models.TextField(blank=True)
+    reminder_note_ta = models.TextField(blank=True)
+    reminder_note_hi = models.TextField(blank=True)
     goal_type = models.CharField(max_length=20, choices=GOAL_CHOICES)
     display_order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
@@ -508,6 +726,14 @@ class WaterTarget(models.Model):
 
     def __str__(self):
         return f"{self.target_amount} (Day {self.day.day_number})"
+
+    @property
+    def translated_target_amount(self):
+        return get_localized_field_value(self, 'target_amount')
+
+    @property
+    def translated_reminder_note(self):
+        return get_localized_field_value(self, 'reminder_note')
 
     @property
     def reminder_interval_minutes(self):

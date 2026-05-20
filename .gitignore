@@ -1,0 +1,12 @@
+db.sqlite3
+.env
+env
+env/*
+
+*__pycache__/*
+**/__pycache__/*
+*/migrations/*
+!fitness/migrations/0025_cloudinary_media_support.py
+!fitness/migrations/0026_alter_userprofile_trainer_image_and_more.py
+*/__pycache__/*
+fitness/__pycache__/__init__.cpython-312.pyc

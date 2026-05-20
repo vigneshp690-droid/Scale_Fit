@@ -1,121 +1,987 @@
-{% extends "fitness/base_admin.html" %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral - ScaleFit Admin</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard_premium.css' %}">
+    <link rel="stylesheet" href="{% static 'css/premium_components.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .admin-app {
+            --sf-orange: #ff6818;
+            --sf-orange-soft: #fff1e8;
+            --sf-cyan: #18bfd0;
+            --sf-purple: #8a58eb;
+            --sf-ink: #243047;
+            --sf-muted: #8592a6;
+            --sf-line: #e8edf4;
+            --sf-panel: #f3f6fa;
+            --sf-shadow: 0 12px 28px rgba(36, 48, 71, 0.08);
+        }
 
-{% block title %}Referral - ScaleFit Admin{% endblock %}
+        .sr-only {
+            border: 0;
+            clip: rect(0, 0, 0, 0);
+            height: 1px;
+            margin: -1px;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            white-space: nowrap;
+            width: 1px;
+        }
 
-{% block content %}
-<div class="dashboard-grid">
-    <section>
-        <div class="metric-row" style="margin-top: 0;">
-            <div class="metric-card cyan" style="min-height: auto;">
-                <span class="metric-icon"><i class="fa-solid fa-users"></i></span>
-                <h3>Total Refers</h3>
-                <p style="font-size: 1.5rem; font-weight: 800;">{{ referral_count|default:"0" }}</p>
-            </div>
-            <div class="metric-card orange" style="min-height: auto;">
-                <span class="metric-icon"><i class="fa-solid fa-user-check"></i></span>
-                <h3>Active Referrals</h3>
-                <p style="font-size: 1.5rem; font-weight: 800;">{{ referral_count|default:"0" }}</p>
-            </div>
-            <div class="metric-card purple" style="min-height: auto;">
-                <span class="metric-icon"><i class="fa-solid fa-gift"></i></span>
-                <h3>Rewards</h3>
-                <p style="font-size: 1.5rem; font-weight: 800;">0</p>
-            </div>
-        </div>
+        body {
+            background: var(--sf-panel);
+            color: var(--sf-ink);
+            font-family: "Inter", sans-serif;
+            min-height: 100vh;
+            padding: 0;
+        }
 
-        <div class="table-panel" style="margin-top: 24px;">
-            <div class="panel-title" style="padding: 0 10px;">
-                <h3>Referral Activity</h3>
-            </div>
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Date Joined</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for referral in referrals %}
-                    <tr>
-                        <td>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <span class="food-dot" style="background: var(--sf-orange-soft); color: var(--sf-orange);">
-                                    {{ referral.username|make_list|first|upper }}
-                                </span>
-                                <div>
-                                    <div style="font-weight: 800; color: var(--sf-ink);">{{ referral.get_full_name|default:referral.username }}</div>
-                                    <div style="font-size: 0.7rem; color: var(--sf-muted);">@{{ referral.username }}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>{{ referral.date_joined|date:"M d, Y" }}</td>
-                        <td>
-                            <span class="pill" style="background: #dcfce7; color: #16a34a; padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 800;">
-                                Joined
-                            </span>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="3" style="text-align: center; padding: 40px;">
-                            <div style="color: var(--sf-muted);">
-                                <i class="fa-solid fa-share-nodes" style="font-size: 2.5rem; margin-bottom: 12px; display: block; opacity: 0.3;"></i>
-                                <p style="font-weight: 800;">No referral activity yet</p>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </section>
+        .app-container {
+            background: #ffffff;
+            display: grid;
+            grid-template-columns: 190px minmax(0, 1fr);
+            min-height: 100vh;
+            overflow: hidden;
+            width: 100%;
+        }
 
-    <aside>
-        <div class="side-header">
-            <h3>Your Referral Code</h3>
-        </div>
-        <div class="side-panel" style="padding: 18px;">
-            <div style="background: var(--sf-panel); border-radius: 8px; padding: 16px; margin-bottom: 15px; border: 1px solid var(--sf-line);">
-                <div style="font-size: 0.7rem; color: var(--sf-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 8px;">Unique Code</div>
-                <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <span id="refCode" style="font-family: monospace; font-size: 1.2rem; font-weight: 800; letter-spacing: 2px;">{{ referral_code|default:"SF-ADMIN" }}</span>
-                    <button onclick="copyToClipboard('refCode')" style="background: none; border: 0; color: var(--sf-orange); cursor: pointer;"><i class="fa-regular fa-copy"></i></button>
-                </div>
-            </div>
-            <button class="btn" style="background: var(--sf-orange); color: white; width: 100%; font-size: 0.8rem; font-weight: 800;" onclick="copyToClipboard('refLink')">Copy Referral Link</button>
-            <input type="hidden" id="refLink" value="{{ referral_link }}">
-        </div>
+        .sidebar {
+            background: #ffffff;
+            border-right: 1px solid var(--sf-line);
+            box-shadow: none;
+            color: var(--sf-muted);
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            min-height: 100%;
+            position: static;
+            width: auto;
+        }
 
-        <div class="promo-panel">
-            <h3>How it works</h3>
-            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
-                <div style="display: flex; gap: 10px;">
-                    <span style="width: 24px; height: 24px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; flex-shrink: 0;">1</span>
-                    <p style="font-size: 0.75rem; color: rgba(255,255,255,0.9);">Share your code or link with potential members.</p>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <span style="width: 24px; height: 24px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; flex-shrink: 0;">2</span>
-                    <p style="font-size: 0.75rem; color: rgba(255,255,255,0.9);">They register using your unique credentials.</p>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <span style="width: 24px; height: 24px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; flex-shrink: 0;">3</span>
-                    <p style="font-size: 0.75rem; color: rgba(255,255,255,0.9);">Track their activity and manage their programs.</p>
-                </div>
-            </div>
+        .sidebar-header {
+            align-items: center;
+            border-bottom: 1px solid var(--sf-line);
+            display: flex;
+            justify-content: center;
+            min-height: 72px;
+            padding: 0 18px;
+        }
+
+        .sidebar-header h2 {
+            color: var(--sf-orange);
+            font-size: 0.98rem;
+            font-weight: 800;
+            gap: 10px;
+            letter-spacing: 0;
+        }
+
+        .sidebar-header h2 i {
+            color: var(--sf-orange);
+            filter: none;
+        }
+
+        .mobile-close {
+            color: var(--sf-muted);
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 12px;
+            list-style: none;
+            padding: 22px 20px;
+        }
+
+        .sidebar-menu a {
+            border-radius: 6px;
+            color: #758296;
+            display: flex;
+            font-size: 0.83rem;
+            font-weight: 700;
+            gap: 14px;
+            padding: 12px 14px;
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+
+        .sidebar-menu a i {
+            color: #8290a3;
+            font-size: 1rem;
+            text-align: center;
+            width: 18px;
+        }
+
+        .sidebar-menu li.active a {
+            background: var(--sf-orange);
+            box-shadow: 0 10px 22px rgba(255, 104, 24, 0.22);
+            color: #ffffff;
+        }
+
+        .sidebar-menu li.active a i {
+            animation: none;
+            color: #ffffff;
+        }
+
+        .sidebar-menu li:not(.active):not(.logout-item) a:hover {
+            background: var(--sf-orange-soft);
+            color: var(--sf-orange);
+            transform: translateX(3px);
+        }
+
+        .sidebar-menu li:not(.active):not(.logout-item) a:hover i {
+            color: var(--sf-orange);
+            transform: none;
+        }
+
+        .logout-item {
+            border-top: 1px solid var(--sf-line);
+            margin-top: auto;
+            padding-top: 14px;
+        }
+
+        .main-wrapper {
+            background: var(--sf-panel);
+            display: flex;
+            flex-direction: column;
+            margin-left: 0;
+            min-width: 0;
+            width: auto;
+        }
+
+        .topbar {
+            align-items: center;
+            background: #ffffff;
+            border-bottom: 1px solid var(--sf-line);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+            display: flex;
+            gap: 24px;
+            justify-content: space-between;
+            min-height: 72px;
+            padding: 0 26px;
+            position: static;
+            z-index: 20;
+        }
+
+        .topbar-left {
+            align-items: center;
+            display: flex;
+            flex: 1 1 auto;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .topbar-left h1 {
+            color: var(--sf-ink);
+            font-size: 0.95rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .mobile-toggle {
+            background: none;
+            border: 0;
+            color: var(--sf-ink);
+            display: none;
+            font-size: 1.2rem;
+        }
+
+        .search-box {
+            align-items: center;
+            background: #f7f9fc;
+            border: 1px solid var(--sf-line);
+            border-radius: 8px;
+            display: flex;
+            flex: 1 1 auto;
+            gap: 10px;
+            height: 34px;
+            min-width: 0;
+            padding: 0 12px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+        }
+
+        .search-box:focus-within {
+            border-color: rgba(255, 122, 0, 0.45);
+            box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.08);
+        }
+
+        .search-box i {
+            color: #9aa6b8;
+            font-size: 0.9rem;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: 0;
+            color: var(--sf-ink);
+            font-size: 0.84rem;
+            min-width: 0;
+            outline: 0;
+            width: 100%;
+        }
+
+        .topbar-right {
+            align-items: center;
+            display: flex;
+            gap: 14px;
+        }
+
+        .icon-btn,
+        .notification-btn {
+            align-items: center;
+            background: transparent;
+            border: 0;
+            color: #728098;
+            display: inline-flex;
+            font-size: 0.95rem;
+            height: 32px;
+            justify-content: center;
+            position: relative;
+            width: 32px;
+        }
+
+        .notification-btn .badge {
+            background: var(--sf-orange);
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            height: 8px;
+            position: absolute;
+            right: 7px;
+            top: 7px;
+            width: 8px;
+        }
+
+        .user-profile {
+            align-items: center;
+            display: flex;
+            gap: 10px;
+            position: relative;
+        }
+
+        .avatar-button {
+            align-items: center;
+            background: linear-gradient(135deg, #ffb377, var(--sf-orange));
+            border: 0;
+            border-radius: 50%;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            font-size: 0.9rem;
+            font-weight: 800;
+            height: 36px;
+            justify-content: center;
+            width: 36px;
+        }
+
+        .profile-menu {
+            background: #ffffff;
+            border: 1px solid var(--sf-line);
+            border-radius: 8px;
+            box-shadow: 0 18px 38px rgba(36, 48, 71, 0.14);
+            min-width: 255px;
+            opacity: 0;
+            padding: 14px;
+            pointer-events: none;
+            position: absolute;
+            right: 0;
+            top: calc(100% + 12px);
+            transform: translateY(-6px);
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            z-index: 30;
+        }
+
+        .user-profile.open .profile-menu {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .profile-menu::before {
+            background: #ffffff;
+            border-left: 1px solid var(--sf-line);
+            border-top: 1px solid var(--sf-line);
+            content: "";
+            height: 10px;
+            position: absolute;
+            right: 13px;
+            top: -6px;
+            transform: rotate(45deg);
+            width: 10px;
+        }
+
+        .profile-menu-header {
+            align-items: center;
+            display: flex;
+            gap: 12px;
+            padding-bottom: 12px;
+        }
+
+        .profile-menu-avatar {
+            align-items: center;
+            background: var(--sf-orange-soft);
+            border-radius: 50%;
+            color: var(--sf-orange);
+            display: flex;
+            flex: 0 0 auto;
+            font-size: 0.95rem;
+            font-weight: 800;
+            height: 40px;
+            justify-content: center;
+            width: 40px;
+        }
+
+        .profile-menu-name {
+            color: var(--sf-ink);
+            font-size: 0.9rem;
+            font-weight: 800;
+            line-height: 1.25;
+            margin: 0;
+        }
+
+        .profile-menu-username {
+            color: var(--sf-muted);
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin: 3px 0 0;
+        }
+
+        .profile-details {
+            border-top: 1px solid var(--sf-line);
+            display: grid;
+            gap: 9px;
+            padding: 12px 0;
+        }
+
+        .profile-detail {
+            align-items: center;
+            color: var(--sf-muted);
+            display: flex;
+            font-size: 0.76rem;
+            font-weight: 700;
+            gap: 9px;
+            min-width: 0;
+        }
+
+        .profile-detail i {
+            color: var(--sf-orange);
+            flex: 0 0 15px;
+            text-align: center;
+        }
+
+        .profile-detail span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .profile-menu-actions {
+            border-top: 1px solid var(--sf-line);
+            padding-top: 10px;
+        }
+
+        .profile-menu-actions a {
+            align-items: center;
+            border-radius: 6px;
+            color: var(--sf-orange);
+            display: flex;
+            font-size: 0.78rem;
+            font-weight: 800;
+            gap: 9px;
+            padding: 9px 10px;
+            text-decoration: none;
+        }
+
+        .profile-menu-actions a:hover {
+            background: var(--sf-orange-soft);
+        }
+
+        .content-area {
+            max-width: none;
+            padding: 26px;
+            width: 100%;
+        }
+
+        .referral-layout {
+            display: grid;
+            gap: 24px;
+            grid-template-columns: minmax(0, 1fr) 300px;
+        }
+
+        .referral-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            border-radius: 8px;
+            box-shadow: var(--sf-shadow);
+            color: #ffffff;
+            min-height: 124px;
+            overflow: hidden;
+            padding: 18px;
+            position: relative;
+        }
+
+        .stat-card::after {
+            background: rgba(255, 255, 255, 0.14);
+            border-radius: 50%;
+            bottom: -38px;
+            content: "";
+            height: 120px;
+            position: absolute;
+            right: -26px;
+            width: 120px;
+        }
+
+        .stat-card.cyan { background: var(--sf-cyan); }
+        .stat-card.orange { background: var(--sf-orange); }
+        .stat-card.purple { background: var(--sf-purple); }
+
+        .stat-card i {
+            align-items: center;
+            background: rgba(0, 0, 0, 0.13);
+            border-radius: 4px;
+            display: inline-flex;
+            height: 34px;
+            justify-content: center;
+            margin-bottom: 10px;
+            width: 34px;
+        }
+
+        .stat-label {
+            font-size: 0.78rem;
+            font-weight: 800;
+            opacity: 0.86;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-top: 5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-sub {
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin-top: 5px;
+            opacity: 0.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .panel-card {
+            background: #ffffff;
+            border: 1px solid var(--sf-line);
+            border-radius: 8px;
+            box-shadow: var(--sf-shadow);
+            padding: 20px;
+        }
+
+        .panel-card h2,
+        .panel-card h3 {
+            color: var(--sf-ink);
+            font-size: 1rem;
+            font-weight: 800;
+            margin: 0 0 16px;
+        }
+
+        .ref-table-wrap {
+            overflow-x: auto;
+        }
+
+        .ref-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .ref-table th {
+            border-bottom: 1px solid var(--sf-line);
+            color: #68758a;
+            font-size: 0.76rem;
+            font-weight: 800;
+            padding: 0 12px 12px;
+            text-align: left;
+            text-transform: uppercase;
+        }
+
+        .ref-table td {
+            border-bottom: 1px solid #f0f3f7;
+            color: #526073;
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 14px 12px;
+        }
+
+        .ref-table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .user-avatar {
+            align-items: center;
+            background: var(--sf-orange-soft);
+            border-radius: 50%;
+            color: var(--sf-orange);
+            display: inline-flex;
+            font-size: 0.75rem;
+            font-weight: 800;
+            height: 32px;
+            justify-content: center;
+            margin-right: 9px;
+            width: 32px;
+        }
+
+        .badge-joined {
+            background: #e8fbef;
+            border-radius: 999px;
+            color: #1aaa5b;
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 6px 9px;
+        }
+
+        .empty-referrals {
+            color: var(--sf-muted);
+            padding: 38px 16px;
+            text-align: center;
+        }
+
+        .empty-referrals i {
+            color: var(--sf-orange);
+            display: block;
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .side-card {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: var(--sf-shadow);
+            margin-bottom: 16px;
+            padding: 18px;
+        }
+
+        .side-card h3 {
+            color: var(--sf-ink);
+            font-size: 0.9rem;
+            font-weight: 800;
+            margin: 0 0 14px;
+        }
+
+        .ref-code-box,
+        .ref-link-box {
+            background: #f7f9fc;
+            border: 1px solid var(--sf-line);
+            border-radius: 8px;
+            color: #526073;
+            font-size: 0.8rem;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            padding: 12px;
+            word-break: break-all;
+        }
+
+        .ref-code-box {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .ref-code-box span {
+            color: var(--sf-ink);
+            font-family: monospace;
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+        }
+
+        .btn-copy,
+        .btn-copy-link {
+            align-items: center;
+            background: var(--sf-orange);
+            border: 0;
+            border-radius: 6px;
+            color: #ffffff;
+            cursor: pointer;
+            display: inline-flex;
+            font: inherit;
+            font-size: 0.75rem;
+            font-weight: 800;
+            gap: 7px;
+            justify-content: center;
+            min-height: 38px;
+            padding: 9px 12px;
+        }
+
+        .btn-copy-link {
+            width: 100%;
+        }
+
+        .btn-copy.copied,
+        .btn-copy-link.copied {
+            background: #16a34a;
+        }
+
+        .how-card {
+            background: linear-gradient(135deg, #8b5de9 0%, #9b7bf0 100%);
+            border-radius: 8px;
+            color: #ffffff;
+            padding: 18px;
+        }
+
+        .how-card h3 {
+            color: #ffffff;
+            margin: 0 0 16px;
+        }
+
+        .how-step {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .how-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .how-step-num {
+            align-items: center;
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 50%;
+            display: flex;
+            flex: 0 0 auto;
+            font-size: 0.72rem;
+            font-weight: 800;
+            height: 26px;
+            justify-content: center;
+            width: 26px;
+        }
+
+        .how-step-text {
+            color: rgba(255, 255, 255, 0.86);
+            font-size: 0.78rem;
+            font-weight: 700;
+            line-height: 1.45;
+            padding-top: 4px;
+        }
+
+        @media (max-width: 980px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                bottom: 0;
+                height: 100vh;
+                left: 0;
+                max-width: 280px;
+                position: fixed;
+                top: 0;
+                transform: translateX(-100%);
+                transition: transform 0.25s ease;
+                width: 78vw;
+                z-index: 20;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-close,
+            .mobile-toggle {
+                display: inline-flex;
+            }
+
+            .sidebar-header {
+                justify-content: space-between;
+            }
+
+            .topbar {
+                grid-template-columns: auto 1fr auto;
+                padding: 0 18px;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .referral-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .content-area {
+                padding: 18px;
+            }
+
+            .referral-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .avatar,
+        .avatar-button,
+        .profile-menu-avatar {
+            overflow: hidden;
+        }
+
+        .avatar img,
+        .avatar-button img,
+        .profile-menu-avatar img {
+            display: block;
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'css/admin_theme.css' %}">
+</head>
+<body class="admin-app">
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fa-solid fa-dumbbell"></i> ScaleFit</h2>
+            <button class="mobile-close" onclick="toggleSidebar()" aria-label="Close Sidebar"><i class="fa-solid fa-xmark"></i></button>
         </div>
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'dashboard' %}" title="Overview dashboard"><i class="fa-solid fa-table-cells-large"></i> Overview</a></li>
+            <li><a href="{% url 'program_list' goal_type='weight_loss' %}" title="Manage weight loss programs"><i class="fa-solid fa-dumbbell"></i> Weight Loss</a></li>
+            <li><a href="{% url 'program_list' goal_type='weight_gain' %}" title="Manage weight gain programs"><i class="fa-solid fa-bowl-food"></i> Weight Gain</a></li>
+            <li><a href="{% url 'members' %}"><i class="fa-regular fa-circle-user"></i> Members</a></li>
+            <li class="active"><a href="{% url 'referral' %}" title="View referral activity"><i class="fa-solid fa-chart-simple"></i> Referrals</a></li>
+            <li><a href="{% url 'settings' %}"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            <li class="logout-item"><a href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
+        </ul>
     </aside>
-</div>
-{% endblock %}
 
-{% block extra_js %}
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar"><i class="fa-solid fa-bars"></i></button>
+                <h1 class="sr-only">Referral Program</h1>
+                <label class="search-box" aria-label="Search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="search" placeholder="Search">
+                </label>
+            </div>
+            <div class="topbar-right">
+                <button class="notification-btn" type="button" aria-label="Notifications"><i class="fa-solid fa-bell"></i><span class="badge"></span></button>
+                <a class="icon-btn" href="{% url 'settings' %}" aria-label="Settings"><i class="fa-solid fa-gear"></i></a>
+                <div class="user-profile">
+                    <button class="avatar-button" type="button" aria-label="Open user details" aria-expanded="false" aria-controls="profileMenu">
+                        {% if current_user_profile.profile_image %}
+                            <img src="{{ current_user_profile.profile_image.url }}" alt="{{ user.username }} profile image">
+                        {% else %}
+                            {{ user.username|make_list|first|upper }}
+                        {% endif %}
+                    </button>
+                    <div class="profile-menu" id="profileMenu">
+                        <div class="profile-menu-header">
+                            <div class="profile-menu-avatar">{% if current_user_profile.profile_image %}<img src="{{ current_user_profile.profile_image.url }}" alt="{{ user.username }} profile image">{% else %}{{ user.username|make_list|first|upper }}{% endif %}</div>
+                            <div>
+                                <p class="profile-menu-name">{{ user.get_full_name|default:user.username }}</p>
+                                <p class="profile-menu-username">@{{ user.username }}</p>
+                            </div>
+                        </div>
+                        <div class="profile-details">
+                            <div class="profile-detail">
+                                <i class="fa-regular fa-envelope"></i>
+                                <span>{{ user.email|default:"No email added" }}</span>
+                            </div>
+                            <div class="profile-detail">
+                                <i class="fa-solid fa-phone"></i>
+                                <span>{{ user.profile.mobile_number|default:"No mobile added" }}</span>
+                            </div>
+                            <div class="profile-detail">
+                                <i class="fa-regular fa-calendar"></i>
+                                <span>Joined {{ user.date_joined|date:"M d, Y" }}</span>
+                            </div>
+                        </div>
+                        <div class="profile-menu-actions">
+                            <a href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="content-area">
+            <div class="referral-layout">
+                <section>
+                    <div class="referral-grid">
+                        <div class="stat-card cyan">
+                            <i class="fa-solid fa-users"></i>
+                            <div class="stat-label">Total Referrals</div>
+                            <div class="stat-value">{{ total_referrals }}</div>
+                            <div class="stat-sub">All time signups</div>
+                        </div>
+                        <div class="stat-card orange">
+                            <i class="fa-solid fa-calendar-check"></i>
+                            <div class="stat-label">This Month</div>
+                            <div class="stat-value">{{ this_month }}</div>
+                            <div class="stat-sub">New this month</div>
+                        </div>
+                        <div class="stat-card purple">
+                            <i class="fa-solid fa-tag"></i>
+                            <div class="stat-label">Your Code</div>
+                            <div class="stat-value" style="font-size:1.25rem;letter-spacing:3px;font-family:monospace;">{{ referral.code }}</div>
+                            <div class="stat-sub">Unique referral code</div>
+                        </div>
+                    </div>
+
+                    <div class="panel-card">
+                        <h2><i class="fa-solid fa-user-plus" style="color:var(--sf-orange);margin-right:8px;"></i>Referred Members</h2>
+                        {% if signups %}
+                            <div class="ref-table-wrap">
+                                <table class="ref-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Member</th>
+                                            <th>Username</th>
+                                            <th>Joined</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for signup in signups %}
+                                        <tr>
+                                            <td>
+                                                <span class="user-avatar">{{ signup.referred_user.username|first|upper }}</span>
+                                                {{ signup.referred_user.get_full_name|default:signup.referred_user.username }}
+                                            </td>
+                                            <td>@{{ signup.referred_user.username }}</td>
+                                            <td>{{ signup.joined_at|date:"d M Y" }}</td>
+                                            <td><span class="badge-joined">Joined</span></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="empty-referrals">
+                                <i class="fa-solid fa-user-group"></i>
+                                <p>No referrals yet. Share your code to get started.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </section>
+
+                <aside>
+                    <div class="side-card">
+                        <h3><i class="fa-solid fa-key" style="color:var(--sf-orange);margin-right:6px;"></i>Your Referral Code</h3>
+                        <div class="ref-code-box">
+                            <span id="refCode">{{ referral.code }}</span>
+                            <button class="btn-copy" id="copyCodeBtn" onclick="copyCode()" type="button">
+                                <i class="fa-solid fa-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="side-card">
+                        <h3><i class="fa-solid fa-link" style="color:var(--sf-orange);margin-right:6px;"></i>Referral Link</h3>
+                        <div class="ref-link-box" id="refLink">{{ referral_link }}</div>
+                        <button class="btn-copy-link" id="copyLinkBtn" onclick="copyLink()" type="button">
+                            <i class="fa-solid fa-copy"></i> Copy Link
+                        </button>
+                    </div>
+
+                    <div class="how-card">
+                        <h3><i class="fa-solid fa-circle-info" style="margin-right:8px;"></i>How It Works</h3>
+                        <div class="how-step">
+                            <div class="how-step-num">1</div>
+                            <div class="how-step-text">Copy your unique referral code or link.</div>
+                        </div>
+                        <div class="how-step">
+                            <div class="how-step-num">2</div>
+                            <div class="how-step-text">Share it with friends, family, or social channels.</div>
+                        </div>
+                        <div class="how-step">
+                            <div class="how-step-num">3</div>
+                            <div class="how-step-text">Their signup appears in Referred Members.</div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </main>
+    </div>
+</div>
+
 <script>
-    function copyToClipboard(elementId) {
-        const text = document.getElementById(elementId).innerText || document.getElementById(elementId).value;
-        navigator.clipboard.writeText(text).then(() => {
-            alert('Copied to clipboard!');
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
+    }
+
+    const userProfile = document.querySelector('.user-profile');
+    const avatarButton = document.querySelector('.avatar-button');
+
+    if (userProfile && avatarButton) {
+        avatarButton.addEventListener('click', function(event) {
+            event.stopPropagation();
+            const isOpen = userProfile.classList.toggle('open');
+            avatarButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+    }
+
+    document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.querySelector('.mobile-toggle');
+        if (window.innerWidth <= 980 && sidebar && toggleBtn && !sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+
+        if (userProfile && avatarButton && !userProfile.contains(event.target)) {
+            userProfile.classList.remove('open');
+            avatarButton.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && userProfile && avatarButton && userProfile.classList.contains('open')) {
+            userProfile.classList.remove('open');
+            avatarButton.setAttribute('aria-expanded', 'false');
+            avatarButton.focus();
+        }
+    });
+
+    function copyCode() {
+        const code = document.getElementById('refCode').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            const btn = document.getElementById('copyCodeBtn');
+            btn.classList.add('copied');
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
+            setTimeout(() => {
+                btn.classList.remove('copied');
+                btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copy';
+            }, 2000);
+        });
+    }
+
+    function copyLink() {
+        const link = document.getElementById('refLink').innerText;
+        navigator.clipboard.writeText(link).then(() => {
+            const btn = document.getElementById('copyLinkBtn');
+            btn.classList.add('copied');
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
+            setTimeout(() => {
+                btn.classList.remove('copied');
+                btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copy Link';
+            }, 2000);
         });
     }
 </script>
-{% endblock %}
+</body>
+</html>

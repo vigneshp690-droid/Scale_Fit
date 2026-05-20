@@ -1,178 +1,1214 @@
-{% extends "fitness/base_admin.html" %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScaleFit - Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard_premium.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .admin-app {
+            --sf-orange: #ff6818;
+            --sf-orange-soft: #fff1e8;
+            --sf-cyan: #18bfd0;
+            --sf-purple: #8a58eb;
+            --sf-ink: #243047;
+            --sf-muted: #8592a6;
+            --sf-line: #e8edf4;
+            --sf-panel: #f3f6fa;
+            --sf-peach: #ffd9ad;
+            --sf-shadow: 0 12px 28px rgba(36, 48, 71, 0.08);
+        }
 
-{% block title %}ScaleFit - Dashboard{% endblock %}
+        * {
+            box-sizing: border-box;
+        }
 
-{% block content %}
-<div class="dashboard-grid">
-    <section>
-        <div class="hero-section">
-            <h2>Track Your Daily Activities</h2>
-            <p>Manage ScaleFit programs, plans, members, and referral activity from one focused admin dashboard.</p>
-        </div>
+        body {
+            background: var(--sf-panel);
+            color: var(--sf-ink);
+            font-family: "Inter", sans-serif;
+            min-height: 100vh;
+            padding: 0;
+        }
 
-        <div class="metric-row">
-            <a class="metric-card cyan" href="{% url 'program_list' goal_type='weight_loss' %}">
-                <span class="metric-icon"><i class="fa-solid fa-arrow-trend-down"></i></span>
-                <h3>Weight Loss</h3>
-                <p>{{ loss_programs|default:"0" }} programs</p>
-            </a>
-            <a class="metric-card orange" href="{% url 'program_list' goal_type='weight_gain' %}">
-                <span class="metric-icon"><i class="fa-solid fa-arrow-trend-up"></i></span>
-                <h3>Weight Gain</h3>
-                <p>{{ gain_programs|default:"0" }} programs</p>
-            </a>
-            <div class="metric-card purple">
-                <span class="metric-icon"><i class="fa-solid fa-calendar-days"></i></span>
-                <h3>Total Plans</h3>
-                <p>{{ total_plans|default:"0" }} plans</p>
-            </div>
-        </div>
+        .app-container {
+            background: #ffffff;
+            box-shadow: none;
+            display: grid;
+            grid-template-columns: 190px minmax(0, 1fr);
+            margin: 0;
+            max-width: none;
+            min-height: 100vh;
+            overflow: hidden;
+            width: 100%;
+        }
 
-        <div class="progress-panel">
-            <div class="panel-title">
-                <h3>Goal Progress</h3>
-                <button type="button">Weekly <i class="fa-solid fa-chevron-down"></i></button>
-            </div>
-            <div class="chart" aria-hidden="true">
-                <div class="bar-group">
-                    <span class="bar cyan" style="height: 46px;"></span>
-                    <span class="bar orange" style="height: 78px;"></span>
-                    <span class="bar purple" style="height: 102px;"></span>
-                </div>
-                <div class="bar-group">
-                    <span class="bar cyan" style="height: 76px;"></span>
-                    <span class="bar orange" style="height: 56px;"></span>
-                    <span class="bar purple" style="height: 84px;"></span>
-                </div>
-                <div class="bar-group">
-                    <span class="bar cyan" style="height: 104px;"></span>
-                    <span class="bar orange" style="height: 84px;"></span>
-                    <span class="bar purple" style="height: 90px;"></span>
-                </div>
-                <div class="bar-group">
-                    <span class="bar cyan" style="height: 86px;"></span>
-                    <span class="bar orange" style="height: 102px;"></span>
-                    <span class="bar purple" style="height: 72px;"></span>
-                </div>
-                <div class="bar-group">
-                    <span class="bar cyan" style="height: 46px;"></span>
-                    <span class="bar orange" style="height: 78px;"></span>
-                    <span class="bar purple" style="height: 92px;"></span>
-                </div>
-                <div class="bar-group">
-                    <span class="bar cyan" style="height: 48px;"></span>
-                    <span class="bar orange" style="height: 80px;"></span>
-                    <span class="bar purple" style="height: 92px;"></span>
-                </div>
-                <div class="bar-group">
-                    <span class="bar cyan" style="height: 48px;"></span>
-                    <span class="bar orange" style="height: 78px;"></span>
-                    <span class="bar purple" style="height: 92px;"></span>
-                </div>
-            </div>
-            <div class="chart-days">
-                <span>Mon</span>
-                <span>Tue</span>
-                <span>Wed</span>
-                <span>Thu</span>
-                <span>Fri</span>
-                <span>Sat</span>
-                <span>Sun</span>
-            </div>
-            <div class="chart-legend">
-                <span><i style="background: var(--sf-cyan);"></i>Programs</span>
-                <span><i style="background: var(--sf-orange);"></i>Plans</span>
-                <span><i style="background: var(--sf-purple);"></i>Days</span>
-            </div>
-        </div>
+        .sidebar {
+            background: #ffffff;
+            border-right: 1px solid var(--sf-line);
+            box-shadow: none;
+            color: var(--sf-muted);
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            min-height: 100%;
+            position: static;
+            width: auto;
+            z-index: 1;
+        }
 
-        <div class="table-panel">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Section</th>
-                        <th>Type</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><span class="food-dot"><i class="fa-solid fa-arrow-trend-down"></i></span>Weight Loss</td>
-                        <td>Program</td>
-                        <td>{{ loss_programs|default:"0" }}</td>
-                        <td>Active</td>
-                        <td><a href="{% url 'program_list' goal_type='weight_loss' %}">Open</a></td>
-                    </tr>
-                    <tr>
-                        <td><span class="food-dot"><i class="fa-solid fa-arrow-trend-up"></i></span>Weight Gain</td>
-                        <td>Program</td>
-                        <td>{{ gain_programs|default:"0" }}</td>
-                        <td>Active</td>
-                        <td><a href="{% url 'program_list' goal_type='weight_gain' %}">Open</a></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
+        .sidebar-header {
+            align-items: center;
+            border-bottom: 1px solid var(--sf-line);
+            display: flex;
+            justify-content: center;
+            min-height: 72px;
+            padding: 0 18px;
+        }
 
-    <aside>
-        <div class="side-header">
-            <h3>My Schedule</h3>
-            <a href="{% url 'program_list' goal_type='weight_loss' %}">View All <i class="fa-solid fa-angle-right"></i></a>
-        </div>
-        <div class="side-panel">
-            <a class="side-card" href="{% url 'program_list' goal_type='weight_loss' %}">
-                <div>
-                    <h4>Weight Loss</h4>
-                    <p>Manage plans</p>
-                </div>
-                <span class="pill">{{ loss_programs|default:"0" }}</span>
-            </a>
-            <a class="side-card" href="{% url 'program_list' goal_type='weight_gain' %}">
-                <div>
-                    <h4>Weight Gain</h4>
-                    <p>Manage plans</p>
-                </div>
-                <span class="pill">{{ gain_programs|default:"0" }}</span>
-            </a>
-            <div class="side-card">
-                <div>
-                    <h4>Total Days</h4>
-                    <p>Across plans</p>
-                </div>
-                <span class="pill">{{ total_days|default:"0" }}</span>
-            </div>
-        </div>
+        .sidebar-header h2 {
+            color: var(--sf-orange);
+            font-size: 0.98rem;
+            font-weight: 800;
+            gap: 10px;
+            letter-spacing: 0;
+        }
 
-        <div class="side-header">
-            <h3>Goals</h3>
-            <a href="{% url 'members' %}">View All <i class="fa-solid fa-angle-right"></i></a>
-        </div>
-        <div class="side-panel">
-            <a class="side-card" href="{% url 'members' %}">
-                <div>
-                    <h4>Members</h4>
-                    <p>User tools</p>
-                </div>
-                <span class="pill">Open</span>
-            </a>
-            <a class="side-card" href="{% url 'referral' %}">
-                <div>
-                    <h4>Referrals</h4>
-                    <p>Invite tracking</p>
-                </div>
-                <span class="pill">Open</span>
-            </a>
-        </div>
+        .sidebar-header h2 i {
+            color: var(--sf-orange);
+            filter: none;
+        }
 
-        <div class="promo-panel">
-            <h3>ScaleFit Admin Workspace</h3>
-            <p>Quickly manage programs, plans, members, and referral activity.</p>
-            <a href="{% url 'program_list' goal_type='weight_loss' %}">Manage</a>
+        .mobile-close {
+            color: var(--sf-muted);
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 12px;
+            list-style: none;
+            padding: 22px 20px;
+        }
+
+        .sidebar-menu a {
+            border-radius: 6px;
+            color: #758296;
+            display: flex;
+            font-size: 0.83rem;
+            font-weight: 700;
+            gap: 14px;
+            padding: 12px 14px;
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+
+        .sidebar-menu a i {
+            color: #8290a3;
+            font-size: 1rem;
+            text-align: center;
+            width: 18px;
+        }
+
+        .sidebar-menu li.active a {
+            background: var(--sf-orange);
+            box-shadow: 0 10px 22px rgba(255, 104, 24, 0.22);
+            color: #ffffff;
+        }
+
+        .sidebar-menu li.active a i {
+            animation: none;
+            color: #ffffff;
+        }
+
+        .sidebar-menu li:not(.active):not(.logout-item) a:hover {
+            background: var(--sf-orange-soft);
+            color: var(--sf-orange);
+            transform: translateX(3px);
+        }
+
+        .sidebar-menu li:not(.active):not(.logout-item) a:hover i {
+            color: var(--sf-orange);
+            transform: none;
+        }
+
+        .logout-item {
+            border-top: 1px solid var(--sf-line);
+            margin-top: auto;
+            padding-top: 14px;
+        }
+
+        .main-wrapper {
+            background: var(--sf-panel);
+            display: flex;
+            flex-direction: column;
+            margin-left: 0;
+            width: auto;
+        }
+
+        .topbar {
+            align-items: center;
+            background: #ffffff;
+            border-bottom: 1px solid var(--sf-line);
+            box-shadow: none;
+            display: grid;
+            gap: 18px;
+            grid-template-columns: minmax(170px, auto) minmax(260px, 1fr) auto;
+            min-height: 72px;
+            padding: 0 26px;
+            position: static;
+        }
+
+        .topbar-left {
+            align-items: center;
+            display: flex;
+            gap: 12px;
+        }
+
+        .topbar-left h1 {
+            color: var(--sf-ink);
+            font-size: 0.95rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .topbar-left span {
+            color: #a0aabc;
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+
+        .mobile-toggle {
+            background: none;
+            border: 0;
+            color: var(--sf-ink);
+            display: none;
+            font-size: 1.2rem;
+        }
+
+        .search-box {
+            align-items: center;
+            background: #f7f9fc;
+            border: 1px solid var(--sf-line);
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            height: 34px;
+            padding: 0 12px;
+        }
+
+        .search-box i {
+            color: #9aa6b8;
+            font-size: 0.9rem;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: 0;
+            color: var(--sf-ink);
+            font: inherit;
+            font-size: 0.82rem;
+            outline: 0;
+            width: 100%;
+        }
+
+        .topbar-right {
+            align-items: center;
+            display: flex;
+            gap: 14px;
+        }
+
+        .notification-wrap {
+            position: relative;
+        }
+
+        .icon-btn,
+        .notification-btn {
+            align-items: center;
+            background: transparent;
+            border: 0;
+            color: #728098;
+            display: inline-flex;
+            font-size: 0.95rem;
+            height: 32px;
+            justify-content: center;
+            position: relative;
+            width: 32px;
+        }
+
+        .notification-btn .badge {
+            background: var(--sf-orange);
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            height: 8px;
+            position: absolute;
+            right: 7px;
+            top: 7px;
+            width: 8px;
+        }
+
+        .notification-menu {
+            background: #ffffff;
+            border: 1px solid var(--sf-line);
+            border-radius: 8px;
+            box-shadow: 0 18px 38px rgba(36, 48, 71, 0.14);
+            min-width: 245px;
+            opacity: 0;
+            padding: 12px;
+            pointer-events: none;
+            position: absolute;
+            right: 0;
+            top: calc(100% + 12px);
+            transform: translateY(-6px);
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            z-index: 30;
+        }
+
+        .notification-wrap.open .notification-menu {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .notification-menu::before {
+            background: #ffffff;
+            border-left: 1px solid var(--sf-line);
+            border-top: 1px solid var(--sf-line);
+            content: "";
+            height: 10px;
+            position: absolute;
+            right: 10px;
+            top: -6px;
+            transform: rotate(45deg);
+            width: 10px;
+        }
+
+        .notification-menu h4 {
+            color: var(--sf-ink);
+            font-size: 0.78rem;
+            font-weight: 800;
+            margin: 0 0 8px;
+        }
+
+        .notification-item {
+            align-items: center;
+            border-radius: 8px;
+            color: #536174;
+            display: flex;
+            font-size: 0.78rem;
+            font-weight: 700;
+            gap: 10px;
+            padding: 10px;
+            text-decoration: none;
+        }
+
+        .notification-item:hover {
+            background: #f8fafc;
+            color: var(--sf-orange);
+        }
+
+        .user-profile {
+            align-items: center;
+            display: flex;
+            gap: 10px;
+            position: relative;
+        }
+
+        .user-greeting {
+            display: none;
+        }
+
+        .avatar-button {
+            align-items: center;
+            background: linear-gradient(135deg, #ffb377, var(--sf-orange));
+            border: 0;
+            border-radius: 50%;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            font-size: 0.9rem;
+            font-weight: 800;
+            height: 36px;
+            justify-content: center;
+            width: 36px;
+        }
+
+        .avatar-button:focus-visible {
+            box-shadow: 0 0 0 4px var(--sf-orange-soft);
+            outline: none;
+        }
+
+        .profile-menu {
+            background: #ffffff;
+            border: 1px solid var(--sf-line);
+            border-radius: 8px;
+            box-shadow: 0 18px 38px rgba(36, 48, 71, 0.14);
+            min-width: 255px;
+            opacity: 0;
+            padding: 14px;
+            pointer-events: none;
+            position: absolute;
+            right: 0;
+            top: calc(100% + 12px);
+            transform: translateY(-6px);
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            z-index: 30;
+        }
+
+        .user-profile.open .profile-menu {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .profile-menu::before {
+            background: #ffffff;
+            border-left: 1px solid var(--sf-line);
+            border-top: 1px solid var(--sf-line);
+            content: "";
+            height: 10px;
+            position: absolute;
+            right: 13px;
+            top: -6px;
+            transform: rotate(45deg);
+            width: 10px;
+        }
+
+        .profile-menu-header {
+            align-items: center;
+            display: flex;
+            gap: 12px;
+            padding-bottom: 12px;
+        }
+
+        .profile-menu-avatar {
+            align-items: center;
+            background: var(--sf-orange-soft);
+            border-radius: 50%;
+            color: var(--sf-orange);
+            display: flex;
+            flex: 0 0 auto;
+            font-size: 0.95rem;
+            font-weight: 800;
+            height: 40px;
+            justify-content: center;
+            width: 40px;
+        }
+
+        .profile-menu-name {
+            color: var(--sf-ink);
+            font-size: 0.9rem;
+            font-weight: 800;
+            line-height: 1.25;
+            margin: 0;
+        }
+
+        .profile-menu-username {
+            color: var(--sf-muted);
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin: 3px 0 0;
+        }
+
+        .profile-details {
+            border-top: 1px solid var(--sf-line);
+            display: grid;
+            gap: 9px;
+            padding: 12px 0;
+        }
+
+        .profile-detail {
+            align-items: center;
+            color: var(--sf-muted);
+            display: flex;
+            font-size: 0.76rem;
+            font-weight: 700;
+            gap: 9px;
+            min-width: 0;
+        }
+
+        .profile-detail i {
+            color: var(--sf-orange);
+            flex: 0 0 15px;
+            text-align: center;
+        }
+
+        .profile-detail span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .profile-menu-actions {
+            border-top: 1px solid var(--sf-line);
+            padding-top: 10px;
+        }
+
+        .profile-menu-actions a {
+            align-items: center;
+            border-radius: 6px;
+            color: var(--sf-orange);
+            display: flex;
+            font-size: 0.78rem;
+            font-weight: 800;
+            gap: 9px;
+            padding: 9px 10px;
+            text-decoration: none;
+        }
+
+        .profile-menu-actions a:hover {
+            background: var(--sf-orange-soft);
+        }
+
+        .content-area {
+            max-width: none;
+            padding: 26px;
+            width: 100%;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            gap: 24px;
+            grid-template-columns: minmax(0, 1fr) 260px;
+        }
+
+        .hero-section {
+            background:
+                linear-gradient(96deg, rgba(255, 104, 24, 0.98) 0%, rgba(255, 104, 24, 0.82) 52%, rgba(255, 255, 255, 0.3) 100%),
+                url("https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1000&q=80");
+            background-position: center;
+            background-size: cover;
+            border-radius: 8px;
+            box-shadow: none;
+            color: #ffffff;
+            min-height: 130px;
+            overflow: hidden;
+            padding: 30px;
+            position: relative;
+        }
+
+        .hero-section h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.15;
+            margin: 0 0 10px;
+            max-width: 430px;
+        }
+
+        .hero-section p {
+            color: rgba(255, 255, 255, 0.86);
+            font-size: 0.82rem;
+            line-height: 1.55;
+            margin: 0;
+            max-width: 430px;
+        }
+
+        .metric-row {
+            display: grid;
+            gap: 14px;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            margin-top: 18px;
+        }
+
+        .metric-card {
+            border-radius: 6px;
+            color: #ffffff;
+            min-height: 134px;
+            overflow: hidden;
+            padding: 18px;
+            position: relative;
+        }
+
+        .metric-card::after {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 50%;
+            bottom: -34px;
+            content: "";
+            height: 120px;
+            position: absolute;
+            right: -18px;
+            width: 120px;
+        }
+
+        .metric-card.cyan {
+            background: var(--sf-cyan);
+        }
+
+        .metric-card.orange {
+            background: var(--sf-orange);
+        }
+
+        .metric-card.purple {
+            background: var(--sf-purple);
+        }
+
+        .metric-card .metric-icon {
+            align-items: center;
+            background: rgba(0, 0, 0, 0.13);
+            border-radius: 4px;
+            display: inline-flex;
+            height: 36px;
+            justify-content: center;
+            margin-bottom: 10px;
+            width: 36px;
+        }
+
+        .metric-card h3 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            margin: 0 0 6px;
+        }
+
+        .metric-card p {
+            font-size: 0.78rem;
+            margin: 0;
+            opacity: 0.85;
+        }
+
+        .progress-panel,
+        .table-panel,
+        .side-panel,
+        .promo-panel {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: var(--sf-shadow);
+        }
+
+        .progress-panel {
+            margin-top: 22px;
+            padding: 22px 24px;
+        }
+
+        .panel-title {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .panel-title h3 {
+            color: var(--sf-ink);
+            font-size: 0.95rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .panel-title a,
+        .panel-title button {
+            background: #ffffff;
+            border: 1px solid var(--sf-line);
+            border-radius: 6px;
+            color: var(--sf-orange);
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 8px 10px;
+            text-decoration: none;
+        }
+
+        .chart {
+            border-bottom: 1px solid #edf1f6;
+            border-top: 1px solid #edf1f6;
+            display: grid;
+            gap: 22px;
+            grid-template-columns: repeat(7, 1fr);
+            height: 176px;
+            padding: 24px 12px 14px;
+            position: relative;
+        }
+
+        .chart::before,
+        .chart::after {
+            border-top: 1px dashed #edf1f6;
+            content: "";
+            left: 0;
+            position: absolute;
+            right: 0;
+        }
+
+        .chart::before {
+            top: 38%;
+        }
+
+        .chart::after {
+            top: 68%;
+        }
+
+        .bar-group {
+            align-items: end;
+            display: flex;
+            gap: 7px;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .bar {
+            border-radius: 6px 6px 0 0;
+            width: 7px;
+        }
+
+        .bar.cyan {
+            background: var(--sf-cyan);
+        }
+
+        .bar.orange {
+            background: var(--sf-orange);
+        }
+
+        .bar.purple {
+            background: var(--sf-purple);
+        }
+
+        .chart-days {
+            color: var(--sf-muted);
+            display: grid;
+            font-size: 0.76rem;
+            grid-template-columns: repeat(7, 1fr);
+            margin-top: 9px;
+            text-align: center;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 22px;
+            margin-top: 18px;
+            padding-left: 40px;
+        }
+
+        .chart-legend span {
+            color: var(--sf-muted);
+            font-size: 0.72rem;
+        }
+
+        .chart-legend i {
+            border-radius: 50%;
+            display: inline-block;
+            height: 7px;
+            margin-right: 6px;
+            width: 7px;
+        }
+
+        .table-panel {
+            box-shadow: none;
+            margin-top: 18px;
+            overflow: hidden;
+        }
+
+        .admin-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            font-size: 0.78rem;
+            padding: 12px 14px;
+            text-align: left;
+        }
+
+        .admin-table th {
+            color: #68758a;
+            font-weight: 800;
+        }
+
+        .admin-table td {
+            background: #ffffff;
+            border-top: 10px solid var(--sf-panel);
+            color: #526073;
+            font-weight: 700;
+        }
+
+        .food-dot {
+            align-items: center;
+            background: var(--sf-orange-soft);
+            border-radius: 50%;
+            color: var(--sf-orange);
+            display: inline-flex;
+            height: 28px;
+            justify-content: center;
+            margin-right: 10px;
+            width: 28px;
+        }
+
+        .side-panel {
+            box-shadow: none;
+            margin-bottom: 22px;
+            padding: 0;
+        }
+
+        .side-header {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .side-header h3 {
+            font-size: 1rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .side-header a {
+            color: var(--sf-orange);
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .side-card {
+            align-items: center;
+            background: #ffffff;
+            border-radius: 7px;
+            box-shadow: var(--sf-shadow);
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding: 14px;
+        }
+
+        .side-card h4 {
+            font-size: 0.82rem;
+            margin: 0 0 7px;
+        }
+
+        .side-card p {
+            color: var(--sf-muted);
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .side-card .pill {
+            background: var(--sf-orange-soft);
+            border-radius: 999px;
+            color: var(--sf-orange);
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 6px 8px;
+            white-space: nowrap;
+        }
+
+        .promo-panel {
+            background: linear-gradient(135deg, #8b5de9 0%, #9b7bf0 100%);
+            box-shadow: none;
+            color: #ffffff;
+            margin-top: 28px;
+            overflow: hidden;
+            padding: 20px;
+            position: relative;
+        }
+
+        .promo-panel::after {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            bottom: -34px;
+            content: "";
+            height: 120px;
+            position: absolute;
+            right: -22px;
+            width: 120px;
+        }
+
+        .promo-panel h3 {
+            font-size: 0.85rem;
+            margin: 0 0 14px;
+            max-width: 180px;
+        }
+
+        .promo-panel p {
+            color: rgba(255, 255, 255, 0.76);
+            font-size: 0.72rem;
+            line-height: 1.45;
+            margin: 0 0 18px;
+            max-width: 170px;
+        }
+
+        .promo-panel a {
+            background: var(--sf-orange);
+            border-radius: 6px;
+            color: #ffffff;
+            display: inline-flex;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 10px 18px;
+            position: relative;
+            text-decoration: none;
+            z-index: 1;
+        }
+
+        @media (max-width: 980px) {
+            body {
+                padding: 0;
+            }
+
+            body::before,
+            body::after {
+                display: none;
+            }
+
+            .app-container {
+                grid-template-columns: 1fr;
+                min-height: 100vh;
+                width: 100%;
+            }
+
+            .sidebar {
+                bottom: 0;
+                height: 100vh;
+                left: 0;
+                max-width: 280px;
+                position: fixed;
+                top: 0;
+                transform: translateX(-100%);
+                transition: transform 0.25s ease;
+                width: 78vw;
+                z-index: 20;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-close,
+            .mobile-toggle {
+                display: inline-flex;
+            }
+
+            .sidebar-header {
+                justify-content: space-between;
+            }
+
+            .topbar {
+                grid-template-columns: auto 1fr auto;
+                padding: 0 18px;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .content-area {
+                padding: 18px;
+            }
+
+            .metric-row {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-section {
+                padding: 22px;
+            }
+
+            .chart {
+                gap: 10px;
+                overflow: hidden;
+            }
+
+            .admin-table {
+                min-width: 620px;
+            }
+
+            .table-panel {
+                overflow-x: auto;
+            }
+        }
+        .avatar,
+        .avatar-button,
+        .profile-menu-avatar {
+            overflow: hidden;
+        }
+
+        .avatar img,
+        .avatar-button img,
+        .profile-menu-avatar img {
+            display: block;
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
+        }
+
+    </style>
+    <link rel="stylesheet" href="{% static 'css/admin_theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin_navbar.css' %}">
+</head>
+<body class="admin-app">
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fa-solid fa-dumbbell"></i> ScaleFit</h2>
+            <button class="mobile-close" onclick="toggleSidebar()" aria-label="Close Sidebar"><i class="fa-solid fa-xmark"></i></button>
         </div>
+        <ul class="sidebar-menu">
+            <li class="active"><a href="{% url 'dashboard' %}" title="Overview dashboard"><i class="fa-solid fa-table-cells-large"></i> Overview</a></li>
+            <li><a href="{% url 'program_list' goal_type='weight_loss' %}" title="Manage weight loss programs"><i class="fa-solid fa-dumbbell"></i> Weight Loss</a></li>
+            <li><a href="{% url 'program_list' goal_type='weight_gain' %}" title="Manage weight gain programs"><i class="fa-solid fa-bowl-food"></i> Weight Gain</a></li>
+            <li><a href="{% url 'members' %}"><i class="fa-regular fa-circle-user"></i> Members</a></li>
+            <li><a href="{% url 'referral' %}" title="View referral activity"><i class="fa-solid fa-chart-simple"></i> Referrals</a></li>
+            <li><a href="{% url 'settings' %}"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            <li class="logout-item"><a href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
+        </ul>
     </aside>
-</div>
-{% endblock %}
+
+    <div class="main-wrapper">
+        {% include "fitness/partials/top_navbar.html" with search_label="Search" %}
+
+        <main class="content-area">
+            <div class="dashboard-grid">
+                <section>
+                    <div class="hero-section">
+                        <h2>Track Your Daily Activities</h2>
+                        <p>Manage ScaleFit programs, plans, members, and referral activity from one focused admin dashboard.</p>
+                    </div>
+
+                    <div class="metric-row">
+                        <a class="metric-card cyan" href="{% url 'program_list' goal_type='weight_loss' %}">
+                            <span class="metric-icon"><i class="fa-solid fa-arrow-trend-down"></i></span>
+                            <h3>Weight Loss</h3>
+                            <p>{{ loss_programs|default:"0" }} programs</p>
+                        </a>
+                        <a class="metric-card orange" href="{% url 'program_list' goal_type='weight_gain' %}">
+                            <span class="metric-icon"><i class="fa-solid fa-arrow-trend-up"></i></span>
+                            <h3>Weight Gain</h3>
+                            <p>{{ gain_programs|default:"0" }} programs</p>
+                        </a>
+                        <div class="metric-card purple">
+                            <span class="metric-icon"><i class="fa-solid fa-calendar-days"></i></span>
+                            <h3>Total Plans</h3>
+                            <p>{{ total_plans|default:"0" }} plans</p>
+                        </div>
+                    </div>
+
+                    <div class="progress-panel">
+                        <div class="panel-title">
+                            <h3>Goal Progress</h3>
+                            <button type="button">Weekly <i class="fa-solid fa-chevron-down"></i></button>
+                        </div>
+                        <div class="chart" aria-hidden="true">
+                            <div class="bar-group">
+                                <span class="bar cyan" style="height: 46px;"></span>
+                                <span class="bar orange" style="height: 78px;"></span>
+                                <span class="bar purple" style="height: 102px;"></span>
+                            </div>
+                            <div class="bar-group">
+                                <span class="bar cyan" style="height: 76px;"></span>
+                                <span class="bar orange" style="height: 56px;"></span>
+                                <span class="bar purple" style="height: 84px;"></span>
+                            </div>
+                            <div class="bar-group">
+                                <span class="bar cyan" style="height: 104px;"></span>
+                                <span class="bar orange" style="height: 84px;"></span>
+                                <span class="bar purple" style="height: 90px;"></span>
+                            </div>
+                            <div class="bar-group">
+                                <span class="bar cyan" style="height: 86px;"></span>
+                                <span class="bar orange" style="height: 102px;"></span>
+                                <span class="bar purple" style="height: 72px;"></span>
+                            </div>
+                            <div class="bar-group">
+                                <span class="bar cyan" style="height: 46px;"></span>
+                                <span class="bar orange" style="height: 78px;"></span>
+                                <span class="bar purple" style="height: 92px;"></span>
+                            </div>
+                            <div class="bar-group">
+                                <span class="bar cyan" style="height: 48px;"></span>
+                                <span class="bar orange" style="height: 80px;"></span>
+                                <span class="bar purple" style="height: 92px;"></span>
+                            </div>
+                            <div class="bar-group">
+                                <span class="bar cyan" style="height: 48px;"></span>
+                                <span class="bar orange" style="height: 78px;"></span>
+                                <span class="bar purple" style="height: 92px;"></span>
+                            </div>
+                        </div>
+                        <div class="chart-days">
+                            <span>Mon</span>
+                            <span>Tue</span>
+                            <span>Wed</span>
+                            <span>Thu</span>
+                            <span>Fri</span>
+                            <span>Sat</span>
+                            <span>Sun</span>
+                        </div>
+                        <div class="chart-legend">
+                            <span><i style="background: var(--sf-cyan);"></i>Programs</span>
+                            <span><i style="background: var(--sf-orange);"></i>Plans</span>
+                            <span><i style="background: var(--sf-purple);"></i>Days</span>
+                        </div>
+                    </div>
+
+                    <div class="table-panel">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Section</th>
+                                    <th>Type</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="food-dot"><i class="fa-solid fa-arrow-trend-down"></i></span>Weight Loss</td>
+                                    <td>Program</td>
+                                    <td>{{ loss_programs|default:"0" }}</td>
+                                    <td>Active</td>
+                                    <td><a href="{% url 'program_list' goal_type='weight_loss' %}">Open</a></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="food-dot"><i class="fa-solid fa-arrow-trend-up"></i></span>Weight Gain</td>
+                                    <td>Program</td>
+                                    <td>{{ gain_programs|default:"0" }}</td>
+                                    <td>Active</td>
+                                    <td><a href="{% url 'program_list' goal_type='weight_gain' %}">Open</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <aside>
+                    <div class="side-header">
+                        <h3>My Schedule</h3>
+                        <a href="{% url 'program_list' goal_type='weight_loss' %}">View All <i class="fa-solid fa-angle-right"></i></a>
+                    </div>
+                    <div class="side-panel">
+                        <a class="side-card" href="{% url 'program_list' goal_type='weight_loss' %}">
+                            <div>
+                                <h4>Weight Loss</h4>
+                                <p>Manage plans</p>
+                            </div>
+                            <span class="pill">{{ loss_programs|default:"0" }}</span>
+                        </a>
+                        <a class="side-card" href="{% url 'program_list' goal_type='weight_gain' %}">
+                            <div>
+                                <h4>Weight Gain</h4>
+                                <p>Manage plans</p>
+                            </div>
+                            <span class="pill">{{ gain_programs|default:"0" }}</span>
+                        </a>
+                        <div class="side-card">
+                            <div>
+                                <h4>Total Days</h4>
+                                <p>Across plans</p>
+                            </div>
+                            <span class="pill">{{ total_days|default:"0" }}</span>
+                        </div>
+                    </div>
+
+                    <div class="side-header">
+                        <h3>Goals</h3>
+                        <a href="{% url 'members' %}">View All <i class="fa-solid fa-angle-right"></i></a>
+                    </div>
+                    <div class="side-panel">
+                        <a class="side-card" href="{% url 'members' %}">
+                            <div>
+                                <h4>Members</h4>
+                                <p>User tools</p>
+                            </div>
+                            <span class="pill">Open</span>
+                        </a>
+                        <a class="side-card" href="{% url 'referral' %}">
+                            <div>
+                                <h4>Referrals</h4>
+                                <p>Invite tracking</p>
+                            </div>
+                            <span class="pill">Open</span>
+                        </a>
+                    </div>
+
+                    <div class="promo-panel">
+                        <h3>ScaleFit Admin Workspace</h3>
+                        <p>Quickly manage programs, plans, members, and referral activity.</p>
+                        <a href="{% url 'program_list' goal_type='weight_loss' %}">Manage</a>
+                    </div>
+                </aside>
+            </div>
+        </main>
+    </div>
+    </div>
+
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
+    }
+
+    const userProfile = document.querySelector('.user-profile');
+    const avatarButton = document.querySelector('.avatar-button');
+    const notificationWrap = document.querySelector('.notification-wrap');
+    const notificationToggle = document.getElementById('notificationToggle');
+
+    if (userProfile && avatarButton) {
+        avatarButton.addEventListener('click', function(event) {
+            event.stopPropagation();
+            const isOpen = userProfile.classList.toggle('open');
+            avatarButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            if (notificationWrap && notificationToggle) {
+                notificationWrap.classList.remove('open');
+                notificationToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+
+    if (notificationWrap && notificationToggle) {
+        notificationToggle.addEventListener('click', function(event) {
+            event.stopPropagation();
+            const isOpen = notificationWrap.classList.toggle('open');
+            notificationToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            if (userProfile && avatarButton) {
+                userProfile.classList.remove('open');
+                avatarButton.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+
+    document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.querySelector('.mobile-toggle');
+        if (window.innerWidth <= 980 && sidebar && toggleBtn && !sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+
+        if (userProfile && avatarButton && !userProfile.contains(event.target)) {
+            userProfile.classList.remove('open');
+            avatarButton.setAttribute('aria-expanded', 'false');
+        }
+
+        if (notificationWrap && notificationToggle && !notificationWrap.contains(event.target)) {
+            notificationWrap.classList.remove('open');
+            notificationToggle.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            if (userProfile && avatarButton && userProfile.classList.contains('open')) {
+                userProfile.classList.remove('open');
+                avatarButton.setAttribute('aria-expanded', 'false');
+                avatarButton.focus();
+            }
+
+            if (notificationWrap && notificationToggle && notificationWrap.classList.contains('open')) {
+                notificationWrap.classList.remove('open');
+                notificationToggle.setAttribute('aria-expanded', 'false');
+                notificationToggle.focus();
+            }
+        }
+    });
+</script>
+</body>
+</html>

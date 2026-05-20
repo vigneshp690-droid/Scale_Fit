@@ -1,0 +1,152 @@
+{% extends 'site_app/base.html' %}
+{% load i18n cloudinary_media %}
+{% block title %}{{ meal.translated_title|default:meal.title }} — {% trans "Nutrition Details" %} — {% trans "ScaleFit" %}{% endblock %}
+
+{% block content %}
+<div class="page-hero meal-detail-hero">
+  <div class="breadcrumb">
+    <a href="{% url 'site_home' %}">{% trans "Home" %}</a>
+    <span class="sep">/</span>
+    <a href="{% url 'site_goal_plans' goal_type %}">{% if goal_type == 'weight_loss' %}{% trans "Weight Loss" %}{% else %}{% trans "Weight Gain" %}{% endif %}</a>
+    <span class="sep">/</span>
+    <a href="{% url 'site_plan_detail' plan.pk %}">{{ plan.translated_name|default:plan.name }}</a>
+    <span class="sep">/</span>
+    <a href="{% url 'site_day_detail' day.pk %}">{{ day.translated_title|default:day.title }}</a>
+    <span class="sep">/</span>
+    <span class="current">{{ meal.translated_title|default:meal.title }}</span>
+  </div>
+  <h1>{{ meal.translated_title|default:meal.title }}</h1>
+  <p>{{ meal.get_meal_category_display }}{% if meal.start_time %} — {{ meal.start_time|time:"H:i" }}{% if meal.end_time %} – {{ meal.end_time|time:"H:i" }}{% endif %}{% endif %}</p>
+</div>
+
+<section class="section meal-detail-section">
+  <div class="meal-detail-actions">
+    <a class="back-link" href="{% url 'site_day_detail' day.pk %}">
+      <i class="fas fa-arrow-left" aria-hidden="true"></i>
+      <span>{% trans "Back to Day Plan" %}</span>
+    </a>
+  </div>
+
+  <div class="meal-detail-layout">
+    <article class="meal-detail-main reveal">
+      {% if meal.video %}
+      <video class="meal-detail-image" controls preload="metadata" playsinline{% if meal.image %} poster="{{ meal.image|optimized_media_url:960 }}"{% endif %}>
+        <source src="{{ meal.video|video_media_url }}" type="video/mp4">
+        {% trans "Your browser does not support video playback." %}
+      </video>
+      {% elif meal.image %}
+      <img class="meal-detail-image" src="{{ meal.image|optimized_media_url:960 }}" srcset="{% responsive_image_srcset meal.image '480,768,960,1280' %}" sizes="(max-width: 900px) 100vw, 60vw" alt="{{ meal.translated_title|default:meal.title }}" loading="lazy">
+      {% endif %}
+      <div class="meal-detail-copy">
+        <div class="meal-detail-heading">
+          <div>
+            <h2>{{ meal.translated_title|default:meal.title }}</h2>
+            {% if meal.translated_description|default:meal.description %}<p>{{ meal.translated_description|default:meal.description }}</p>{% endif %}
+          </div>
+          {% if meal.calories %}
+          <div class="calorie-chip detail-calorie-chip">
+            <strong>{{ meal.calories }}</strong>
+            <span>{% trans "kcal" %}</span>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="content-meta meal-detail-badges">
+          <span class="meta-tag meta-meal"><i class="fas fa-tag"></i> {{ meal.get_meal_category_display }}</span>
+          {% if meal.start_time %}<span class="meta-tag meta-time"><i class="fas fa-clock"></i> {{ meal.start_time|time:"H:i" }}{% if meal.end_time %} – {{ meal.end_time|time:"H:i" }}{% endif %}</span>{% endif %}
+          {% if meal.diet_type %}<span class="meta-tag meta-diet"><i class="fas fa-leaf"></i> {{ meal.get_diet_type_display }}</span>{% endif %}
+          {% if meal.protein and meal.protein >= 25 %}<span class="meta-tag meta-protein"><i class="fas fa-bolt"></i> {% trans "High protein" %}</span>{% endif %}
+          {% if goal_type == 'weight_loss' %}<span class="meta-tag meta-goal"><i class="fas fa-fire"></i> {% trans "Weight loss friendly" %}</span>{% else %}<span class="meta-tag meta-goal"><i class="fas fa-dumbbell"></i> {% trans "Muscle gain friendly" %}</span>{% endif %}
+        </div>
+      </div>
+    </article>
+
+    <aside class="meal-detail-side reveal">
+      <div class="quick-panel">
+        <h3>{% trans "Quick Guidance" %}</h3>
+        <div class="quick-row"><span>{% trans "Hydration" %}</span><strong>{{ meal.translated_hydration|default:meal.hydration|default:"Drink 500ml water" }}</strong></div>
+        <div class="quick-row"><span>{% trans "Meal Timing" %}</span><strong>{{ meal.get_meal_category_display }}</strong></div>
+        {% if meal.diet_type %}<div class="quick-row"><span>{% trans "Diet Type" %}</span><strong>{{ meal.get_diet_type_display }}</strong></div>{% endif %}
+      </div>
+    </aside>
+  </div>
+
+  <div class="nutrition-panel detail-nutrition-panel reveal">
+    <div class="nutrition-title">
+      <span>{% trans "Nutrition Facts" %}</span>
+      {% if meal.translated_hydration|default:meal.hydration %}<small><i class="fas fa-droplet"></i> {{ meal.translated_hydration|default:meal.hydration }}</small>{% endif %}
+    </div>
+    <div class="macro-grid detail-macro-grid">
+      <div class="macro-stat calories">
+        <span>{% trans "Calories" %}</span>
+        <strong>{% if meal.calories %}{{ meal.calories }}{% else %}--{% endif %}</strong>
+        <small>{% trans "kcal" %}</small>
+      </div>
+      <div class="macro-stat protein">
+        <span>{% trans "Protein" %}</span>
+        <strong>{% if meal.protein %}{{ meal.protein|floatformat:1 }}{% else %}--{% endif %}</strong>
+        <small>g</small>
+      </div>
+      <div class="macro-stat carbs">
+        <span>{% trans "Carbohydrates" %}</span>
+        <strong>{% if meal.carbs %}{{ meal.carbs|floatformat:1 }}{% else %}--{% endif %}</strong>
+        <small>g</small>
+      </div>
+      <div class="macro-stat fats">
+        <span>{% trans "Fats" %}</span>
+        <strong>{% if meal.fat %}{{ meal.fat|floatformat:1 }}{% else %}--{% endif %}</strong>
+        <small>g</small>
+      </div>
+      <div class="macro-stat fiber">
+        <span>{% trans "Fiber" %}</span>
+        <strong>{% if meal.fiber %}{{ meal.fiber|floatformat:1 }}{% else %}--{% endif %}</strong>
+        <small>g</small>
+      </div>
+    </div>
+
+    <div class="macro-bars detail-macro-bars">
+      <div class="macro-bar-row">
+        <span>{% trans "Protein" %}</span>
+        <div class="macro-track"><i class="protein" style="width:{% if meal.protein %}{{ meal.protein }}{% else %}0{% endif %}%;"></i></div>
+      </div>
+      <div class="macro-bar-row">
+        <span>{% trans "Carbs" %}</span>
+        <div class="macro-track"><i class="carbs" style="width:{% if meal.carbs %}{{ meal.carbs }}{% else %}0{% endif %}%;"></i></div>
+      </div>
+      <div class="macro-bar-row">
+        <span>{% trans "Fats" %}</span>
+        <div class="macro-track"><i class="fats" style="width:{% if meal.fat %}{{ meal.fat }}{% else %}0{% endif %}%;"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="meal-info-grid">
+    {% if meal.vitamins %}
+    <div class="detail-box reveal">
+      <span><i class="fas fa-capsules"></i> {% trans "Vitamins" %}</span>
+      <p>{{ meal.vitamins }}</p>
+    </div>
+    {% endif %}
+    {% if meal.minerals %}
+    <div class="detail-box reveal">
+      <span><i class="fas fa-gem"></i> {% trans "Minerals" %}</span>
+      <p>{{ meal.minerals }}</p>
+    </div>
+    {% endif %}
+    {% if meal.translated_benefits|default:meal.benefits %}
+    <div class="detail-box detail-wide reveal">
+      <span><i class="fas fa-heart-pulse"></i> {% trans "Fitness Benefits" %}</span>
+      <p>{{ meal.translated_benefits|default:meal.benefits }}</p>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if meal.sugar or meal.sodium or meal.cholesterol %}
+  <div class="advanced-nutrition advanced-detail reveal">
+    {% if meal.sugar %}<span>{% trans "Sugar" %}: <strong>{{ meal.sugar|floatformat:1 }}g</strong></span>{% endif %}
+    {% if meal.sodium %}<span>{% trans "Sodium" %}: <strong>{{ meal.sodium|floatformat:0 }}mg</strong></span>{% endif %}
+    {% if meal.cholesterol %}<span>{% trans "Cholesterol" %}: <strong>{{ meal.cholesterol|floatformat:0 }}mg</strong></span>{% endif %}
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,103 +1,765 @@
-{% extends "fitness/base_admin.html" %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ action }} Plan - ScaleFit</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard_premium.css' %}">
+    <link rel="stylesheet" href="{% static 'css/premium_components.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .admin-app {
+            --sf-orange: #ff6818;
+            --sf-orange-soft: #fff1e8;
+            --sf-ink: #243047;
+            --sf-muted: #8592a6;
+            --sf-line: #e8edf4;
+            --sf-panel: #f3f6fa;
+            --sf-shadow: 0 12px 28px rgba(36, 48, 71, 0.08);
+        }
 
-{% block title %}{{ action }} Plan - ScaleFit{% endblock %}
+        body {
+            background: var(--sf-panel);
+            color: var(--sf-ink);
+            font-family: "Inter", sans-serif;
+            min-height: 100vh;
+            padding: 0;
+        }
 
-{% block content %}
-<div class="dashboard-grid">
-    <section>
-        <div class="view-toolbar">
-            <div class="view-heading">
-                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
-                    <a href="{% url 'plan_list' program_id=program.pk %}" style="color: var(--sf-orange); font-size: 0.8rem; font-weight: 800; text-decoration: none;">
-                        <i class="fa-solid fa-arrow-left"></i> Plans
-                    </a>
-                </div>
-                <h2>{{ action }} Plan</h2>
-                <p>{{ program.name }} · {{ formatted_goal_type }}</p>
-            </div>
+        .app-container {
+            background: #ffffff;
+            display: grid;
+            grid-template-columns: 190px minmax(0, 1fr);
+            min-height: 100vh;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .sidebar {
+            background: #ffffff;
+            border-right: 1px solid var(--sf-line);
+            box-shadow: none;
+            color: var(--sf-muted);
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            min-height: 100%;
+            position: static;
+            width: auto;
+        }
+
+        .sidebar-header {
+            align-items: center;
+            border-bottom: 1px solid var(--sf-line);
+            display: flex;
+            justify-content: center;
+            min-height: 72px;
+            padding: 0 18px;
+        }
+
+        .sidebar-header h2 {
+            color: var(--sf-orange);
+            font-size: 0.98rem;
+            font-weight: 800;
+            gap: 10px;
+            letter-spacing: 0;
+        }
+
+        .sidebar-header h2 i {
+            color: var(--sf-orange);
+            filter: none;
+        }
+
+        .mobile-close {
+            color: var(--sf-muted);
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 12px;
+            list-style: none;
+            padding: 22px 20px;
+        }
+
+        .sidebar-menu a {
+            border-radius: 6px;
+            color: #758296;
+            display: flex;
+            font-size: 0.83rem;
+            font-weight: 700;
+            gap: 14px;
+            padding: 12px 14px;
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+
+        .sidebar-menu a i {
+            color: #8290a3;
+            font-size: 1rem;
+            text-align: center;
+            width: 18px;
+        }
+
+        .sidebar-menu li.active a {
+            background: var(--sf-orange);
+            box-shadow: 0 10px 22px rgba(255, 104, 24, 0.22);
+            color: #ffffff;
+        }
+
+        .sidebar-menu li.active a i {
+            animation: none;
+            color: #ffffff;
+        }
+
+        .sidebar-menu li:not(.active):not(.logout-item) a:hover {
+            background: var(--sf-orange-soft);
+            color: var(--sf-orange);
+            transform: translateX(3px);
+        }
+
+        .sidebar-menu li:not(.active):not(.logout-item) a:hover i {
+            color: var(--sf-orange);
+            transform: none;
+        }
+
+        .logout-item {
+            border-top: 1px solid var(--sf-line);
+            margin-top: auto;
+            padding-top: 14px;
+        }
+
+        .main-wrapper {
+            background: var(--sf-panel);
+            display: flex;
+            flex-direction: column;
+            margin-left: 0;
+            width: auto;
+        }
+
+        .topbar {
+            align-items: center;
+            background: #ffffff;
+            border-bottom: 1px solid var(--sf-line);
+            box-shadow: none;
+            display: grid;
+            gap: 18px;
+            grid-template-columns: minmax(170px, auto) minmax(260px, 1fr) auto;
+            min-height: 72px;
+            padding: 0 26px;
+            position: static;
+        }
+
+        .topbar-left {
+            align-items: center;
+            display: flex;
+            gap: 12px;
+        }
+
+        .topbar-left h1 {
+            color: var(--sf-ink);
+            font-size: 0.95rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .topbar-left span {
+            color: #a0aabc;
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+
+        .mobile-toggle {
+            background: none;
+            border: 0;
+            color: var(--sf-ink);
+            display: none;
+            font-size: 1.2rem;
+        }
+
+        .search-box {
+            align-items: center;
+            background: #f7f9fc;
+            border: 1px solid var(--sf-line);
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            height: 34px;
+            padding: 0 12px;
+        }
+
+        .search-box i {
+            color: #9aa6b8;
+            font-size: 0.9rem;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: 0;
+            color: var(--sf-ink);
+            font: inherit;
+            font-size: 0.82rem;
+            outline: 0;
+            width: 100%;
+        }
+
+        .topbar-right {
+            align-items: center;
+            display: flex;
+            gap: 14px;
+        }
+
+        .icon-btn,
+        .notification-btn {
+            align-items: center;
+            background: transparent;
+            border: 0;
+            color: #728098;
+            display: inline-flex;
+            font-size: 0.95rem;
+            height: 32px;
+            justify-content: center;
+            position: relative;
+            width: 32px;
+        }
+
+        .notification-btn .badge {
+            background: var(--sf-orange);
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            height: 8px;
+            position: absolute;
+            right: 7px;
+            top: 7px;
+            width: 8px;
+        }
+
+        .user-profile {
+            align-items: center;
+            display: flex;
+            gap: 10px;
+        }
+
+        .user-greeting {
+            display: none;
+        }
+
+        .avatar {
+            align-items: center;
+            background: linear-gradient(135deg, #ffb377, var(--sf-orange));
+            border-radius: 50%;
+            color: #ffffff;
+            display: flex;
+            font-size: 0.9rem;
+            font-weight: 800;
+            height: 36px;
+            justify-content: center;
+            width: 36px;
+        }
+
+        .content-area {
+            max-width: none;
+            padding: 26px;
+            width: 100%;
+        }
+
+        .form-layout {
+            display: grid;
+            gap: 24px;
+            grid-template-columns: minmax(0, 1fr) 260px;
+        }
+
+        .form-toolbar {
+            align-items: center;
+            display: flex;
+            gap: 14px;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .form-title h2 {
+            color: var(--sf-ink);
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin: 0 0 6px;
+        }
+
+        .form-title p {
+            color: var(--sf-muted);
+            font-size: 0.84rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .form-card {
+            background: #ffffff;
+            border: 1px solid var(--sf-line);
+            border-radius: 8px;
+            box-shadow: var(--sf-shadow);
+            padding: 22px;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 18px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .form-group {
+            margin: 0;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            color: #4f5d73;
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select,
+        .form-input {
+            background: #f7f9fc;
+            border: 1px solid var(--sf-line);
+            border-radius: 8px;
+            color: var(--sf-ink);
+            font: inherit;
+            font-size: 0.9rem;
+            min-height: 46px;
+            padding: 12px 14px;
+            width: 100%;
+        }
+
+        textarea {
+            min-height: 132px;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: var(--sf-orange);
+            box-shadow: 0 0 0 4px rgba(255, 104, 24, 0.12);
+            outline: none;
+        }
+
+        .form-error,
+        .errorlist {
+            color: #d83b3b;
+            font-size: 0.78rem;
+            font-weight: 700;
+            list-style: none;
+            margin: 7px 0 0;
+            padding: 0;
+        }
+
+        .status-toggle {
+            align-items: center;
+            background: #f7f9fc;
+            border: 1px solid var(--sf-line);
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            min-height: 46px;
+            padding: 0 14px;
+        }
+
+        .status-toggle input {
+            accent-color: var(--sf-orange);
+            height: 18px;
+            width: 18px;
+        }
+
+        .form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 22px;
+        }
+
+        .btn {
+            align-items: center;
+            border: 0;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            font: inherit;
+            font-size: 0.78rem;
+            font-weight: 800;
+            gap: 8px;
+            justify-content: center;
+            min-height: 40px;
+            padding: 10px 14px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--sf-orange);
+            color: #ffffff;
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            border: 1px solid var(--sf-line);
+            color: #6d7a90;
+        }
+
+        .messages-container {
+            margin-bottom: 18px;
+        }
+
+        .alert {
+            background: #e8fbef;
+            border: 1px solid #cdf4dc;
+            border-radius: 8px;
+            color: #1aaa5b;
+            font-size: 0.86rem;
+            font-weight: 700;
+            padding: 14px 16px;
+        }
+
+        .side-header {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .side-header h3 {
+            color: var(--sf-ink);
+            font-size: 1rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .side-header a {
+            color: var(--sf-orange);
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .side-card {
+            align-items: center;
+            background: #ffffff;
+            border-radius: 7px;
+            box-shadow: var(--sf-shadow);
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding: 14px;
+            text-decoration: none;
+        }
+
+        .side-card h4 {
+            color: var(--sf-ink);
+            font-size: 0.82rem;
+            margin: 0 0 7px;
+        }
+
+        .side-card p {
+            color: var(--sf-muted);
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .side-card .pill {
+            background: var(--sf-orange-soft);
+            border-radius: 999px;
+            color: var(--sf-orange);
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 6px 8px;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 980px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                bottom: 0;
+                height: 100vh;
+                left: 0;
+                max-width: 280px;
+                position: fixed;
+                top: 0;
+                transform: translateX(-100%);
+                transition: transform 0.25s ease;
+                width: 78vw;
+                z-index: 20;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-close,
+            .mobile-toggle {
+                display: inline-flex;
+            }
+
+            .sidebar-header {
+                justify-content: space-between;
+            }
+
+            .topbar {
+                grid-template-columns: auto 1fr auto;
+                padding: 0 18px;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .form-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .content-area {
+                padding: 18px;
+            }
+
+            .form-toolbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+            }
+        }
+        .avatar,
+        .avatar-button,
+        .profile-menu-avatar {
+            overflow: hidden;
+        }
+
+        .avatar img,
+        .avatar-button img,
+        .profile-menu-avatar img {
+            display: block;
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'css/admin_theme.css' %}">
+</head>
+<body class="admin-app">
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fa-solid fa-dumbbell"></i> ScaleFit</h2>
+            <button class="mobile-close" onclick="toggleSidebar()" aria-label="Close Sidebar"><i class="fa-solid fa-xmark"></i></button>
         </div>
-
-        <form method="POST" class="progress-panel" style="margin-top: 0;">
-            {% csrf_token %}
-            {{ form.program.as_hidden }}
-            {% if form.non_field_errors %}
-                <div class="alert error">
-                    {{ form.non_field_errors }}
-                </div>
-            {% endif %}
-
-            <div style="display: grid; gap: 20px; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                <div style="grid-column: 1 / -1;">
-                    <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Plan Name</label>
-                    {{ form.name.errors }}
-                    {{ form.name }}
-                </div>
-
-                <div>
-                    <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Plan Type</label>
-                    {{ form.plan_type.errors }}
-                    {{ form.plan_type }}
-                </div>
-
-                <div>
-                    <label id="count-label" class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Number of Days</label>
-                    {{ form.count.errors }}
-                    {{ form.count }}
-                </div>
-
-                <div style="grid-column: 1 / -1;">
-                    <label class="side-header" style="margin-bottom: 8px; display: block; font-size: 0.85rem;">Description</label>
-                    {{ form.description.errors }}
-                    {{ form.description }}
-                </div>
-
-                <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--sf-panel); border-radius: 8px;">
-                    {{ form.is_active }}
-                    <label for="{{ form.is_active.id_for_label }}" style="font-size: 0.85rem; font-weight: 800; color: var(--sf-ink);">Active</label>
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--sf-line);">
-                <a href="{% url 'plan_list' program_id=program.pk %}" style="padding: 12px 24px; border-radius: 6px; font-size: 0.85rem; font-weight: 800; text-decoration: none; background: var(--sf-panel); color: var(--sf-muted);">Cancel</a>
-                <button type="submit" class="btn" style="background: var(--sf-orange); color: white; padding: 12px 24px; border: 0; border-radius: 6px; font-size: 0.85rem; font-weight: 800; cursor: pointer;">
-                    {{ action }} Plan
-                </button>
-            </div>
-        </form>
-    </section>
-
-    <aside>
-        <div class="side-header">
-            <h3>Quick Links</h3>
-        </div>
-        <div class="side-panel">
-            <a class="side-card" href="{% url 'program_list' goal_type=goal_type %}">
-                <div>
-                    <h4>Programs</h4>
-                    <p>Program library</p>
-                </div>
-                <span class="pill">Open</span>
-            </a>
-            <a class="side-card" href="{% url 'members' %}">
-                <div>
-                    <h4>Members</h4>
-                    <p>User management</p>
-                </div>
-                <span class="pill">Open</span>
-            </a>
-        </div>
-
-        <div class="promo-panel">
-            <h3>Plan Creator</h3>
-            <p>Define the roadmap for your members with clear, structured plans.</p>
-        </div>
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'dashboard' %}" title="Overview dashboard"><i class="fa-solid fa-table-cells-large"></i> Overview</a></li>
+            <li class="{% if goal_type == 'weight_loss' %}active{% endif %}"><a href="{% url 'program_list' goal_type='weight_loss' %}" title="Manage weight loss programs"><i class="fa-solid fa-dumbbell"></i> Weight Loss</a></li>
+            <li class="{% if goal_type == 'weight_gain' %}active{% endif %}"><a href="{% url 'program_list' goal_type='weight_gain' %}" title="Manage weight gain programs"><i class="fa-solid fa-bowl-food"></i> Weight Gain</a></li>
+            <li><a href="{% url 'members' %}"><i class="fa-regular fa-circle-user"></i> Members</a></li>
+            <li><a href="{% url 'referral' %}" title="View referral activity"><i class="fa-solid fa-chart-simple"></i> Referrals</a></li>
+            <li><a href="{% url 'settings' %}"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            <li class="logout-item"><a href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a></li>
+        </ul>
     </aside>
-</div>
-{% endblock %}
 
-{% block extra_js %}
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar"><i class="fa-solid fa-bars"></i></button>
+                <div>
+                    {% if goal_type != 'weight_loss' %}
+                    <span>Hello, {{ user.first_name|default:user.username }}</span>
+                    {% endif %}
+                    <h1>{{ action }} Plan</h1>
+                </div>
+            </div>
+            <label class="search-box" aria-label="Search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Search">
+            </label>
+            <div class="topbar-right">
+                <button class="notification-btn" type="button" aria-label="Notifications"><i class="fa-solid fa-bell"></i><span class="badge"></span></button>
+                <a class="icon-btn" href="{% url 'settings' %}" aria-label="Settings"><i class="fa-solid fa-gear"></i></a>
+                <div class="user-profile">
+                    <span class="user-greeting">Hi, {{ user.first_name|default:user.username }}</span>
+                    <div class="avatar">{% if current_user_profile.profile_image %}<img src="{{ current_user_profile.profile_image.url }}" alt="{{ user.username }} profile image">{% else %}{{ user.username|make_list|first|upper }}{% endif %}</div>
+                </div>
+            </div>
+        </header>
+
+        <main class="content-area">
+            <div class="form-layout">
+                <section>
+                    <div class="form-toolbar">
+                        <div class="form-title">
+                            <h2>{{ action }} Plan</h2>
+                            <p>{{ program.name }} · {{ formatted_goal_type }}</p>
+                        </div>
+                        <a href="{% url 'plan_list' program_id=program.pk %}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+                    </div>
+
+                    {% if messages %}
+                    <div class="messages-container">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                <i class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% else %}check-circle{% endif %}"></i>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="form-card">
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{ form.program.as_hidden }}
+                            {% if form.non_field_errors %}
+                                {{ form.non_field_errors }}
+                            {% endif %}
+
+                            <div class="form-grid">
+                                <div class="form-group full">
+                                    <label class="form-label" for="{{ form.name.id_for_label }}">Plan Name</label>
+                                    {{ form.name }}
+                                    {% if form.name.errors %}<p class="form-error">{{ form.name.errors.0 }}</p>{% endif %}
+                                </div>
+                                
+                                {% if form.name_ta %}
+                                <div class="form-group">
+                                    <label class="form-label" for="{{ form.name_ta.id_for_label }}">Plan Name (Tamil)</label>
+                                    {{ form.name_ta }}
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="{{ form.name_hi.id_for_label }}">Plan Name (Hindi)</label>
+                                    {{ form.name_hi }}
+                                </div>
+                                {% endif %}
+
+                                <div class="form-group">
+                                    <label class="form-label" for="{{ form.plan_type.id_for_label }}">Plan Type</label>
+                                    {{ form.plan_type }}
+                                    {% if form.plan_type.errors %}<p class="form-error">{{ form.plan_type.errors.0 }}</p>{% endif %}
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" id="count-label" for="{{ form.count.id_for_label }}">Number of Days</label>
+                                    {{ form.count }}
+                                    {% if form.count.errors %}<p class="form-error">{{ form.count.errors.0 }}</p>{% endif %}
+                                </div>
+
+                                <div class="form-group full">
+                                    <label class="form-label" for="{{ form.description.id_for_label }}">Description</label>
+                                    {{ form.description }}
+                                    {% if form.description.errors %}<p class="form-error">{{ form.description.errors.0 }}</p>{% endif %}
+                                </div>
+                                
+                                {% if form.description_ta %}
+                                <div class="form-group full">
+                                    <label class="form-label" for="{{ form.description_ta.id_for_label }}">Description (Tamil)</label>
+                                    {{ form.description_ta }}
+                                </div>
+                                <div class="form-group full">
+                                    <label class="form-label" for="{{ form.description_hi.id_for_label }}">Description (Hindi)</label>
+                                    {{ form.description_hi }}
+                                </div>
+                                {% endif %}
+
+                                <div class="form-group full">
+                                    <label class="form-label" for="{{ form.is_active.id_for_label }}">Status</label>
+                                    <div class="status-toggle">
+                                        {{ form.is_active }}
+                                        <label for="{{ form.is_active.id_for_label }}">Active</label>
+                                    </div>
+                                    {% if form.is_active.errors %}<p class="form-error">{{ form.is_active.errors.0 }}</p>{% endif %}
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <a href="{% url 'plan_list' program_id=program.pk %}" class="btn btn-secondary">Back</a>
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> {{ action }} Plan</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <aside>
+                    <div class="side-header">
+                        <h3>Program</h3>
+                        <a href="{% url 'plan_list' program_id=program.pk %}">Back <i class="fa-solid fa-angle-right"></i></a>
+                    </div>
+                    <a class="side-card" href="{% url 'plan_list' program_id=program.pk %}">
+                        <div>
+                            <h4>{{ program.name }}</h4>
+                            <p>{{ formatted_goal_type }}</p>
+                        </div>
+                        <span class="pill">Plans</span>
+                    </a>
+                    <a class="side-card" href="{% url 'program_list' goal_type=goal_type %}">
+                        <div>
+                            <h4>{{ formatted_goal_type }}</h4>
+                            <p>Program library</p>
+                        </div>
+                        <span class="pill">Open</span>
+                    </a>
+
+                    <div class="side-header" style="margin-top: 26px;">
+                        <h3>Admin Links</h3>
+                        <a href="{% url 'dashboard' %}">View All <i class="fa-solid fa-angle-right"></i></a>
+                    </div>
+                    <a class="side-card" href="{% url 'members' %}">
+                        <div>
+                            <h4>Members</h4>
+                            <p>User management</p>
+                        </div>
+                        <span class="pill">Open</span>
+                    </a>
+                    <a class="side-card" href="{% url 'referral' %}">
+                        <div>
+                            <h4>Referrals</h4>
+                            <p>Invite tracking</p>
+                        </div>
+                        <span class="pill">Open</span>
+                    </a>
+                </aside>
+            </div>
+        </main>
+    </div>
+</div>
+
 <script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
+    }
+
     const planTypeSelect = document.querySelector('select[name="plan_type"]');
     const countLabel = document.getElementById('count-label');
     const labels = { day: 'Number of Days', weekly: 'Number of Weeks', monthly: 'Number of Months' };
@@ -113,5 +775,14 @@
         planTypeSelect.addEventListener('change', updateLabel);
         updateLabel();
     }
+
+    document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.querySelector('.mobile-toggle');
+        if (window.innerWidth <= 980 && sidebar && toggleBtn && !sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+    });
 </script>
-{% endblock %}
+</body>
+</html>
