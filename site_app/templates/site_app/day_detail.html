@@ -322,11 +322,11 @@
               <div class="combined-micro-grid">
                 <div class="combined-micro-box">
                   <span><i class="fas fa-apple-alt"></i> {% trans "Vitamins" %}</span>
-                  <p>{% if meal.vitamins %}{{ meal.vitamins }}{% else %}-{% endif %}</p>
+                  <p>{% if meal.translated_vitamins|default:meal.vitamins %}{{ meal.translated_vitamins|default:meal.vitamins }}{% else %}-{% endif %}</p>
                 </div>
                 <div class="combined-micro-box">
                   <span><i class="fas fa-seedling"></i> {% trans "Minerals" %}</span>
-                  <p>{% if meal.minerals %}{{ meal.minerals }}{% else %}-{% endif %}</p>
+                  <p>{% if meal.translated_minerals|default:meal.minerals %}{{ meal.translated_minerals|default:meal.minerals }}{% else %}-{% endif %}</p>
                 </div>
               </div>
               <div class="combined-meal-footer">
@@ -375,11 +375,11 @@
               <div class="combined-micro-grid">
                 <div class="combined-micro-box">
                   <span><i class="fas fa-apple-alt"></i> {% trans "Vitamins" %}</span>
-                  <p>{% if meal.vitamins %}{{ meal.vitamins }}{% else %}-{% endif %}</p>
+                  <p>{% if meal.translated_vitamins|default:meal.vitamins %}{{ meal.translated_vitamins|default:meal.vitamins }}{% else %}-{% endif %}</p>
                 </div>
                 <div class="combined-micro-box">
                   <span><i class="fas fa-seedling"></i> {% trans "Minerals" %}</span>
-                  <p>{% if meal.minerals %}{{ meal.minerals }}{% else %}-{% endif %}</p>
+                  <p>{% if meal.translated_minerals|default:meal.minerals %}{{ meal.translated_minerals|default:meal.minerals }}{% else %}-{% endif %}</p>
                 </div>
               </div>
               <div class="combined-meal-footer">
@@ -428,11 +428,11 @@
               <div class="combined-micro-grid">
                 <div class="combined-micro-box">
                   <span><i class="fas fa-apple-alt"></i> {% trans "Vitamins" %}</span>
-                  <p>{% if meal.vitamins %}{{ meal.vitamins }}{% else %}-{% endif %}</p>
+                  <p>{% if meal.translated_vitamins|default:meal.vitamins %}{{ meal.translated_vitamins|default:meal.vitamins }}{% else %}-{% endif %}</p>
                 </div>
                 <div class="combined-micro-box">
                   <span><i class="fas fa-seedling"></i> {% trans "Minerals" %}</span>
-                  <p>{% if meal.minerals %}{{ meal.minerals }}{% else %}-{% endif %}</p>
+                  <p>{% if meal.translated_minerals|default:meal.minerals %}{{ meal.translated_minerals|default:meal.minerals }}{% else %}-{% endif %}</p>
                 </div>
               </div>
               <div class="combined-meal-footer">
@@ -481,11 +481,11 @@
               <div class="combined-micro-grid">
                 <div class="combined-micro-box">
                   <span><i class="fas fa-apple-alt"></i> {% trans "Vitamins" %}</span>
-                  <p>{% if meal.vitamins %}{{ meal.vitamins }}{% else %}-{% endif %}</p>
+                  <p>{% if meal.translated_vitamins|default:meal.vitamins %}{{ meal.translated_vitamins|default:meal.vitamins }}{% else %}-{% endif %}</p>
                 </div>
                 <div class="combined-micro-box">
                   <span><i class="fas fa-seedling"></i> {% trans "Minerals" %}</span>
-                  <p>{% if meal.minerals %}{{ meal.minerals }}{% else %}-{% endif %}</p>
+                  <p>{% if meal.translated_minerals|default:meal.minerals %}{{ meal.translated_minerals|default:meal.minerals }}{% else %}-{% endif %}</p>
                 </div>
               </div>
               <div class="combined-meal-footer">
@@ -514,7 +514,7 @@
                   <source src="{{ w.video|video_media_url }}" type="video/mp4">
                 </video>
               {% elif w.image %}
-                <button type="button" class="demo-preview" onclick="openLightbox('{{ w.image|optimized_media_url:1200 }}','{{ w.translated_title|default:w.title|escapejs }}','{{ w.duration|default:site_settings.workout_duration_label|escapejs }}','{{ w.translated_description|default:w.description|escapejs }}')">
+                <button type="button" class="demo-preview" onclick="openLightbox('{{ w.image|optimized_media_url:1200 }}','{{ w.translated_title|default:w.title|escapejs }}','{{ w.translated_duration|default:w.duration|default:site_settings.workout_duration_label|escapejs }}','{{ w.translated_description|default:w.description|escapejs }}')">
                   <img src="{{ w.image|optimized_media_url:640 }}" srcset="{% responsive_image_srcset w.image '320,640,960' %}" sizes="(max-width: 768px) 100vw, 33vw" alt="{{ w.translated_title|default:w.title }}" loading="lazy">
                   <div class="zoom-overlay"><i class="fas fa-search-plus"></i></div>
                 </button>
@@ -529,7 +529,7 @@
               </div>
               <div class="combined-meal-footer">
                 <div>
-                  <span class="meta-tag meta-duration"><i class="fas fa-stopwatch"></i> {{ w.duration|default:site_settings.workout_duration_label }}</span>
+                  <span class="meta-tag meta-duration"><i class="fas fa-stopwatch"></i> {{ w.translated_duration|default:w.duration|default:site_settings.workout_duration_label }}</span>
                 </div>
                 <a class="meta-tag meta-link" href="{% url 'site_workout_detail' w.pk %}">{% trans "View" %} <i class="fas fa-arrow-right"></i></a>
               </div>

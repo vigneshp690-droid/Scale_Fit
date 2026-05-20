@@ -23,7 +23,12 @@ class SiteSettingsMiddleware:
             session_language = session.get(LANGUAGE_SESSION_KEY) if hasattr(session, 'get') else None
             cookie_language = request.COOKIES.get(django_settings.LANGUAGE_COOKIE_NAME)
             selected_language = session_language or cookie_language
-            language_code = selected_language or (settings.default_language if is_user_site else 'en')
+            
+            if is_user_site:
+                language_code = selected_language or settings.default_language
+            else:
+                language_code = 'en'
+                
             translation.activate(language_code)
             request.LANGUAGE_CODE = language_code
             request.site_settings = settings

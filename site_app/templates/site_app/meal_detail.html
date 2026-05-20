@@ -64,7 +64,7 @@
     <aside class="meal-detail-side reveal">
       <div class="quick-panel">
         <h3>{% trans "Quick Guidance" %}</h3>
-        <div class="quick-row"><span>{% trans "Hydration" %}</span><strong>{{ meal.translated_hydration|default:meal.hydration|default:"Drink 500ml water" }}</strong></div>
+        <div class="quick-row"><span>{% trans "Hydration" %}</span><strong>{% if meal.translated_hydration|default:meal.hydration %}{{ meal.translated_hydration|default:meal.hydration }}{% else %}{% trans "Drink 500ml water" %}{% endif %}</strong></div>
         <div class="quick-row"><span>{% trans "Meal Timing" %}</span><strong>{{ meal.get_meal_category_display }}</strong></div>
         {% if meal.diet_type %}<div class="quick-row"><span>{% trans "Diet Type" %}</span><strong>{{ meal.get_diet_type_display }}</strong></div>{% endif %}
       </div>
@@ -124,13 +124,13 @@
     {% if meal.vitamins %}
     <div class="detail-box reveal">
       <span><i class="fas fa-capsules"></i> {% trans "Vitamins" %}</span>
-      <p>{{ meal.vitamins }}</p>
+      <p>{{ meal.translated_vitamins|default:meal.vitamins }}</p>
     </div>
     {% endif %}
     {% if meal.minerals %}
     <div class="detail-box reveal">
       <span><i class="fas fa-gem"></i> {% trans "Minerals" %}</span>
-      <p>{{ meal.minerals }}</p>
+      <p>{{ meal.translated_minerals|default:meal.minerals }}</p>
     </div>
     {% endif %}
     {% if meal.translated_benefits|default:meal.benefits %}

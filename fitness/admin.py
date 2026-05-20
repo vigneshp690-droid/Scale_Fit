@@ -126,7 +126,7 @@ class ProgramAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', 'updated_at')
     fieldsets = (
         (None, {
-            'fields': ('name', 'goal_type', 'description', 'is_active')
+            'fields': ('name', 'name_ta', 'name_hi', 'goal_type', 'description', 'description_ta', 'description_hi', 'is_active')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
@@ -145,7 +145,7 @@ class PlanAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', 'updated_at')
     fieldsets = (
         (None, {
-            'fields': ('program', 'name', 'plan_type', 'count', 'description', 'is_active')
+            'fields': ('program', 'name', 'name_ta', 'name_hi', 'plan_type', 'count', 'description', 'description_ta', 'description_hi', 'is_active')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
@@ -164,7 +164,7 @@ class DayAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', 'updated_at')
     fieldsets = (
         (None, {
-            'fields': ('plan', 'day_number', 'title', 'description', 'is_active')
+            'fields': ('plan', 'day_number', 'title', 'title_ta', 'title_hi', 'description', 'description_ta', 'description_hi', 'is_active')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
@@ -183,13 +183,13 @@ class ProgramItemAdmin(admin.ModelAdmin):
     readonly_fields = ('image_preview', 'video_preview', 'created_at', 'updated_at')
     fieldsets = (
         (None, {
-            'fields': ('day', 'title', 'image', 'image_preview', 'video', 'video_preview', 'description')
+            'fields': ('day', 'title', 'title_ta', 'title_hi', 'image', 'image_preview', 'video', 'video_preview', 'description', 'description_ta', 'description_hi')
         }),
         ('Program Settings', {
             'fields': ('meal_category', 'display_order', 'is_active')
         }),
         ('Nutritional Information', {
-            'fields': ('calories', 'protein', 'carbs', 'fat', 'fiber', 'vitamins', 'minerals')
+            'fields': ('calories', 'protein', 'carbs', 'fat', 'fiber', 'vitamins', 'vitamins_ta', 'vitamins_hi', 'minerals', 'minerals_ta', 'minerals_hi', 'hydration', 'hydration_ta', 'hydration_hi', 'benefits', 'benefits_ta', 'benefits_hi')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
@@ -226,10 +226,10 @@ class WorkoutItemAdmin(admin.ModelAdmin):
     readonly_fields = ('image_preview', 'video_preview', 'created_at', 'updated_at')
     fieldsets = (
         (None, {
-            'fields': ('day', 'title', 'image', 'image_preview', 'video', 'video_preview', 'description')
+            'fields': ('day', 'title', 'title_ta', 'title_hi', 'image', 'image_preview', 'video', 'video_preview', 'description', 'description_ta', 'description_hi')
         }),
         ('Workout Settings', {
-            'fields': ('duration', 'display_order', 'is_active')
+            'fields': ('duration', 'duration_ta', 'duration_hi', 'display_order', 'is_active')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
@@ -266,7 +266,7 @@ class DayMediaAdmin(admin.ModelAdmin):
     readonly_fields = ('media_link_preview', 'created_at', 'updated_at')
     fieldsets = (
         (None, {
-            'fields': ('day', 'media_type', 'title', 'media_file', 'media_link_preview', 'description')
+            'fields': ('day', 'media_type', 'title', 'title_ta', 'title_hi', 'media_file', 'media_link_preview', 'description', 'description_ta', 'description_hi')
         }),
         ('Display Settings', {
             'fields': ('display_order', 'is_active')
@@ -293,7 +293,7 @@ class WaterTargetAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', 'updated_at')
     fieldsets = (
         (None, {
-            'fields': ('day', 'target_amount', 'reminder_note', 'display_order', 'is_active')
+            'fields': ('day', 'target_amount', 'target_amount_ta', 'target_amount_hi', 'reminder_note', 'reminder_note_ta', 'reminder_note_hi', 'display_order', 'is_active')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),

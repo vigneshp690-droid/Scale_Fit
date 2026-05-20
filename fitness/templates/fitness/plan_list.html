@@ -147,128 +147,6 @@
             width: auto;
         }
 
-        .topbar {
-            align-items: center;
-            background: var(--white);
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: none;
-            display: grid;
-            gap: 18px;
-            grid-template-columns: minmax(170px, auto) minmax(260px, 1fr) auto;
-            min-height: 72px;
-            padding: 0 26px;
-            position: static;
-        }
-
-        .topbar-left {
-            align-items: center;
-            display: flex;
-            gap: 12px;
-        }
-
-        .topbar-left h1 {
-            color: var(--text-color);
-            font-size: 0.95rem;
-            font-weight: 800;
-            margin: 0;
-        }
-
-        .topbar-left span {
-            color: var(--text-muted);
-            display: block;
-            font-size: 0.68rem;
-            font-weight: 800;
-            margin-bottom: 2px;
-        }
-
-        .mobile-toggle {
-            background: none;
-            border: 0;
-            color: var(--text-color);
-            display: none;
-            font-size: 1.2rem;
-        }
-
-        .search-box {
-            align-items: center;
-            background: var(--surface-soft);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            display: flex;
-            gap: 10px;
-            height: 34px;
-            padding: 0 12px;
-        }
-
-        .search-box i {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .search-box input {
-            background: transparent;
-            border: 0;
-            color: var(--text-color);
-            font: inherit;
-            font-size: 0.82rem;
-            outline: 0;
-            width: 100%;
-        }
-
-        .topbar-right {
-            align-items: center;
-            display: flex;
-            gap: 14px;
-        }
-
-        .icon-btn,
-        .notification-btn {
-            align-items: center;
-            background: transparent;
-            border: 0;
-            color: var(--text-muted);
-            display: inline-flex;
-            font-size: 0.95rem;
-            height: 32px;
-            justify-content: center;
-            position: relative;
-            width: 32px;
-        }
-
-        .notification-btn .badge {
-            background: var(--primary);
-            border: 2px solid var(--white);
-            border-radius: 50%;
-            height: 8px;
-            position: absolute;
-            right: 7px;
-            top: 7px;
-            width: 8px;
-        }
-
-        .user-profile {
-            align-items: center;
-            display: flex;
-            gap: 10px;
-        }
-
-        .user-greeting {
-            display: none;
-        }
-
-        .avatar {
-            align-items: center;
-            background: linear-gradient(135deg, var(--primary-soft), var(--primary));
-            border-radius: 50%;
-            color: var(--white);
-            display: flex;
-            font-size: 0.9rem;
-            font-weight: 800;
-            height: 36px;
-            justify-content: center;
-            width: 36px;
-        }
-
         .content-area {
             max-width: none;
             padding: 26px;
@@ -761,15 +639,6 @@
                 justify-content: space-between;
             }
 
-            .topbar {
-                grid-template-columns: auto 1fr auto;
-                padding: 0 18px;
-            }
-
-            .search-box {
-                display: none;
-            }
-
             .plan-layout {
                 grid-template-columns: 1fr;
             }
@@ -818,6 +687,7 @@
         }
     </style>
     <link rel="stylesheet" href="{% static 'css/admin_theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin_navbar.css' %}">
 </head>
 <body class="admin-app">
 <div class="app-container">
@@ -838,29 +708,7 @@
     </aside>
 
     <div class="main-wrapper">
-        <header class="topbar">
-            <div class="topbar-left">
-                <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar"><i class="fa-solid fa-bars"></i></button>
-                <div>
-                    {% if goal_type != 'weight_loss' %}
-                    <span>Hello, {{ user.first_name|default:user.username }}</span>
-                    {% endif %}
-                    <h1>{{ program.name }} Plans</h1>
-                </div>
-            </div>
-            <label class="search-box" aria-label="Search">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Search">
-            </label>
-            <div class="topbar-right">
-                <button class="notification-btn" type="button" aria-label="Notifications"><i class="fa-solid fa-bell"></i><span class="badge"></span></button>
-                <a class="icon-btn" href="{% url 'settings' %}" aria-label="Settings"><i class="fa-solid fa-gear"></i></a>
-                <div class="user-profile">
-                    <span class="user-greeting">Hi, {{ user.first_name|default:user.username }}</span>
-                    <div class="avatar">{% if current_user_profile.profile_image %}<img src="{{ current_user_profile.profile_image.url }}" alt="{{ user.username }} profile image">{% else %}{{ user.username|make_list|first|upper }}{% endif %}</div>
-                </div>
-            </div>
-        </header>
+        {% include "fitness/partials/top_navbar.html" %}
 
         <main class="content-area">
             <div class="plan-layout">

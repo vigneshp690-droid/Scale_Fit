@@ -16,7 +16,7 @@
     <span class="current">{{ workout.translated_title|default:workout.title }}</span>
   </div>
   <h1>{{ workout.translated_title|default:workout.title }}</h1>
-  <p><i class="fas fa-stopwatch"></i> {{ workout.duration|default:site_settings.workout_duration_label }}</p>
+  <p><i class="fas fa-stopwatch"></i> {{ workout.translated_duration|default:workout.duration|default:site_settings.workout_duration_label }}</p>
 </div>
 
 <section class="section meal-detail-section">
@@ -46,7 +46,7 @@
         </div>
 
         <div class="content-meta meal-detail-badges">
-          <span class="meta-tag meta-duration"><i class="fas fa-stopwatch"></i> {{ workout.duration|default:site_settings.workout_duration_label }}</span>
+          <span class="meta-tag meta-duration"><i class="fas fa-stopwatch"></i> {{ workout.translated_duration|default:workout.duration|default:site_settings.workout_duration_label }}</span>
           {% if goal_type == 'weight_loss' %}<span class="meta-tag meta-goal"><i class="fas fa-fire"></i> {% trans "Weight loss friendly" %}</span>{% else %}<span class="meta-tag meta-goal"><i class="fas fa-dumbbell"></i> {% trans "Muscle gain friendly" %}</span>{% endif %}
         </div>
       </div>
@@ -55,7 +55,7 @@
     <aside class="meal-detail-side reveal">
       <div class="quick-panel">
         <h3>{% trans "Quick Guidance" %}</h3>
-        <div class="quick-row"><span>{% trans "Duration" %}</span><strong>{{ workout.duration|default:site_settings.workout_duration_label }}</strong></div>
+        <div class="quick-row"><span>{% trans "Duration" %}</span><strong>{{ workout.translated_duration|default:workout.duration|default:site_settings.workout_duration_label }}</strong></div>
       </div>
     </aside>
   </div>

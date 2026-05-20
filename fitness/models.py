@@ -2,7 +2,7 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
-from django.utils.translation import get_language
+from django.utils.translation import get_language, gettext_lazy as _
 
 from .media_storage import cloudinary_upload_path
 
@@ -19,12 +19,17 @@ def cloudinary_or_file_field(resource_type, folder, fallback_field=models.FileFi
 
 
 def get_localized_field_value(instance, field_name):
+    from django.utils.translation import gettext
     language_code = (get_language() or 'en').split('-')[0]
     if language_code in {'ta', 'hi'}:
         translated_value = getattr(instance, f'{field_name}_{language_code}', '')
         if translated_value:
             return translated_value
-    return getattr(instance, field_name, '')
+    
+    original_value = getattr(instance, field_name, '')
+    if original_value and language_code != 'en':
+        return gettext(original_value)
+    return original_value
 
 
 class SiteSettings(models.Model):
@@ -417,7 +422,17 @@ class Week(models.Model):
 
     @property
     def translated_title(self):
-        return get_localized_field_value(self, 'title')
+        language_code = (get_language() or 'en').split('-')[0]
+        if language_code in {'ta', 'hi'}:
+            translated_value = getattr(self, f'title_{language_code}', '')
+            if translated_value:
+                return translated_value
+            if self.title == f"Week {self.week_number}":
+                if language_code == 'ta':
+                    return f"வாரம் {self.week_number}"
+                elif language_code == 'hi':
+                    return f"सप्ताह {self.week_number}"
+        return getattr(self, 'title', '')
 
     @property
     def translated_description(self):
@@ -454,7 +469,17 @@ class Month(models.Model):
 
     @property
     def translated_title(self):
-        return get_localized_field_value(self, 'title')
+        language_code = (get_language() or 'en').split('-')[0]
+        if language_code in {'ta', 'hi'}:
+            translated_value = getattr(self, f'title_{language_code}', '')
+            if translated_value:
+                return translated_value
+            if self.title == f"Month {self.month_number}":
+                if language_code == 'ta':
+                    return f"மாதம் {self.month_number}"
+                elif language_code == 'hi':
+                    return f"महीना {self.month_number}"
+        return getattr(self, 'title', '')
 
     @property
     def translated_description(self):
@@ -492,7 +517,17 @@ class Day(models.Model):
 
     @property
     def translated_title(self):
-        return get_localized_field_value(self, 'title')
+        language_code = (get_language() or 'en').split('-')[0]
+        if language_code in {'ta', 'hi'}:
+            translated_value = getattr(self, f'title_{language_code}', '')
+            if translated_value:
+                return translated_value
+            if self.title == f"Day {self.day_number}":
+                if language_code == 'ta':
+                    return f"நாள் {self.day_number}"
+                elif language_code == 'hi':
+                    return f"दिन {self.day_number}"
+        return getattr(self, 'title', '')
 
     @property
     def translated_description(self):
@@ -517,18 +552,18 @@ class ProgramItem(models.Model):
     DINNER = 'dinner'
     SNACKS = 'snacks'
     CATEGORY_CHOICES = [
-        (BREAKFAST, 'Breakfast'),
-        (LUNCH, 'Lunch'),
-        (DINNER, 'Dinner'),
-        (SNACKS, 'Snacks'),
+        (BREAKFAST, _('Breakfast')),
+        (LUNCH, _('Lunch')),
+        (DINNER, _('Dinner')),
+        (SNACKS, _('Snacks')),
     ]
     DIET_VEGETARIAN = 'vegetarian'
     DIET_NON_VEGETARIAN = 'non_vegetarian'
     DIET_VEGAN = 'vegan'
     DIET_TYPE_CHOICES = [
-        (DIET_VEGETARIAN, 'Vegetarian'),
-        (DIET_NON_VEGETARIAN, 'Non-vegetarian'),
-        (DIET_VEGAN, 'Vegan'),
+        (DIET_VEGETARIAN, _('Vegetarian')),
+        (DIET_NON_VEGETARIAN, _('Non-vegetarian')),
+        (DIET_VEGAN, _('Vegan')),
     ]
 
     day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name='program_items', null=True, blank=True)
@@ -553,7 +588,11 @@ class ProgramItem(models.Model):
     fat = models.FloatField(blank=True, null=True, help_text="Fat in grams")
     fiber = models.FloatField(blank=True, null=True, help_text="Fiber in grams")
     vitamins = models.CharField(max_length=255, blank=True, help_text="e.g., Vitamin A, Vitamin C")
+    vitamins_ta = models.CharField(max_length=255, blank=True)
+    vitamins_hi = models.CharField(max_length=255, blank=True)
     minerals = models.CharField(max_length=255, blank=True, help_text="e.g., Iron, Calcium")
+    minerals_ta = models.CharField(max_length=255, blank=True)
+    minerals_hi = models.CharField(max_length=255, blank=True)
     hydration = models.CharField(max_length=120, blank=True, help_text="e.g., Drink 500ml water")
     hydration_ta = models.CharField(max_length=120, blank=True)
     hydration_hi = models.CharField(max_length=120, blank=True)
@@ -594,6 +633,14 @@ class ProgramItem(models.Model):
     def translated_benefits(self):
         return get_localized_field_value(self, 'benefits')
 
+    @property
+    def translated_vitamins(self):
+        return get_localized_field_value(self, 'vitamins')
+
+    @property
+    def translated_minerals(self):
+        return get_localized_field_value(self, 'minerals')
+
 
 class WorkoutItem(models.Model):
     WEIGHT_LOSS = 'weight_loss'
@@ -615,6 +662,8 @@ class WorkoutItem(models.Model):
     description_ta = models.TextField(blank=True)
     description_hi = models.TextField(blank=True)
     duration = models.CharField(max_length=100, blank=True)
+    duration_ta = models.CharField(max_length=100, blank=True)
+    duration_hi = models.CharField(max_length=100, blank=True)
     goal_type = models.CharField(max_length=20, choices=GOAL_CHOICES)
     display_order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
@@ -637,6 +686,10 @@ class WorkoutItem(models.Model):
     def translated_description(self):
         return get_localized_field_value(self, 'description')
 
+    @property
+    def translated_duration(self):
+        return get_localized_field_value(self, 'duration')
+
     def save(self, *args, **kwargs):
         if not self.duration:
             self.duration = SiteSettings.get_solo().workout_duration_label
@@ -649,10 +702,10 @@ class DayMedia(models.Model):
     EXERCISE_IMAGE = 'exercise_image'
     MEAL_IMAGE = 'meal_image'
     MEDIA_TYPE_CHOICES = [
-        (WORKOUT_VIDEO, 'Workout Video'),
-        (EXERCISE_GIF, 'Exercise GIF'),
-        (EXERCISE_IMAGE, 'Exercise Image'),
-        (MEAL_IMAGE, 'Meal Image'),
+        (WORKOUT_VIDEO, _('Workout Video')),
+        (EXERCISE_GIF, _('Exercise GIF')),
+        (EXERCISE_IMAGE, _('Exercise Image')),
+        (MEAL_IMAGE, _('Meal Image')),
     ]
 
     day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name='media_items')

@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: ScaleFit\n"
@@ -15,7 +16,7 @@ msgid "ScaleFit"
 msgstr "ScaleFit"
 
 msgid "ScaleFit logo"
-msgstr "ScaleFit लोगो"
+msgstr "स्केलफिट लोगो"
 
 msgid "Home"
 msgstr "होम"
@@ -107,8 +108,11 @@ msgstr "विज्ञान-समर्थित"
 msgid "Plans"
 msgstr "प्लान"
 
-msgid "Structured day-by-day meal plans, workouts, and hydration guides tailored for your goal."
-msgstr "आपके लक्ष्य के अनुसार दिन-प्रतिदिन भोजन योजना, वर्कआउट और हाइड्रेशन गाइड।"
+msgid ""
+"Structured day-by-day meal plans, workouts, and hydration guides tailored "
+"for your goal."
+msgstr ""
+"आपके लक्ष्य के अनुसार दिन-प्रतिदिन भोजन योजना, वर्कआउट और हाइड्रेशन गाइड।"
 
 msgid "Lose Weight"
 msgstr "वजन घटाएं"
@@ -134,11 +138,18 @@ msgstr "अपना लक्ष्य चुनें"
 msgid "Pick the path that matches your fitness goal"
 msgstr "अपने फिटनेस लक्ष्य से मेल खाने वाला रास्ता चुनें"
 
-msgid "Structured meal plans and cardio-focused workouts designed to burn fat and boost metabolism effectively."
-msgstr "फैट घटाने और मेटाबॉलिज्म बढ़ाने के लिए भोजन योजनाएं और कार्डियो-केंद्रित वर्कआउट।"
+msgid ""
+"Structured meal plans and cardio-focused workouts designed to burn fat and "
+"boost metabolism effectively."
+msgstr ""
+"फैट घटाने और मेटाबॉलिज्म बढ़ाने के लिए भोजन योजनाएं और कार्डियो-केंद्रित "
+"वर्कआउट।"
 
-msgid "High-calorie meal plans and strength training programs to build lean muscle mass and increase body weight."
-msgstr "लीन मसल और वजन बढ़ाने के लिए हाई-कैलोरी भोजन योजनाएं और स्ट्रेंथ ट्रेनिंग।"
+msgid ""
+"High-calorie meal plans and strength training programs to build lean muscle "
+"mass and increase body weight."
+msgstr ""
+"लीन मसल और वजन बढ़ाने के लिए हाई-कैलोरी भोजन योजनाएं और स्ट्रेंथ ट्रेनिंग।"
 
 msgid "Explore Plans"
 msgstr "प्लान देखें"
@@ -305,8 +316,11 @@ msgstr "सामान्य प्रश्न"
 msgid "Start Your Fitness Journey Today"
 msgstr "आज ही अपनी फिटनेस यात्रा शुरू करें"
 
-msgid "Discover personalized plans designed to help you reach your fitness goals."
-msgstr "अपने फिटनेस लक्ष्यों को प्राप्त करने में मदद के लिए डिज़ाइन की गई व्यक्तिगत योजनाओं की खोज करें।"
+msgid ""
+"Discover personalized plans designed to help you reach your fitness goals."
+msgstr ""
+"अपने फिटनेस लक्ष्यों को प्राप्त करने में मदद के लिए डिज़ाइन की गई व्यक्तिगत "
+"योजनाओं की खोज करें।"
 
 msgid "Join Now"
 msgstr "अभी जुड़ें"
@@ -322,3 +336,1154 @@ msgstr "कार्बोहाइड्रेट"
 
 msgid "Fats"
 msgstr "वसा"
+
+msgid "Day Media"
+msgstr "डे मीडिया"
+
+msgid "No media added for this day yet."
+msgstr "इस दिन के लिए अभी कोई मीडिया नहीं जोड़ा गया है।"
+
+msgid ""
+"Transform your fitness journey with personalized workout plans, meal "
+"guidance, and progress tracking."
+msgstr ""
+"व्यक्तिगत वर्कआउट प्लान, भोजन मार्गदर्शन और प्रगति ट्रैकिंग के साथ अपनी "
+"फिटनेस यात्रा को बदलें।"
+
+msgid "Quick Links"
+msgstr "त्वरित लिंक"
+
+msgid "Fitness Resources"
+msgstr "फिटनेस संसाधन"
+
+msgid "Contact Information"
+msgstr "संपर्क जानकारी"
+
+msgid "All rights reserved."
+msgstr "सर्वाधिकार सुरक्षित।"
+
+msgid "123 Fitness Ave, NY"
+msgstr "123 फिटनेस एवेन्यू, NY"
+
+msgid "Contact"
+msgstr "संपर्क"
+
+msgid "Workouts"
+msgstr "वर्कआउट्स"
+
+msgid "Hydration"
+msgstr "हाइड्रेशन"
+
+msgid "Vegetarian"
+msgstr "शाकाहारी"
+
+msgid "Non-vegetarian"
+msgstr "मांसाहारी"
+
+msgid "Vegan"
+msgstr "वीगन"
+
+msgid "Workout Video"
+msgstr "वर्कआउट वीडियो"
+
+msgid "Exercise GIF"
+msgstr "व्यायाम GIF"
+
+msgid "Exercise Image"
+msgstr "व्यायाम छवि"
+
+msgid "Meal Image"
+msgstr "भोजन छवि"
+
+msgid "View"
+msgstr "देखें"
+
+msgid "Oatmeal with Berries"
+msgstr "ओटमील और बेरीज़"
+
+msgid ""
+"Steel-cut oats topped with fresh blueberries, strawberries and a drizzle of "
+"honey. Rich in fiber to keep you full."
+msgstr ""
+"ताजे ब्लूबेरी, स्ट्रॉबेरी और शहद के साथ स्टील-कट ओट्स। फाइबर से भरपूर जो "
+"आपको भरा रखता है।"
+
+msgid "Greek Yogurt Parfait"
+msgstr "ग्रीक योगर्ट पारफे"
+
+msgid ""
+"Low-fat Greek yogurt layered with granola, kiwi and mixed berries. High "
+"protein, low sugar morning fuel."
+msgstr ""
+"ग्रेनोला, कीवी और मिक्स्ड बेरीज़ के साथ लो-फैट ग्रीक योगर्ट। उच्च प्रोटीन, "
+"कम चीनी।"
+
+msgid "Avocado Egg Toast"
+msgstr "एवोकाडो एग टोस्ट"
+
+msgid ""
+"Whole grain toast topped with mashed avocado, poached eggs and chili flakes."
+" Healthy fats and protein."
+msgstr ""
+"मैश किए हुए एवोकाडो, उबले अंडे और चिली फ्लेक्स के साथ होल ग्रेन टोस्ट। "
+"स्वस्थ वसा और प्रोटीन।"
+
+msgid "Green Smoothie Bowl"
+msgstr "ग्रीन स्मूदी बाउल"
+
+msgid ""
+"Blended spinach, banana and almond milk topped with chia seeds, flaxseeds "
+"and sliced fruits."
+msgstr ""
+"पालक, केला और बादाम के दूध की स्मूदी, चिया सीड्स, फ्लैक्ससीड्स और कटे हुए "
+"फलों के साथ।"
+
+msgid "Veggie Omelette"
+msgstr "वेज ऑमलेट"
+
+msgid ""
+"Three-egg white omelette with bell peppers, spinach, mushrooms and low-fat "
+"cheese."
+msgstr ""
+"शिमला मिर्च, पालक, मशरूम और लो-फैट चीज़ के साथ तीन अंडे की सफेदी का ऑमलेट।"
+
+msgid "Chia Pudding"
+msgstr "चिया पुडिंग"
+
+msgid ""
+"Overnight chia seeds soaked in almond milk, topped with mango chunks and "
+"coconut flakes."
+msgstr ""
+"बादाम के दूध में रात भर भीगे हुए चिया सीड्स, आम के टुकड़ों और नारियल के साथ।"
+
+msgid "Whole Grain Pancakes"
+msgstr "होल ग्रेन पैनकेक"
+
+msgid ""
+"Fluffy whole wheat pancakes with fresh strawberries and a light drizzle of "
+"maple syrup."
+msgstr "ताजी स्ट्रॉबेरी और मेपल सिरप के साथ फ्लफी होल व्हीट पैनकेक।"
+
+msgid "Grilled Chicken Salad"
+msgstr "ग्रिल्ड चिकन सलाद"
+
+msgid ""
+"Grilled chicken breast on a bed of mixed greens, cherry tomatoes, cucumber "
+"and lemon vinaigrette."
+msgstr ""
+"मिक्स्ड ग्रीन्स, चेरी टमाटर, ककड़ी और नींबू के रस के साथ ग्रिल्ड चिकन "
+"ब्रेस्ट।"
+
+msgid "Quinoa Buddha Bowl"
+msgstr "क्विनोआ बुद्धा बाउल"
+
+msgid ""
+"Quinoa with roasted chickpeas, sweet potato, kale, avocado and tahini "
+"dressing."
+msgstr "भुने हुए चने, शकरकंद, केल और एवोकाडो के साथ क्विनोआ।"
+
+msgid "Turkey Lettuce Wraps"
+msgstr "टर्की लेट्यूस रैप्स"
+
+msgid ""
+"Lean ground turkey with water chestnuts, carrots and hoisin sauce wrapped in"
+" butter lettuce."
+msgstr "गाजर और सॉस के साथ लेट्यूस में लपेटा हुआ टर्की।"
+
+msgid "Lentil Soup"
+msgstr "दाल का सूप"
+
+msgid ""
+"Hearty red lentil soup with turmeric, cumin, spinach and a squeeze of lemon."
+msgstr "हल्दी, जीरा, पालक और नींबू के साथ लाल दाल का सूप।"
+
+msgid "Tuna Stuffed Peppers"
+msgstr "टूना स्टफ्ड पेपर्स"
+
+msgid ""
+"Bell peppers stuffed with tuna, celery, onion and light mayo. Baked until "
+"tender."
+msgstr "टूना, अजवाइन और प्याज से भरी हुई शिमला मिर्च।"
+
+msgid "Zucchini Noodles"
+msgstr "ज़ुकिनी नूडल्स"
+
+msgid ""
+"Spiralized zucchini with cherry tomatoes, basil pesto and grilled shrimp."
+msgstr "चेरी टमाटर, पेस्टो और ग्रिल्ड झींगा के साथ ज़ुकिनी नूडल्स।"
+
+msgid "Cauliflower Rice Bowl"
+msgstr "फूलगोभी राइस बाउल"
+
+msgid ""
+"Cauliflower rice with black beans, corn, salsa, lime and grilled chicken "
+"strips."
+msgstr "काले सेम, मकई और ग्रिल्ड चिकन के साथ फूलगोभी चावल।"
+
+msgid "Baked Salmon"
+msgstr "बेक्ड सैल्मन"
+
+msgid ""
+"Herb-crusted salmon fillet with steamed broccoli and lemon-garlic asparagus."
+msgstr "ब्रोकोली और शतावरी के साथ सैल्मन फ़िले।"
+
+msgid "Grilled Tilapia"
+msgstr "ग्रिल्ड तिलापिया"
+
+msgid ""
+"Lemon-pepper tilapia with roasted Brussels sprouts and a side of brown rice."
+msgstr "भुने हुए ब्रसेल्स स्प्राउट्स और ब्राउन राइस के साथ तिलापिया।"
+
+msgid "Chicken Stir Fry"
+msgstr "चिकन स्टिर फ्राई"
+
+msgid ""
+"Lean chicken breast with mixed vegetables in a light soy-ginger sauce over "
+"cauliflower rice."
+msgstr "सब्जियों और फूलगोभी चावल के साथ चिकन ब्रेस्ट।"
+
+msgid "Turkey Meatballs"
+msgstr "टर्की मीटबॉल"
+
+msgid ""
+"Lean turkey meatballs in marinara sauce with zucchini noodles and fresh "
+"basil."
+msgstr "ज़ुकिनी नूडल्स और तुलसी के साथ टर्की मीटबॉल।"
+
+msgid "Shrimp Tacos"
+msgstr "श्रिम्प टैकोस"
+
+msgid ""
+"Grilled shrimp in corn tortillas with cabbage slaw, avocado and lime crema."
+msgstr "एवोकाडो और नींबू के साथ झींगा टैकोस।"
+
+msgid "Stuffed Chicken Breast"
+msgstr "स्टफ्ड चिकन ब्रेस्ट"
+
+msgid ""
+"Chicken breast stuffed with spinach and feta, served with roasted sweet "
+"potato."
+msgstr "पालक और शकरकंद के साथ स्टफ्ड चिकन।"
+
+msgid "Vegetable Curry"
+msgstr "वेजिटेबल करी"
+
+msgid ""
+"Light coconut milk curry with chickpeas, spinach, tomatoes and brown rice."
+msgstr "चने, पालक, टमाटर और ब्राउन राइस के साथ सब्जियों की करी।"
+
+msgid "Apple with Almond Butter"
+msgstr "बादाम मक्खन के साथ सेब"
+
+msgid ""
+"Sliced apple with 1 tbsp natural almond butter. Perfect balance of fiber and"
+" healthy fats."
+msgstr "बादाम मक्खन के साथ सेब के टुकड़े। फाइबर और स्वस्थ वसा।"
+
+msgid "Celery and Hummus"
+msgstr "अजवाइन और हमस"
+
+msgid ""
+"Crunchy celery sticks with 2 tbsp homemade hummus. Low calorie, high fiber "
+"snack."
+msgstr "हमस के साथ अजवाइन के टुकड़े।"
+
+msgid "Mixed Nuts"
+msgstr "मिक्स्ड नट्स"
+
+msgid ""
+"A small handful of almonds, walnuts and cashews. Healthy fats and protein."
+msgstr "बादाम, अखरोट और काजू। स्वस्थ वसा और प्रोटीन।"
+
+msgid "Cucumber Slices"
+msgstr "खीरे के टुकड़े"
+
+msgid "Fresh cucumber slices with tzatziki dip. Hydrating and low calorie."
+msgstr "डिप के साथ ताजे खीरे के टुकड़े।"
+
+msgid "Protein Smoothie"
+msgstr "प्रोटीन स्मूदी"
+
+msgid ""
+"Whey protein with almond milk, banana and spinach. Post-workout recovery "
+"drink."
+msgstr "बादाम का दूध, केला और पालक के साथ प्रोटीन स्मूदी।"
+
+msgid "Rice Cakes"
+msgstr "राइस केक"
+
+msgid ""
+"Brown rice cakes with avocado and a sprinkle of sea salt. Light and "
+"satisfying."
+msgstr "एवोकाडो और नमक के साथ ब्राउन राइस केक।"
+
+msgid "Boiled Eggs"
+msgstr "उबले अंडे"
+
+msgid ""
+"Two hard-boiled eggs with a pinch of salt and pepper. High protein, portable"
+" snack."
+msgstr "नमक और काली मिर्च के साथ दो उबले अंडे।"
+
+msgid "Protein Pancake Stack"
+msgstr "प्रोटीन पैनकेक स्टैक"
+
+msgid ""
+"Thick protein pancakes with peanut butter, banana slices and maple syrup. "
+"650 calories of muscle fuel."
+msgstr "पीनट बटर, केले और मेपल सिरप के साथ प्रोटीन पैनकेक।"
+
+msgid "Eggs and Steak"
+msgstr "अंडे और स्टेक"
+
+msgid ""
+"Three whole eggs scrambled with a lean sirloin steak, whole grain toast and "
+"orange juice."
+msgstr "स्टेक, टोस्ट और संतरे के रस के साथ तीन अंडे।"
+
+msgid "Mass Gainer Smoothie"
+msgstr "मास गेनर स्मूदी"
+
+msgid ""
+"Whole milk, oats, banana, peanut butter, whey protein and honey blended "
+"together. 800+ calories."
+msgstr "दूध, ओट्स, केला, पीनट बटर, प्रोटीन और शहद की स्मूदी।"
+
+msgid "Breakfast Burrito"
+msgstr "ब्रेकफास्ट बुरिटो"
+
+msgid ""
+"Whole wheat tortilla with scrambled eggs, black beans, cheese, avocado and "
+"salsa."
+msgstr "अंडे, बीन्स, चीज़ और एवोकाडो के साथ बुरिटो।"
+
+msgid "Oatmeal Power Bowl"
+msgstr "ओटमील पावर बाउल"
+
+msgid ""
+"Large bowl of oats with whole milk, whey protein, peanut butter, banana and "
+"mixed nuts."
+msgstr "दूध, प्रोटीन, पीनट बटर और नट्स के साथ ओट्स।"
+
+msgid "French Toast"
+msgstr "फ्रेंच टोस्ट"
+
+msgid ""
+"Thick-cut whole grain French toast with eggs, topped with berries and Greek "
+"yogurt."
+msgstr "अंडे, बेरीज़ और ग्रीक योगर्ट के साथ फ्रेंच टोस्ट।"
+
+msgid "Cottage Cheese Bowl"
+msgstr "कॉटेज चीज़ बाउल"
+
+msgid ""
+"Full-fat cottage cheese with granola, honey, walnuts and fresh pineapple "
+"chunks."
+msgstr "ग्रेनोला, शहद, अखरोट और अनानास के साथ पनीर।"
+
+msgid "Chicken Rice Bowl"
+msgstr "चिकन राइस बाउल"
+
+msgid ""
+"Double portion of grilled chicken thighs over white rice with teriyaki sauce"
+" and steamed broccoli."
+msgstr "चावल, सॉस और ब्रोकोली के साथ ग्रिल्ड चिकन।"
+
+msgid "Beef and Pasta"
+msgstr "बीफ और पास्ता"
+
+msgid ""
+"Lean ground beef bolognese over whole wheat pasta with parmesan and garlic "
+"bread."
+msgstr "पास्ता और गार्लिक ब्रेड के साथ बीफ।"
+
+msgid "Salmon Quinoa Bowl"
+msgstr "सैल्मन क्विनोआ बाउल"
+
+msgid "Grilled salmon fillet over quinoa with roasted vegetables and avocado."
+msgstr "क्विनोआ, सब्जियों और एवोकाडो के साथ सैल्मन।"
+
+msgid "Turkey Sub"
+msgstr "टर्की सब"
+
+msgid ""
+"Footlong whole grain sub with turkey, cheese, avocado, veggies and olive "
+"oil."
+msgstr "टर्की, चीज़, एवोकाडो और सब्जियों के साथ सब।"
+
+msgid "Tuna Pasta Salad"
+msgstr "टूना पास्ता सलाद"
+
+msgid ""
+"Whole wheat pasta with tuna, olive oil, cherry tomatoes, olives and feta "
+"cheese."
+msgstr "टूना, जैतून का तेल, टमाटर और चीज़ के साथ पास्ता।"
+
+msgid "Chicken Burrito Bowl"
+msgstr "चिकन बुरिटो बाउल"
+
+msgid ""
+"Large burrito bowl with chicken, brown rice, black beans, cheese, sour cream"
+" and guacamole."
+msgstr "चिकन, ब्राउन राइस, बीन्स और चीज़ के साथ बुरिटो बाउल।"
+
+msgid "Steak and Potatoes"
+msgstr "स्टेक और आलू"
+
+msgid ""
+"Grilled sirloin steak with mashed potatoes, green beans and a side salad."
+msgstr "मैश किए हुए आलू और बीन्स के साथ स्टेक।"
+
+msgid "Beef Stir Fry"
+msgstr "बीफ स्टिर फ्राई"
+
+msgid ""
+"Lean beef strips with mixed vegetables, noodles and oyster sauce. High "
+"protein evening meal."
+msgstr "सब्जियों और नूडल्स के साथ बीफ।"
+
+msgid "Baked Chicken Thighs"
+msgstr "बेक्ड चिकन जांघ"
+
+msgid ""
+"Juicy baked chicken thighs with roasted sweet potatoes and garlic green "
+"beans."
+msgstr "शकरकंद और बीन्स के साथ चिकन जांघ।"
+
+msgid "Salmon and Rice"
+msgstr "सैल्मन और राइस"
+
+msgid "Pan-seared salmon with jasmine rice, edamame and miso soup."
+msgstr "चावल और सूप के साथ सैल्मन।"
+
+msgid "Lamb Chops"
+msgstr "लैम्ब चॉप्स"
+
+msgid "Herb-marinated lamb chops with roasted potatoes and mint yogurt sauce."
+msgstr "भुने हुए आलू और सॉस के साथ लैम्ब चॉप्स।"
+
+msgid "Chicken Pasta"
+msgstr "चिकन पास्ता"
+
+msgid "Creamy chicken and mushroom pasta with whole wheat penne and parmesan."
+msgstr "चिकन और मशरूम के साथ पास्ता।"
+
+msgid "Pork Tenderloin"
+msgstr "पोर्क टेंडरलॉइन"
+
+msgid ""
+"Roasted pork tenderloin with apple sauce, roasted carrots and mashed sweet "
+"potato."
+msgstr "सेब की चटनी, गाजर और शकरकंद के साथ पोर्क।"
+
+msgid "Beef Tacos"
+msgstr "बीफ टैकोस"
+
+msgid ""
+"Seasoned ground beef tacos with cheese, sour cream, guacamole and pico de "
+"gallo."
+msgstr "चीज़ और क्रीम के साथ बीफ टैकोस।"
+
+msgid "Peanut Butter Banana"
+msgstr "पीनट बटर केला"
+
+msgid ""
+"Two bananas with 3 tbsp peanut butter. Quick 400-calorie muscle-building "
+"snack."
+msgstr "पीनट बटर के साथ दो केले।"
+
+msgid "Protein Shake"
+msgstr "प्रोटीन शेक"
+
+msgid ""
+"Double scoop whey protein with whole milk and oats. 500 calories post-"
+"workout."
+msgstr "दूध और ओट्स के साथ प्रोटीन शेक।"
+
+msgid "Trail Mix"
+msgstr "ट्रेल मिक्स"
+
+msgid ""
+"Large handful of mixed nuts, dried fruits, dark chocolate chips and seeds."
+msgstr "मिक्स्ड नट्स, सूखे मेवे और बीजों का मिश्रण।"
+
+msgid "Cheese and Crackers"
+msgstr "चीज़ और क्रैकर्स"
+
+msgid ""
+"Whole grain crackers with cheddar cheese and sliced turkey. Protein-rich "
+"snack."
+msgstr "चीज़ और टर्की के साथ क्रैकर्स।"
+
+msgid "Greek Yogurt"
+msgstr "ग्रीक योगर्ट"
+
+msgid ""
+"Full-fat Greek yogurt with honey, granola and mixed berries. 350 calories."
+msgstr "शहद, ग्रेनोला और बेरीज़ के साथ ग्रीक योगर्ट।"
+
+msgid "Avocado Toast"
+msgstr "एवोकाडो टोस्ट"
+
+msgid ""
+"Two slices whole grain toast with avocado, eggs and everything bagel "
+"seasoning."
+msgstr "एवोकाडो और अंडे के साथ टोस्ट।"
+
+msgid "Milk and Cookies"
+msgstr "दूध और कुकीज़"
+
+msgid ""
+"Two whole grain oat cookies with a large glass of whole milk. 400 calories."
+msgstr "दूध और ओट कुकीज़।"
+
+msgid "Morning HIIT Run"
+msgstr "सुबह की HIIT रन"
+
+msgid ""
+"30 minutes of high-intensity interval running. Alternate 1 min sprint with 2"
+" min jog. Burns 350-400 calories."
+msgstr "30 मिनट की उच्च तीव्रता वाली दौड़। 350-400 कैलोरी जलाती है।"
+
+msgid "Jump Rope Circuit"
+msgstr "जंप रोप सर्किट"
+
+msgid ""
+"Jump rope intervals: 3 sets of 5 minutes with 1 minute rest. Excellent "
+"cardio and coordination."
+msgstr "5 मिनट के 3 सेट, 1 मिनट के आराम के साथ। बेहतरीन कार्डियो।"
+
+msgid "Cycling Session"
+msgstr "साइकिलिंग सेशन"
+
+msgid ""
+"Moderate to high intensity cycling. Maintain 75-85% max heart rate "
+"throughout. Great fat burner."
+msgstr "मध्यम से उच्च तीव्रता वाली साइकिलिंग। बेहतरीन फैट बर्नर।"
+
+msgid "Bodyweight Circuit"
+msgstr "बॉडीवेट सर्किट"
+
+msgid ""
+"Push-ups, squats, lunges, burpees and mountain climbers. 4 rounds of 15 reps"
+" each."
+msgstr "पुश-अप्स, स्क्वैट्स, लंग्स। प्रत्येक 15 रेप्स के 4 राउंड।"
+
+msgid "Swimming Laps"
+msgstr "स्विमिंग लैप्स"
+
+msgid ""
+"Freestyle swimming laps with 30 second rest between sets. Full body low-"
+"impact cardio."
+msgstr "30 सेकंड के आराम के साथ फ्रीस्टाइल तैराकी। फुल बॉडी कार्डियो।"
+
+msgid "Yoga Flow"
+msgstr "योग प्रवाह"
+
+msgid ""
+"Dynamic yoga flow focusing on core strength, flexibility and mindful "
+"breathing."
+msgstr "मुख्य शक्ति, लचीलापन और श्वास पर केंद्रित योग।"
+
+msgid "Stair Climbing"
+msgstr "सीढ़ी चढ़ना"
+
+msgid ""
+"Stair climbing intervals for lower body strength and cardio. 10 sets of 3 "
+"floors."
+msgstr "निचले शरीर की ताकत और कार्डियो के लिए सीढ़ी चढ़ना।"
+
+msgid "Dance Cardio"
+msgstr "डांस कार्डियो"
+
+msgid ""
+"High energy dance workout targeting full body fat burn. Fun and effective."
+msgstr "फुल बॉडी फैट बर्न करने वाला हाई एनर्जी डांस वर्कआउट।"
+
+msgid "Rowing Machine"
+msgstr "रोइंग मशीन"
+
+msgid ""
+"Rowing intervals: 500m hard, 250m easy. Repeat 6 times. Full body cardio."
+msgstr "500 मीटर तेज, 250 मीटर आसान। फुल बॉडी कार्डियो।"
+
+msgid "Pilates Core"
+msgstr "पिलाटेस कोर"
+
+msgid ""
+"Pilates-based core workout focusing on deep abdominal muscles and posture."
+msgstr "गहरी पेट की मांसपेशियों और मुद्रा पर केंद्रित पिलाटेस वर्कआउट।"
+
+msgid "Bench Press"
+msgstr "बेंच प्रेस"
+
+msgid ""
+"Flat bench press: 4 sets of 8-10 reps at 75% 1RM. Primary chest and tricep "
+"builder."
+msgstr "छाती और ट्राइसेप्स के लिए। 8-10 रेप्स के 4 सेट।"
+
+msgid "Squat Session"
+msgstr "स्क्वैट सेशन"
+
+msgid ""
+"Back squats: 5 sets of 5 reps heavy weight. King of all muscle-building "
+"exercises."
+msgstr "भारी वजन के साथ बैक स्क्वैट्स। 5 रेप्स के 5 सेट।"
+
+msgid "Deadlift Day"
+msgstr "डेडलिफ्ट डे"
+
+msgid ""
+"Conventional deadlifts: 4 sets of 6 reps. Full posterior chain activation "
+"for mass."
+msgstr "डेडलिफ्ट्स। 6 रेप्स के 4 सेट।"
+
+msgid "Pull-Up and Row"
+msgstr "पुल-अप और रो"
+
+msgid ""
+"Weighted pull-ups and barbell rows: 4 sets each. Back width and thickness "
+"builder."
+msgstr "पुल-अप्स और बार्बेल रोज़। प्रत्येक के 4 सेट।"
+
+msgid "Shoulder Press"
+msgstr "शोल्डर प्रेस"
+
+msgid ""
+"Overhead press and lateral raises: 4 sets of 10. Boulder shoulder "
+"development."
+msgstr "कंधों के लिए। 10 रेप्स के 4 सेट।"
+
+msgid "Leg Press Day"
+msgstr "लेग प्रेस डे"
+
+msgid ""
+"Leg press, leg curls and calf raises: 4 sets of 12. Complete lower body mass"
+" builder."
+msgstr "लेग प्रेस और कर्ल्स। 12 रेप्स के 4 सेट।"
+
+msgid "Bicep and Tricep"
+msgstr "बाइसेप और ट्राइसेप"
+
+msgid ""
+"Barbell curls and skull crushers: 4 sets of 10 each. Arm size and strength."
+msgstr "बांह की ताकत के लिए। प्रत्येक 10 रेप्स के 4 सेट।"
+
+msgid "Power Clean"
+msgstr "पावर क्लीन"
+
+msgid ""
+"Olympic power cleans: 5 sets of 3 reps. Explosive full body strength and "
+"power."
+msgstr "फुल बॉडी स्ट्रेंथ के लिए पावर क्लीन्स। 3 रेप्स के 5 सेट।"
+
+msgid "Incline Press"
+msgstr "इनक्लाइन प्रेस"
+
+msgid ""
+"Incline dumbbell press and cable flyes: 4 sets of 10. Upper chest "
+"development."
+msgstr "ऊपरी छाती के विकास के लिए इनक्लाइन प्रेस। 10 रेप्स के 4 सेट।"
+
+msgid "Romanian Deadlift"
+msgstr "रोमानियाई डेडलिफ्ट"
+
+msgid "RDL and glute bridges: 4 sets of 10. Hamstring and glute mass builder."
+msgstr "हैमस्ट्रिंग और ग्लूट के लिए। 10 रेप्स के 4 सेट।"
+
+msgid "30 minutes"
+msgstr "30 मिनट"
+
+msgid "35 minutes"
+msgstr "35 मिनट"
+
+msgid "40 minutes"
+msgstr "40 मिनट"
+
+msgid "45 minutes"
+msgstr "45 मिनट"
+
+msgid "50 minutes"
+msgstr "50 मिनट"
+
+msgid "55 minutes"
+msgstr "55 मिनट"
+
+msgid "2.5 Liters"
+msgstr "2.5 लीटर"
+
+msgid "3.5 Liters"
+msgstr "3.5 लीटर"
+
+msgid "Vitamin A, Vitamin C"
+msgstr "विटामिन ए, विटामिन सी"
+
+msgid "Iron, Calcium"
+msgstr "आयरन, कैल्शियम"
+
+msgid "Quick Guidance"
+msgstr "त्वरित मार्गदर्शन"
+
+msgid "Meal Timing"
+msgstr "भोजन का समय"
+
+msgid "Drink 500ml water"
+msgstr "500 मिलीलीटर पानी पिएं"
+
+msgid "Weight loss friendly"
+msgstr "वजन घटाने के अनुकूल"
+
+msgid "Muscle gain friendly"
+msgstr "मांसपेशियों के निर्माण के अनुकूल"
+
+msgid "High protein"
+msgstr "उच्च प्रोटीन"
+
+msgid "Duration"
+msgstr "अवधि"
+
+msgid "Workout Details"
+msgstr "वर्कआउट विवरण"
+
+msgid "Your browser does not support video playback."
+msgstr "आपका ब्राउज़र वीडियो प्लेबैक का समर्थन नहीं करता है।"
+
+msgid "Back to Day Plan"
+msgstr "दिन की योजना पर वापस जाएं"
+
+msgid "Day"
+msgstr "दिन"
+
+msgid "Videos, exercise demos, meals, and nutrition for today's plan."
+msgstr "आज की योजना के लिए वीडियो, व्यायाम डेमो, भोजन और पोषण।"
+
+msgid "10 Day Muscle Kickstart"
+msgstr "10 दिन का मसल किकस्टार्ट"
+
+msgid ""
+"A 10-day high-intensity strength program with calorie-dense meals to rapidly"
+" kickstart muscle growth and weight gain."
+msgstr ""
+"तेजी से मांसपेशियों की वृद्धि और वजन बढ़ाने के लिए कैलोरी-सघन भोजन के साथ "
+"10-दिवसीय उच्च-तीव्रता वाला शक्ति कार्यक्रम।"
+
+msgid "20 Day Mass Builder Program"
+msgstr "20 दिन का मास बिल्डर प्रोग्राम"
+
+msgid ""
+"A 20-day progressive overload strength program with a high-protein, high-"
+"calorie diet to maximize muscle mass and strength gains."
+msgstr ""
+"मांसपेशियों के द्रव्यमान और शक्ति लाभ को अधिकतम करने के लिए उच्च प्रोटीन, "
+"उच्च कैलोरी आहार के साथ 20 दिन का कार्यक्रम।"
+
+msgid ""
+"Day 1: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 1: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम करने"
+" के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 1: Hydration is key for muscle recovery. Drink extra water post-workout."
+msgstr ""
+"दिन 1: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद "
+"अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 2: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 2: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम करने"
+" के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 2: Hydration is key for muscle recovery. Drink extra water post-workout."
+msgstr ""
+"दिन 2: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद "
+"अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 3: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 3: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम करने"
+" के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 3: Hydration is key for muscle recovery. Drink extra water post-workout."
+msgstr ""
+"दिन 3: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद "
+"अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 4: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 4: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम करने"
+" के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 4: Hydration is key for muscle recovery. Drink extra water post-workout."
+msgstr ""
+"दिन 4: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद "
+"अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 5: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 5: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम करने"
+" के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 5: Hydration is key for muscle recovery. Drink extra water post-workout."
+msgstr ""
+"दिन 5: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद "
+"अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 6: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 6: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम करने"
+" के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 6: Hydration is key for muscle recovery. Drink extra water post-workout."
+msgstr ""
+"दिन 6: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद "
+"अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 7: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 7: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम करने"
+" के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 7: Hydration is key for muscle recovery. Drink extra water post-workout."
+msgstr ""
+"दिन 7: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद "
+"अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 8: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 8: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम करने"
+" के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 8: Hydration is key for muscle recovery. Drink extra water post-workout."
+msgstr ""
+"दिन 8: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद "
+"अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 9: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 9: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम करने"
+" के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 9: Hydration is key for muscle recovery. Drink extra water post-workout."
+msgstr ""
+"दिन 9: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद "
+"अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 10: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 10: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 10: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 10: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 11: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 11: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 11: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 11: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 12: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 12: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 12: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 12: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 13: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 13: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 13: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 13: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 14: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 14: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 14: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 14: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 15: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 15: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 15: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 15: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 16: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 16: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 16: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 16: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 17: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 17: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 17: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 17: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 18: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 18: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 18: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 18: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 19: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 19: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 19: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 19: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 20: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 20: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 20: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 20: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 21: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 21: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 21: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 21: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 22: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 22: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 22: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 22: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 23: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 23: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 23: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 23: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 24: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 24: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 24: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 24: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 25: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 25: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 25: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 25: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 26: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 26: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 26: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 26: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 27: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 27: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 27: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 27: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 28: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 28: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 28: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 28: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 29: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 29: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 29: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 29: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
+
+msgid ""
+"Day 30: Drink water before each meal. Stay hydrated to boost metabolism and "
+"reduce hunger."
+msgstr ""
+"दिन 30: प्रत्येक भोजन से पहले पानी पिएं। चयापचय को बढ़ावा देने और भूख कम "
+"करने के लिए हाइड्रेटेड रहें।"
+
+msgid ""
+"Day 30: Hydration is key for muscle recovery. Drink extra water post-"
+"workout."
+msgstr ""
+"दिन 30: मांसपेशियों की रिकवरी के लिए हाइड्रेशन महत्वपूर्ण है। वर्कआउट के बाद"
+" अतिरिक्त पानी पिएं।"
