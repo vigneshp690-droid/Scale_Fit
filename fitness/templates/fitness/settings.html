@@ -762,6 +762,158 @@
             box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.08);
         }
 
+        .security-panel {
+            display: grid;
+            gap: 18px;
+        }
+
+        .security-section {
+            background: #fbfcfe;
+            border: 1px solid var(--sf-line);
+            border-radius: 18px;
+            box-shadow: 0 10px 24px rgba(36, 48, 71, 0.04);
+            padding: 20px;
+        }
+
+        .security-section-head {
+            align-items: flex-start;
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .security-section-title {
+            align-items: center;
+            display: flex;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .security-section-title i {
+            align-items: center;
+            background: var(--sf-orange-soft);
+            border-radius: 12px;
+            color: var(--sf-orange);
+            display: inline-flex;
+            flex: 0 0 auto;
+            height: 38px;
+            justify-content: center;
+            width: 38px;
+        }
+
+        .security-section h4 {
+            color: var(--sf-ink);
+            font-size: 0.95rem;
+            font-weight: 850;
+            margin: 0 0 4px;
+        }
+
+        .security-section p {
+            color: var(--sf-muted);
+            font-size: 0.76rem;
+            font-weight: 700;
+            line-height: 1.45;
+            margin: 0;
+        }
+
+        .security-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .security-grid.single {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .security-field {
+            display: grid;
+            gap: 8px;
+        }
+
+        .security-field label {
+            color: #27364d;
+            font-size: 0.78rem;
+            font-weight: 800;
+        }
+
+        .security-field input,
+        .readonly-value {
+            background: #ffffff;
+            border: 1px solid #dfe7f1;
+            border-radius: 12px;
+            color: var(--sf-ink);
+            font-size: 0.84rem;
+            font-weight: 700;
+            min-height: 44px;
+            outline: 0;
+            padding: 0 13px;
+            width: 100%;
+        }
+
+        .readonly-value {
+            align-items: center;
+            color: #64748b;
+            display: flex;
+        }
+
+        .security-field input:focus {
+            border-color: rgba(255, 122, 0, 0.45);
+            box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.08);
+        }
+
+        .password-input {
+            position: relative;
+        }
+
+        .password-input input {
+            padding-right: 46px;
+        }
+
+        .password-toggle {
+            align-items: center;
+            background: transparent;
+            border: 0;
+            border-radius: 10px;
+            color: var(--sf-muted);
+            cursor: pointer;
+            display: inline-flex;
+            height: 34px;
+            justify-content: center;
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: background 0.2s ease, color 0.2s ease;
+            width: 34px;
+        }
+
+        .password-toggle:hover,
+        .password-toggle:focus-visible {
+            background: var(--sf-orange-soft);
+            color: var(--sf-orange);
+            outline: 0;
+        }
+
+        .security-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 18px;
+        }
+
+        .alert-error {
+            background: #fff5f5;
+            border-color: #ffd4d4;
+            color: #b42318;
+        }
+
+        .alert-info {
+            background: #eff6ff;
+            border-color: #dbeafe;
+            color: #1d4ed8;
+        }
+
         #profile .settings-actions {
             justify-content: flex-end;
             margin-top: 34px !important;
@@ -1283,6 +1435,14 @@
                 grid-template-columns: 1fr;
             }
 
+            .security-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .security-section {
+                padding: 16px;
+            }
+
             #profile .card-header {
                 align-items: flex-start;
                 flex-direction: column;
@@ -1483,6 +1643,7 @@
                     <a class="active" href="#profile" data-settings-tab="profile"><i class="fa-regular fa-user"></i> Profile</a>
                     <a href="#theme" data-settings-tab="theme"><i class="fa-solid fa-palette"></i> Theme</a>
                     <a href="#notifications" data-settings-tab="notifications"><i class="fa-regular fa-bell"></i> Notifications</a>
+                    <a href="#security" data-settings-tab="security"><i class="fa-solid fa-shield-halved"></i> Security</a>
                     <a href="#programs" data-settings-tab="programs"><i class="fa-solid fa-dumbbell"></i> Programs</a>
                     <a href="#language" data-settings-tab="language"><i class="fa-solid fa-globe"></i> Language &amp; Region</a>
                     <a href="#support" data-settings-tab="support"><i class="fa-regular fa-circle-question"></i> Support</a>
@@ -1526,6 +1687,7 @@
 
                             <form class="profile-form" method="post">
                                 {% csrf_token %}
+                                <input type="hidden" name="profile_action" value="save_profile">
                                 <div class="profile-form-grid">
                                     <div class="profile-form-row">
                                         <label for="fullName">Full name</label>
@@ -1550,8 +1712,75 @@
                                 </div>
 
                                 <div class="settings-actions" style="margin-top: 18px;">
-                                    <button class="secondary-btn" type="button"><i class="fa-solid fa-key"></i> Change Password</button>
                                     <button class="primary-btn" type="submit" name="profile_action" value="save_profile"><i class="fa-regular fa-floppy-disk"></i> Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </section>
+
+                    <section class="settings-card" id="security" data-settings-row="security username password auth login update credentials current password duplicate">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="card-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                                <div>
+                                    <h3>Security Settings</h3>
+                                    <p>Manage admin login credentials for this authenticated account.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="security-panel">
+                            <form class="security-section" method="post" autocomplete="off">
+                                {% csrf_token %}
+                                <input type="hidden" name="profile_action" value="update_security">
+
+                                <div class="security-section-head">
+                                    <div class="security-section-title">
+                                        <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                                        <div>
+                                            <h4>Update Login Credentials</h4>
+                                            <p>Change username and password together. You will be logged out after saving.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="security-grid">
+                                    <div class="security-field">
+                                        <label>Current Username</label>
+                                        <div class="readonly-value">{{ user.username }}</div>
+                                    </div>
+                                    <div class="security-field">
+                                        <label for="securityNewUsername">New Username</label>
+                                        <input id="securityNewUsername" name="new_username" type="text" autocomplete="username" placeholder="Enter new username">
+                                    </div>
+                                    <div class="security-field">
+                                        <label for="current_password">Current Password</label>
+                                        <div class="password-input">
+                                            <input id="current_password" name="current_password" type="password" autocomplete="current-password">
+                                            <button class="password-toggle" type="button" data-password-toggle="current_password" aria-label="Show current password"><i class="fa-regular fa-eye"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="security-field">
+                                        <label for="new_password">New Password</label>
+                                        <div class="password-input">
+                                            <input id="new_password" name="new_password" type="password" autocomplete="new-password">
+                                            <button class="password-toggle" type="button" data-password-toggle="new_password" aria-label="Show new password"><i class="fa-regular fa-eye"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="security-field">
+                                        <label for="confirm_password">Confirm New Password</label>
+                                        <div class="password-input">
+                                            <input id="confirm_password" name="confirm_password" type="password" autocomplete="new-password">
+                                            <button class="password-toggle" type="button" data-password-toggle="confirm_password" aria-label="Show confirm password"><i class="fa-regular fa-eye"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="security-actions">
+                                    <button class="primary-btn" type="submit">
+                                        <i class="fa-solid fa-shield-halved"></i> Update Security
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -1954,6 +2183,37 @@
     }
 
     showSettingsSection(location.hash.replace('#', '') || 'profile', false);
+
+    function toggleVisibility(inputId, toggleButton) {
+        const input = document.getElementById(inputId);
+        const button = toggleButton || (input && input.nextElementSibling);
+        const icon = button ? button.querySelector('i') : null;
+        if (!input || !icon) {
+            return;
+        }
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+            if (button) {
+                button.setAttribute('aria-label', 'Hide password');
+            }
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+            if (button) {
+                button.setAttribute('aria-label', 'Show password');
+            }
+        }
+    }
+
+    document.querySelectorAll('[data-password-toggle]').forEach(function(button) {
+        button.addEventListener('click', function() {
+            toggleVisibility(button.dataset.passwordToggle, button);
+        });
+    });
 
 </script>
 </body>

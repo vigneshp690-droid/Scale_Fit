@@ -692,9 +692,7 @@
             <div class="topbar-left">
                 <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar"><i class="fa-solid fa-bars"></i></button>
                 <div>
-                    {% if goal_type != 'weight_loss' %}
-                    <span>Hello, {{ user.first_name|default:user.username }}</span>
-                    {% endif %}
+
                     <h1>{{ day.title }} Content</h1>
                 </div>
             </div>

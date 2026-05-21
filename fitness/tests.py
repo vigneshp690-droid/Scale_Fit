@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 from django.http import HttpResponse
 from django.urls import reverse
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.utils import translation
 
@@ -248,6 +249,66 @@ class PlanPeriodPaginationTests(TestCase):
                 self.assertEqual([day.day_number for day in second_page.context['items'].object_list], list(range(8, 15)))
                 self.assertContains(first_page, 'Showing 1-7 of 14 days')
                 self.assertContains(second_page, 'Showing 8-14 of 14 days')
+
+
+class SettingsSecurityTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='security-admin', password='InitialPass123!')
+        self.client.force_login(self.user)
+
+    def test_security_update_changes_username_and_password_together(self):
+        response = self.client.post(
+            reverse('settings'),
+            {
+                'profile_action': 'update_security',
+                'new_username': 'updated-security-admin',
+                'current_password': 'InitialPass123!',
+                'new_password': 'UpdatedPass123!',
+                'confirm_password': 'UpdatedPass123!',
+            },
+        )
+
+        self.assertRedirects(response, reverse('login'))
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.username, 'updated-security-admin')
+        self.assertIsNone(authenticate(username='security-admin', password='InitialPass123!'))
+        self.assertIsNone(authenticate(username='security-admin', password='InitialPass123!'))
+        self.assertEqual(
+            authenticate(username='updated-security-admin', password='UpdatedPass123!'),
+            self.user,
+        )
+
+    def test_security_rejects_duplicate_username(self):
+        User.objects.create_user(username='existing-admin', password='OtherPass123!')
+
+        response = self.client.post(
+            reverse('settings'),
+            {
+                'profile_action': 'update_security',
+                'new_username': 'existing-admin',
+                'current_password': 'InitialPass123!',
+                'new_password': 'UpdatedPass123!',
+                'confirm_password': 'UpdatedPass123!',
+            },
+        )
+
+        self.assertRedirects(response, f'{reverse("settings")}#security')
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.username, 'security-admin')
+
+    def test_security_requires_username_and_password_together(self):
+        response = self.client.post(
+            reverse('settings'),
+            {
+                'profile_action': 'update_security',
+                'new_username': 'updated-security-admin',
+            },
+        )
+
+        self.assertRedirects(response, f'{reverse("settings")}#security')
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.username, 'security-admin')
+        self.assertEqual(authenticate(username='security-admin', password='InitialPass123!'), self.user)
 
 
 class AdminMediaCrudTests(TestCase):

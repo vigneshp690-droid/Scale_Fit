@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.password_validation import validate_password
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -661,6 +662,47 @@ def settings_view(request):
 
             messages.success(request, 'Profile settings saved.')
             return redirect('settings')
+
+        profile_action = request.POST.get('profile_action')
+
+        if profile_action == 'update_security':
+            new_username = request.POST.get('new_username', '').strip()
+            current_password = request.POST.get('current_password', '')
+            new_password = request.POST.get('new_password', '')
+            confirm_password = request.POST.get('confirm_password', '')
+
+            if not new_username or not current_password or not new_password or not confirm_password:
+                messages.error(request, 'Please complete all security fields.')
+                return redirect(f"{reverse('settings')}#security")
+
+            if new_username == request.user.username:
+                messages.error(request, 'New username must be different from current username.')
+                return redirect(f"{reverse('settings')}#security")
+
+            if User.objects.filter(username__iexact=new_username).exclude(pk=request.user.pk).exists():
+                messages.error(request, 'This username is already taken.')
+                return redirect(f"{reverse('settings')}#security")
+
+            if not request.user.check_password(current_password):
+                messages.error(request, 'Current password is incorrect.')
+                return redirect(f"{reverse('settings')}#security")
+
+            if new_password != confirm_password:
+                messages.error(request, 'New passwords do not match.')
+                return redirect(f"{reverse('settings')}#security")
+
+            try:
+                validate_password(new_password, request.user)
+            except ValidationError as exc:
+                messages.error(request, ' '.join(exc.messages))
+                return redirect(f"{reverse('settings')}#security")
+
+            request.user.username = new_username
+            request.user.set_password(new_password)
+            request.user.save(update_fields=['username', 'password'])
+            logout(request)
+            messages.success(request, 'Security credentials updated successfully. Please log in with your new username and password.')
+            return redirect('login')
 
         selected_theme = request.POST.get('theme', '').strip()
         if selected_theme in THEME_SLUGS:

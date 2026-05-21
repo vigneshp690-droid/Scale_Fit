@@ -183,7 +183,7 @@ class ProgramItemAdmin(admin.ModelAdmin):
     readonly_fields = ('image_preview', 'video_preview', 'created_at', 'updated_at')
     fieldsets = (
         (None, {
-            'fields': ('day', 'title', 'title_ta', 'title_hi', 'image', 'image_preview', 'video', 'video_preview', 'description', 'description_ta', 'description_hi')
+            'fields': ('day', 'title', 'title_ta', 'title_hi', 'image', 'image_preview', 'video', 'video_preview', 'description', 'description_ta', 'description_hi', 'ingredients', 'ingredients_ta', 'ingredients_hi')
         }),
         ('Program Settings', {
             'fields': ('meal_category', 'display_order', 'is_active')
